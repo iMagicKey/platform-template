@@ -5,11 +5,11 @@ import type { RuntimeStore } from '../../store.js'
 
 /** A complete POST route with request/response validation and isolated business logic. */
 const estimateRouteSchema = {
-                tags: ['projects'],
-                summary: 'Estimate project cost in integer cents',
-                body: estimateRequestSchema,
-                response: { 200: estimateResponseSchema },
-            }
+    tags: ['projects'],
+    summary: 'Estimate project cost in integer cents',
+    body: estimateRequestSchema,
+    response: { 200: estimateResponseSchema },
+}
 
 export function registerProjectEstimate(app: FastifyInstance, state: RuntimeStore): void {
     app.withTypeProvider<ZodTypeProvider>().post(

@@ -7,16 +7,16 @@ import type { BackendConfig } from '../../config.js'
 import { errorResponseSchema } from '../../schemas/common.js'
 
 const loginRouteSchema = {
-                tags: ['auth'],
-                summary: 'Development-only login; never enabled in production',
-                body: z.object({ login: z.string().min(1).max(128), password: z.string().min(1).max(512) }),
-                response: {
-                    200: z.object({ user: z.object({ id: z.string() }) }),
-                    401: errorResponseSchema('INVALID_CREDENTIALS'),
-                    403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),
-                    501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
-                },
-            }
+    tags: ['auth'],
+    summary: 'Development-only login; never enabled in production',
+    body: z.object({ login: z.string().min(1).max(128), password: z.string().min(1).max(512) }),
+    response: {
+        200: z.object({ user: z.object({ id: z.string() }) }),
+        401: errorResponseSchema('INVALID_CREDENTIALS'),
+        403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),
+        501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
+    },
+}
 
 export function registerAuthLogin(app: FastifyInstance, config: BackendConfig, auth: DemoAuthService | undefined): void {
     app.withTypeProvider<ZodTypeProvider>().post(

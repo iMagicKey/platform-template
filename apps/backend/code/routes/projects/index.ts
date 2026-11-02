@@ -4,10 +4,10 @@ import { listProjects, projectSchema } from '../../modules/projects/projects.ser
 
 /** GET /projects. No database or authentication requirements. */
 const projectsRouteSchema = {
-                tags: ['projects'],
-                summary: 'List reference projects',
-                response: { 200: z.object({ projects: z.array(projectSchema) }) },
-            }
+    tags: ['projects'],
+    summary: 'List reference projects',
+    response: { 200: z.object({ projects: z.array(projectSchema) }) },
+}
 
 export function registerProjectsRoot(app: FastifyInstance): void {
     app.get(

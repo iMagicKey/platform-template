@@ -4,17 +4,17 @@ import type { ApiConfig } from '../../config.js'
 import { APP_VERSION, SERVICE_NAME } from '../../consts/app.js'
 
 const healthRouteSchema = {
-                hide: true,
-                response: {
-                    200: z.object({
-                        status: z.literal('ok'),
-                        ready: z.boolean(),
-                        service: z.string(),
-                        version: z.string(),
-                        release: z.string(),
-                    }),
-                },
-            }
+    hide: true,
+    response: {
+        200: z.object({
+            status: z.literal('ok'),
+            ready: z.boolean(),
+            service: z.string(),
+            version: z.string(),
+            release: z.string(),
+        }),
+    },
+}
 
 export function registerHealth(app: FastifyInstance, config: ApiConfig) {
     app.get(

@@ -6,14 +6,14 @@ import type { BackendConfig } from '../../config.js'
 import { errorResponseSchema } from '../../schemas/common.js'
 
 const logoutRouteSchema = {
-                tags: ['auth'],
-                summary: 'Revoke development session',
-                response: {
-                    204: z.null(),
-                    403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),
-                    501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
-                },
-            }
+    tags: ['auth'],
+    summary: 'Revoke development session',
+    response: {
+        204: z.null(),
+        403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),
+        501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
+    },
+}
 
 export function registerAuthLogout(app: FastifyInstance, config: BackendConfig, auth: DemoAuthService | undefined): void {
     app.post(

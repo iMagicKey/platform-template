@@ -4,14 +4,14 @@ import { demoCookieName, type DemoAuthService } from '../../modules/auth/auth.se
 import { errorResponseSchema } from '../../schemas/common.js'
 
 const meRouteSchema = {
-                tags: ['auth'],
-                summary: 'Read current development session',
-                response: {
-                    200: z.object({ user: z.object({ id: z.string() }) }),
-                    401: errorResponseSchema('UNAUTHENTICATED'),
-                    501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
-                },
-            }
+    tags: ['auth'],
+    summary: 'Read current development session',
+    response: {
+        200: z.object({ user: z.object({ id: z.string() }) }),
+        401: errorResponseSchema('UNAUTHENTICATED'),
+        501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
+    },
+}
 
 export function registerAuthMe(app: FastifyInstance, auth: DemoAuthService | undefined): void {
     app.get(
