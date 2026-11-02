@@ -1,0 +1,34 @@
+import { setTimeout as delay } from 'node:timers/promises'
+import { resolve } from 'node:path'
+import pino from 'pino'
+import { readConfig } from './config.js'
+import { createWorker } from './worker.js'
+
+const config = readConfig()
+const logger = pino({
+    level: config.LOG_LEVEL,
+    base: { service: 'worker', environment: config.NODE_ENV, release: config.APP_RELEASE },
+    ...(config.LOG_OUTPUT === 'file' ? {
+        transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', mkdir: true } },
+    } : {}),
+})
+const scheduler = createWorker(config, logger)
+scheduler.start()
+logger.info({ event: 'service.started' }, 'Worker started')
+let closing = false
+async function shutdown(signal: string) {
+    if (closing) return
+    closing = true
+    logger.info({ event: 'service.shutdown', signal }, 'Worker stopping')
+    scheduler.stop()
+    const deadline = Date.now() + 5_000
+    while (Object.values(scheduler.getStatus()).some((task) => task.inProcess) && Date.now() < deadline) {
+        await delay(100)
+    }
+    if (Object.values(scheduler.getStatus()).some((task) => task.inProcess)) {
+        logger.warn('Active scheduler tasks exceeded shutdown deadline')
+    }
+    logger.flush()
+}
+process.once('SIGINT', () => { void shutdown('SIGINT') })
+process.once('SIGTERM', () => { void shutdown('SIGTERM') })

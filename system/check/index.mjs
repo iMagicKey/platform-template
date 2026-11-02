@@ -26,7 +26,7 @@ for (const name of appNames) {
         if (!pkg.scripts?.[script]) errors.push(`Missing ${script} script: apps/${name}`)
     }
     const code = join(app, 'code')
-    if (existsSync(code) && !existsSync(join(code, 'routes/index.ts'))) errors.push(`Missing central route registry: apps/${name}`)
+    if (existsSync(code) && (pkg.platform?.type === 'fastify' || ['backend', 'api'].includes(name)) && !existsSync(join(code, 'routes/index.ts'))) errors.push(`Missing central route registry: apps/${name}`)
     visit(app, (file) => {
         const path = relative(root, file).replaceAll('\\', '/')
         if (/\/code\/.*\.md$/i.test(path)) errors.push(`Markdown in code/: ${path}`)
