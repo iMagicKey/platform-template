@@ -19,6 +19,7 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig, s
         '/ws',
         {
             websocket: true,
+            config: { rateLimit: false },
             preValidation: async (request, reply) => {
                 const origin = request.headers.origin
                 const protocols = String(request.headers['sec-websocket-protocol'] ?? '')

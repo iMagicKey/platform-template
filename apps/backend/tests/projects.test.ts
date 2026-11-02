@@ -20,7 +20,7 @@ test('pure estimate uses cents and is independently testable', () => {
 })
 
 test('route transport validates request and produces OpenAPI contract', async () => {
-    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
+    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'true' }))
     try {
         const root = await app.inject('/projects')
         assert.equal(root.statusCode, 200)

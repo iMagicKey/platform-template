@@ -86,7 +86,7 @@ test('demo identity provider refuses production and missing configuration', asyn
             }),
         /forbidden in production/
     )
-    assert.throws(() => readConfig({ NODE_ENV: 'test', AUTH_MODE: 'demo' }), /AUTH_USERNAME/)
+    assert.throws(() => readConfig({ NODE_ENV: 'test', AUTH_MODE: 'demo', ALLOW_DEMO_AUTH: 'true' }), /AUTH_USERNAME/)
 })
 
 test('file-backed demo sessions survive app restart and are revoked across restarts', async () => {
