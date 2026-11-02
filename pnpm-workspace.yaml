@@ -1,3 +1,7 @@
 packages:
     - 'apps/*'
     - 'packages/*'
+
+# pnpm 12 normally quarantines versions for 24h; the existing reviewed lockfile already pins this release.
+minimumReleaseAgeExclude:
+    - 'jose@6.2.15'
