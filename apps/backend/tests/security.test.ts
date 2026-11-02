@@ -35,7 +35,10 @@ test('rate limits are per forwarded client and do not affect health', async () =
         assert.equal((await app.inject(opts('198.51.100.1'))).statusCode, 429)
         assert.equal((await app.inject(opts('198.51.100.2'))).statusCode, 501)
         for (let i = 0; i < 130; i++) {
-            assert.equal((await app.inject({ url: '/health', headers: { 'x-forwarded-for': '198.51.100.1' }, remoteAddress: '127.0.0.1' })).statusCode, 200)
+            assert.equal(
+                (await app.inject({ url: '/health', headers: { 'x-forwarded-for': '198.51.100.1' }, remoteAddress: '127.0.0.1' })).statusCode,
+                200
+            )
         }
     } finally {
         await app.close()
@@ -43,12 +46,14 @@ test('rate limits are per forwarded client and do not affect health', async () =
 })
 
 test('real WebSocket handshake and ping/pong work with an explicitly allowed ticket', async () => {
-    const app = await buildApp(readConfig({
-        NODE_ENV: 'test',
-        DOCS_ENABLED: 'false',
-        WS_DEMO_TOKEN: 'test-ticket',
-        WS_ALLOWED_ORIGINS: 'http://localhost:8080',
-    }))
+    const app = await buildApp(
+        readConfig({
+            NODE_ENV: 'test',
+            DOCS_ENABLED: 'false',
+            WS_DEMO_TOKEN: 'test-ticket',
+            WS_ALLOWED_ORIGINS: 'http://localhost:8080',
+        })
+    )
     await app.ready()
     let socket: Awaited<ReturnType<typeof app.injectWS>> | undefined
     try {
