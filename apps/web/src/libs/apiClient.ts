@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@platform/api-contract'
+import type { ApiSuccess } from '@platform/api-contract'
 
 export class ApiRequestError extends Error {
     constructor(
@@ -16,7 +16,7 @@ function record(value: unknown): value is Record<string, unknown> {
 }
 
 /** Validate the shared envelope at the browser boundary; T is validated by each endpoint consumer. */
-export async function readApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
+export async function readApiResponse<T>(response: Response): Promise<ApiSuccess<T>> {
     let raw: unknown
     try {
         raw = (await response.json()) as unknown
