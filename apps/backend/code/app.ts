@@ -15,6 +15,7 @@ import { registerWebsocket } from './websocket/index.js'
 import { createAuthService } from './modules/auth/auth.factory.js'
 import { createLoggerOptions } from './logging.js'
 import { registerRequestLogging } from './plugins/request-logging.js'
+import { registerErrorHandlers } from './plugins/error-handler.js'
 import { createStore, type RuntimeStore } from './store.js'
 import { APP_VERSION } from './consts/app.js'
 
@@ -36,6 +37,7 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)
     registerRequestLogging(app)
+    registerErrorHandlers(app)
     if (config.CORS_ORIGINS.length) {
         await app.register(cors, { origin: config.CORS_ORIGINS, credentials: false })
     }

@@ -8,6 +8,7 @@ import { registerRoutes } from './routes/index.js'
 import { APP_VERSION } from './consts/app.js'
 import { createLoggerOptions } from './logging.js'
 import { registerRequestLogging } from './plugins/request-logging.js'
+import { registerErrorHandlers } from './plugins/error-handler.js'
 
 export async function buildApp(config: ApiConfig = readConfig()) {
     const app = Fastify({
@@ -17,6 +18,7 @@ export async function buildApp(config: ApiConfig = readConfig()) {
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)
     registerRequestLogging(app)
+    registerErrorHandlers(app)
     await app.register(rateLimit, { max: 180, timeWindow: '1 minute' })
     await app.register(swagger, {
         openapi: { info: { title: 'Independent Platform API', version: APP_VERSION }, servers: [] },
