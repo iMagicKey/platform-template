@@ -1,0 +1,26 @@
+{
+    "name": "@platform/api-contract",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "engines": {
+        "node": ">=26 <27"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "test": "tsx --test tests/*.test.ts",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "lint": "eslint code tests"
+    },
+    "dependencies": {
+        "zod": "^4.2.0"
+    }
+}
