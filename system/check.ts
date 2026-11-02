@@ -4,6 +4,8 @@ import { join, relative, resolve } from 'node:path'
 const root = resolve(import.meta.dirname, '..')
 const apps = join(root, 'apps')
 const errors: string[] = []
+if (!existsSync(join(root, 'docs', 'ARCHITECTURE.md'))) errors.push('Missing docs/ARCHITECTURE.md')
+if (existsSync(join(root, 'ARCHITECTURE.md'))) errors.push('ARCHITECTURE.md belongs in docs/, not the repository root')
 const appNames = existsSync(apps)
     ? readdirSync(apps, { withFileTypes: true })
           .filter((entry) => entry.isDirectory())

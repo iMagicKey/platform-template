@@ -4,4 +4,4 @@ Workspace: `@platform/bot`, grammY long-polling Telegram bot; has no HTTP port, 
 
 Example command: `/start`. No Telegram Mini App auth or persistent users are implemented here.
 
-Graceful stop uses `bot.stop()`; stdout Pino logging, optional pino-roll. Do not log bot tokens or update payloads. Read root `ARCHITECTURE.md` for platform rules.
+Graceful stop uses `bot.stop()`; stdout Pino logging, optional pino-roll. Do not log bot tokens or update payloads. Read root `docs/ARCHITECTURE.md` for platform rules.

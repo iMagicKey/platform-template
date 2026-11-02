@@ -2,7 +2,7 @@
 
 **Node.js 26 LTS** · TypeScript · pnpm + Turborepo · native Next.js · independent Fastify backend and API.
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the architecture contract and [AGENTS.md](AGENTS.md) for agent instructions.
+Read [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the architecture contract and [AGENTS.md](AGENTS.md) for agent instructions.
 
 ## Quick start
 
@@ -100,7 +100,7 @@ With Next.js, backend, independent API and Caddy running, execute `pnpm system:s
 
 ## Directory semantics and naming
 
-[ARCHITECTURE.md](ARCHITECTURE.md) defines the exact responsibilities of every `apps/*/code` and `apps/web/src` directory,
+[ARCHITECTURE.md](docs/ARCHITECTURE.md) defines the exact responsibilities of every `apps/*/code` and `apps/web/src` directory,
 plus React PascalCase naming, camelCase TypeScript, lowercase routes and snake_case SQL. The rules are checked by ESLint and
 `pnpm check:architecture`. UI examples include a Zustand-powered service explorer: filters, favorites, search, scoped store
 provider and independent store tests.
@@ -116,4 +116,4 @@ provider and independent store tests.
 
 Use `type(scope): imperative summary` (Conventional Commits). For example, `feat(web): add dashboard filters` or
 `fix(backend): reject invalid tokens`. Scope is optional; keep the header at most 72 characters. Detailed rules and
-breaking-change notation are in [ARCHITECTURE.md](ARCHITECTURE.md). Validate with `pnpm check:commit`.
+breaking-change notation are in [ARCHITECTURE.md](docs/ARCHITECTURE.md). Validate with `pnpm check:commit`.

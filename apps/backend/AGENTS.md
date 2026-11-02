@@ -1,6 +1,6 @@
 # Backend — local agent facts
 
-Workspace `@platform/backend`, Fastify port **3100**, public `/api/*` via Caddy prefix stripping, public WebSocket `/ws`. Global naming and directory rules are in root ARCHITECTURE.md.
+Workspace `@platform/backend`, Fastify port **3100**, public `/api/*` via Caddy prefix stripping, public WebSocket `/ws`. Global naming and directory rules are in root `docs/ARCHITECTURE.md`.
 
 Actual implementations:
 

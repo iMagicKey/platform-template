@@ -1,6 +1,6 @@
 # API — local agent facts
 
-Workspace `@platform/api`, independent Fastify HTTP process, internal port **3200**, intended for its own hostname (not the main web's /api prefix). Global naming and layout: root ARCHITECTURE.md.
+Workspace `@platform/api`, independent Fastify HTTP process, internal port **3200**, intended for its own hostname (not the main web's /api prefix). Global naming and layout: root `docs/ARCHITECTURE.md`.
 
 - `code/index.ts`: process lifecycle; `code/app.ts`: Fastify composition, Pino, Zod, Swagger, rate limits.
 - `code/config.ts`: Zod env. `code/consts/app.ts`: service name/version.
