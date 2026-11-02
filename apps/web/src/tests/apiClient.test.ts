@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { ApiRequestError, readApiResponse } from '../../apps/web/src/libs/apiClient'
+import { ApiRequestError, readApiResponse } from '../libs/apiClient'
 
 test('web client reads a successful typed envelope with null and scalar data', async () => {
     const success = await readApiResponse<number>(Response.json({ data: 17, error: null }))
@@ -36,7 +36,7 @@ test('frontend receives every structured validation issue', async () => {
 })
 
 test('requestApi does not send JSON content type on bodyless logout', async () => {
-    const { requestApi } = await import('../../apps/web/src/libs/apiClient')
+    const { requestApi } = await import('../libs/apiClient')
     const originalFetch = globalThis.fetch
     let sentHeaders: Headers | undefined
     globalThis.fetch = async (_url, init) => {

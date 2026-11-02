@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { createDashboardStore } from '../../apps/web/src/store/dashboardStore'
+import { createDashboardStore } from '../store/dashboardStore'
 
 test('dashboard stores are isolated across separate provider instances', () => {
     const alice = createDashboardStore()

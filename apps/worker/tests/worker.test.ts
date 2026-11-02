@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import pino from 'pino'
-import { createWorker } from '../../apps/worker/code/worker.js'
-import { readConfig } from '../../apps/worker/code/config.js'
+import { createWorker } from '../code/worker.js'
+import { readConfig } from '../code/config.js'
 
 test('worker schedules only when enabled and stops cleanly', () => {
     const logger = pino({ enabled: false })
