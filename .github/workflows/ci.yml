@@ -37,6 +37,7 @@ jobs:
       - run: pnpm check:architecture
       - run: pnpm check:commit
       - run: pnpm test:system
+      - run: pnpm audit --prod
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
