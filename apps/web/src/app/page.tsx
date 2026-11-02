@@ -1,5 +1,6 @@
-import { HomeContainer } from '../containers/home'
+import { HomeContainer } from '../containers/HomeContainer'
+import { DashboardStoreProvider } from '../providers/DashboardStoreProvider'
 
 export default function Home() {
-    return <HomeContainer />
+    return <DashboardStoreProvider><HomeContainer /></DashboardStoreProvider>
 }

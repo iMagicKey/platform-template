@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { UpdateBanner } from '../components/update-banner'
+import { UpdateBanner } from '../components/UpdateBanner'
 import { BUILD_RELEASE } from '../consts/release'
 import './globals.css'
 
