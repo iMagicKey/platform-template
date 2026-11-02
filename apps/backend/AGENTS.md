@@ -6,6 +6,7 @@ Actual implementations:
 
 - `code/index.ts` starts/stops the process; `code/app.ts` assembles Fastify/Zod/Pino/OpenAPI/WebSocket/rate limiting.
 - `code/config.ts` validates env; `code/consts/app.ts` holds fixed version and service name.
+- `code/store.ts` exports the process-local singleton and `createStore()`. Current fields are `activeConnections` (written directly by WebSocket) and `lastProjectEstimateAt` (written through `modules/projects/projects.service.ts`). `code/index.ts` supplies the singleton to `buildApp`; tests default to fresh isolated stores.
 - `code/routes/index.ts` is the single HTTP registry.
 - `code/routes/health/index.ts`: `GET /health`; `auth/index.ts`: `GET /auth`; `auth/login.ts`: `POST /auth/login`, returns **501** by default, or authenticates a single demo account when AUTH_MODE=demo on non-production. `POST /auth/logout` and `GET /auth/me` use the same revocable file-backed development cookie session. Production auth requires a real persistent identity/session provider; demo mode is blocked in production.
 - `code/modules/auth/auth.service.ts` is the currently disabled identity provider boundary; `jwt.ts` supplies jose JWT issue/verify primitives but no session backend.

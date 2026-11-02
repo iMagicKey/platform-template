@@ -2,6 +2,7 @@ import { timingSafeEqual } from 'node:crypto'
 import type { FastifyInstance } from 'fastify'
 import type { BackendConfig } from '../config.js'
 import { z } from 'zod'
+import type { RuntimeStore } from '../store.js'
 
 const messageSchema = z.object({ type: z.literal('ping') })
 
@@ -11,7 +12,7 @@ function constantTimeEqual(left: string, right: string): boolean {
     return a.length === b.length && timingSafeEqual(a, b)
 }
 
-export function registerWebsocket(app: FastifyInstance, config: BackendConfig): void {
+export function registerWebsocket(app: FastifyInstance, config: BackendConfig, state: RuntimeStore): void {
     const clients = new Set<{ close: (code: number, reason: string) => void; terminate: () => void }>()
     app.get(
         '/ws',
@@ -36,6 +37,8 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig): 
         },
         (socket) => {
             clients.add(socket)
+            // WebSocket is the sole writer of connection state. Simple direct assignment.
+            state.activeConnections = clients.size
             let alive = true
             socket.on('pong', () => {
                 alive = true
@@ -59,6 +62,7 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig): 
             socket.on('close', () => {
                 clearInterval(heartbeat)
                 clients.delete(socket)
+                state.activeConnections = clients.size
             })
             socket.on('error', (error: unknown) => app.log.warn({ err: error }, 'WebSocket connection error'))
         }

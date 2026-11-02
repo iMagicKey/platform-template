@@ -1,8 +1,9 @@
 import { buildApp } from './app.js'
 import { readConfig } from './config.js'
+import store from './store.js'
 
 const config = readConfig()
-const app = await buildApp(config)
+const app = await buildApp(config, store)
 let closing = false
 
 async function shutdown(signal: string) {

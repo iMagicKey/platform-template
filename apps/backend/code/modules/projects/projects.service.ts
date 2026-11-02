@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { z } from 'zod'
+import type { RuntimeStore } from '../../store.js'
 
 export const projectSchema = z.object({
     id: z.string().min(1),
@@ -29,4 +30,9 @@ export function listProjects(): Project[] {
 export function estimateProject(input: z.infer<typeof estimateRequestSchema>) {
     const { hours, rateCents } = estimateRequestSchema.parse(input)
     return estimateResponseSchema.parse({ hours, rateCents, totalCents: hours * rateCents })
+}
+
+/** The projects module owns this field. Use a function for semantic updates. */
+export function markProjectEstimated(state: RuntimeStore, at: number = Date.now()): void {
+    state.lastProjectEstimateAt = at
 }

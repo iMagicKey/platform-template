@@ -13,9 +13,11 @@ import { registerRoutes } from './routes/index.js'
 import { registerWebsocket } from './websocket/index.js'
 import { DemoAuthService } from './modules/auth/auth.service.js'
 import { FileSessionStore } from './db/FileSessionStore.js'
+import { createStore, type RuntimeStore } from './store.js'
 import { APP_VERSION, SERVICE_NAME } from './consts/app.js'
 
-export async function buildApp(config: BackendConfig = readConfig()) {
+/** Fresh state per Fastify instance by default; production passes the process singleton. */
+export async function buildApp(config: BackendConfig = readConfig(), state: RuntimeStore = createStore()) {
     const logger = {
         level: config.LOG_LEVEL,
         base: { service: SERVICE_NAME, environment: config.NODE_ENV, release: config.APP_RELEASE },
@@ -83,8 +85,8 @@ export async function buildApp(config: BackendConfig = readConfig()) {
                   new FileSessionStore(config.AUTH_FILE_PATH ?? resolve(process.cwd(), 'storage', 'auth', 'sessions.json'))
               )
             : undefined
-    registerRoutes(app, config, auth)
-    registerWebsocket(app, config)
+    registerRoutes(app, config, auth, state)
+    registerWebsocket(app, config, state)
     app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
     return app
 }

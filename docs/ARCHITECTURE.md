@@ -52,6 +52,7 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `apps/backend/code/app.ts`                 | Injectable Fastify construction, infrastructure registration                                               | Network listen, process exit                               |
 | `apps/*/code/config.ts`                    | Zod-validated environment and defaults                                                                     | Fixed business constants or passwords                      |
 | `apps/*/code/consts/`                      | Immutable domain constants                                                                                 | Env configuration                                          |
+| `apps/*/code/store.ts`                     | Optional typed process-local shared state and `createStore()` factory                                        | Persistent data, user/request state, DB transactions       |
 | `apps/*/code/routes/index.ts`              | **Single central HTTP route registry**                                                                     | URL endpoint implementation                                |
 | `apps/*/code/routes/<segment>/index.ts`    | HTTP endpoint for `/<segment>`, no extra URL segment                                                       | Sub-route registry                                         |
 | `apps/*/code/routes/<segment>/<action>.ts` | HTTP method, path, Zod input/output schemas, HTTP-only auth and response logic                             | Complex business operations or database model logic        |
@@ -73,6 +74,20 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `runtime/`                                 | Untracked manually movable certificates and secrets                                                        | Committed source                                           |
 
 Future Fastify apps must follow the same `code/` conventions regardless of their name. Worker/bot apps do not need an HTTP route registry if they do not serve HTTP.
+
+
+## Server Runtime Store — process-local shared state
+
+Each server application **may** have a small `code/store.ts` when multiple modules need access to the same mutable operational data. This is a plain typed object, **not** a class or a required library. It is distinct from client-side Zustand in Next.js.
+
+- `createStore()` constructs a fresh object for independent tests or multiple Fastify instances; the default export is a convenience singleton for the **running Node.js process only**. Production passes that singleton to `buildApp()`; `buildApp()` without one creates isolated state.
+- Only add fields that are used by more than one part of the application. The backend demo includes `activeConnections` (owned by WebSocket) and `lastProjectEstimateAt` (owned by the projects module); neither is required in other services.
+- All application modules may **read** the shared state. Each mutable field or subsection has a **single owning module** that writes it; this is an architectural rule, not a TypeScript access-control guarantee.
+- The owner may use **direct assignment** for simple synchronous changes, e.g. `state.activeConnections = clients.size`. Meaningful operations can be expressed via an owner function, e.g. `markProjectEstimated(state)`. Both methods are demonstrated and tested.
+- No universal mutex, event bus, subscribers or serialization framework. When a real module has competing asynchronous writes, that module handles ordering, versions or locking according to its business semantics; do not ignore races across `await`.
+- No request-specific, tenant-specific or user-private data in global process state. No persistence or cross-process coordination is provided; use `db/`, an appropriate durable adapter, or an external coordinator for those purposes. Static configuration remains in `config.ts` or `consts/`.
+- Avoid direct imports of the **default singleton** inside request handlers that must be independently instantiated by Fastify tests. Pass the per-app store by dependency to routes/modules instead; `code/index.ts` is where the process-wide default is attached to the actual app instance.
+- If a feature's state is only used within one domain module, keep it inside that module rather than expanding the common object.
 
 ## Naming conventions — normative
 
