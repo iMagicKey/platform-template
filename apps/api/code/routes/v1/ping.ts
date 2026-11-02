@@ -7,7 +7,9 @@ const pingRouteSchema = {
     tags: ['v1'],
     summary: 'Public service ping',
     response: {
-        ...commonErrorResponses, 200: dataResponseSchema(z.object({ message: z.literal('pong') })) },
+        ...commonErrorResponses,
+        200: dataResponseSchema(z.object({ message: z.literal('pong') })),
+    },
 }
 
 export function registerPing(app: FastifyInstance) {

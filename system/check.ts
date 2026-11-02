@@ -23,7 +23,10 @@ function visit(directory: string, visitor: (file: string) => void): void {
 function checkNames(directory: string, kind: 'PascalCase' | 'useHook' | 'camelCase'): void {
     visit(directory, (file) => {
         if (!/\.tsx?$/.test(file) || /\.d\.ts$/.test(file)) return
-        const name = file.split(sep).at(-1)!.replace(/\.tsx?$/, '')
+        const name = file
+            .split(sep)
+            .at(-1)!
+            .replace(/\.tsx?$/, '')
         const valid =
             kind === 'PascalCase'
                 ? /^[A-Z][a-zA-Z0-9]*$/.test(name)
@@ -35,10 +38,14 @@ function checkNames(directory: string, kind: 'PascalCase' | 'useHook' | 'camelCa
 }
 
 const appNames = existsSync(apps)
-    ? readdirSync(apps, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+    ? readdirSync(apps, { withFileTypes: true })
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name)
     : []
 const packageNames = existsSync(packages)
-    ? readdirSync(packages, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+    ? readdirSync(packages, { withFileTypes: true })
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name)
     : []
 
 if (!existsSync(join(root, 'docs', 'ARCHITECTURE.md'))) errors.push('Missing docs/ARCHITECTURE.md')

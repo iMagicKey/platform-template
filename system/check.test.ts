@@ -33,7 +33,14 @@ test('architecture checker catches filename, route and cross-boundary violations
         add('packages/shared/code/leak.ts', "export { value } from '../../../apps/backend/code/config.js'")
         const run = spawnSync(process.execPath, [checker, root], { encoding: 'utf8' })
         assert.equal(run.status, 1)
-        for (const expected of ['Expected PascalCase', 'Expected useHook', 'Invalid lowercase', 'Duplicate HTTP route', 'Cross-app source import', 'Shared package imports']) {
+        for (const expected of [
+            'Expected PascalCase',
+            'Expected useHook',
+            'Invalid lowercase',
+            'Duplicate HTTP route',
+            'Cross-app source import',
+            'Shared package imports',
+        ]) {
             assert.match(run.stderr, new RegExp(expected))
         }
     } finally {

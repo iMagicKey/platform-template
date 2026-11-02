@@ -8,7 +8,9 @@ const projectsRouteSchema = {
     tags: ['projects'],
     summary: 'List reference projects',
     response: {
-        ...commonErrorResponses, 200: dataResponseSchema(z.object({ projects: z.array(projectSchema) })) },
+        ...commonErrorResponses,
+        200: dataResponseSchema(z.object({ projects: z.array(projectSchema) })),
+    },
 }
 
 export function registerProjectsRoot(app: FastifyInstance): void {

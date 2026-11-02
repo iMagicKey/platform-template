@@ -16,7 +16,10 @@ export function createBot(token: string, logger: Logger) {
         await ctx.reply('Hello from Universal Platform Template.')
     })
     bot.catch((error) => {
-        logger.error({ event: 'telegram.update.failed', updateId: error.ctx.update.update_id, errorType: telegramErrorType(error.error) }, 'Telegram update failed')
+        logger.error(
+            { event: 'telegram.update.failed', updateId: error.ctx.update.update_id, errorType: telegramErrorType(error.error) },
+            'Telegram update failed'
+        )
     })
     return bot
 }

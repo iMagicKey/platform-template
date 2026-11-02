@@ -7,7 +7,9 @@ const authAvailabilityRouteSchema = {
     tags: ['auth'],
     summary: 'Authentication availability',
     response: {
-        ...commonErrorResponses, 200: dataResponseSchema(z.object({ configured: z.boolean() })) },
+        ...commonErrorResponses,
+        200: dataResponseSchema(z.object({ configured: z.boolean() })),
+    },
 }
 
 export function registerAuthRoot(app: FastifyInstance, auth: DemoAuthService | undefined): void {

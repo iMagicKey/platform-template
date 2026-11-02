@@ -27,7 +27,10 @@ const envSchema = z.object({
     TLS_CERT_PATH: z.string().optional(),
     TLS_KEY_PATH: z.string().optional(),
     AUTH_MODE: z.enum(['disabled', 'demo']).default('disabled'),
-    ALLOW_DEMO_AUTH: z.enum(['true', 'false']).default('false').transform((x) => x === 'true'),
+    ALLOW_DEMO_AUTH: z
+        .enum(['true', 'false'])
+        .default('false')
+        .transform((x) => x === 'true'),
     AUTH_USERNAME: z.string().optional(),
     AUTH_PASSWORD_HASH: z.string().optional(),
     AUTH_FILE_PATH: z.string().min(1).optional(),

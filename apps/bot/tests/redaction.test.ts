@@ -7,7 +7,12 @@ import { telegramErrorType } from '../code/bot.js'
 test('Telegram errors never expose canary token or message in logged fields', () => {
     const secret = 'CANARY-BOT-TOKEN-SECRET'
     const data: string[] = []
-    const stream = new Writable({ write(chunk, _encoding, cb) { data.push(String(chunk)); cb() } })
+    const stream = new Writable({
+        write(chunk, _encoding, cb) {
+            data.push(String(chunk))
+            cb()
+        },
+    })
     const logger = pino(stream)
     const cause = new Error('request to https://api.telegram.org/bot' + secret + '/getUpdates failed')
     cause.name = 'HttpError'
