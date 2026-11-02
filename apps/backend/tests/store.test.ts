@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildApp } from '../../apps/backend/code/app.js'
-import { readConfig } from '../../apps/backend/code/config.js'
-import { markProjectEstimated } from '../../apps/backend/code/modules/projects/projects.service.js'
-import store, { createStore } from '../../apps/backend/code/store.js'
+import { buildApp } from '../code/app.js'
+import { readConfig } from '../code/config.js'
+import { markProjectEstimated } from '../code/modules/projects/projects.service.js'
+import store, { createStore } from '../code/store.js'
 
 test('the runtime store supports direct assignment and an owner-owned update function', () => {
     const first = createStore()

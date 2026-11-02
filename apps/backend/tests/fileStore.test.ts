@@ -4,8 +4,8 @@ import { mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { z } from 'zod'
-import { FileJsonStore } from '../../apps/backend/code/db/FileJsonStore.js'
-import { FileSessionStore } from '../../apps/backend/code/db/FileSessionStore.js'
+import { FileJsonStore } from '../code/db/FileJsonStore.js'
+import { FileSessionStore } from '../code/db/FileSessionStore.js'
 
 test('file adapter serializes concurrent writes and retains data across instances', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'platform-json-'))

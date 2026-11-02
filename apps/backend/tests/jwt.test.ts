@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { SignJWT } from 'jose'
-import { issueApiToken, verifyApiToken } from '../../apps/backend/code/modules/auth/jwt.js'
+import { issueApiToken, verifyApiToken } from '../code/modules/auth/jwt.js'
 
 test('api JWT is limited to its audience and issuer', async () => {
     const secret = new TextEncoder().encode('a-secret-value-with-more-than-32-bytes-for-tests')

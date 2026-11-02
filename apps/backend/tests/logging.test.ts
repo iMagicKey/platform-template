@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { createLoggerOptions } from '../../apps/backend/code/logging.js'
-import { readConfig } from '../../apps/backend/code/config.js'
+import { createLoggerOptions } from '../code/logging.js'
+import { readConfig } from '../code/config.js'
 
 test('backend uses structured stdout logging by default with sensitive headers redacted', () => {
     const logger = createLoggerOptions(readConfig({ NODE_ENV: 'test' }))

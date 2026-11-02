@@ -3,9 +3,9 @@ import test from 'node:test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildApp } from '../../apps/backend/code/app.js'
-import { readConfig } from '../../apps/backend/code/config.js'
-import { hashPassword } from '../../apps/backend/code/modules/auth/auth.service.js'
+import { buildApp } from '../code/app.js'
+import { readConfig } from '../code/config.js'
+import { hashPassword } from '../code/modules/auth/auth.service.js'
 
 const ORIGIN = 'http://localhost:8080'
 

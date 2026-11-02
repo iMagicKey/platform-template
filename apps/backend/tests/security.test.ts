@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildApp } from '../../apps/backend/code/app.js'
-import { readConfig } from '../../apps/backend/code/config.js'
+import { buildApp } from '../code/app.js'
+import { readConfig } from '../code/config.js'
 
 test('production disables docs and refuses demo authentication', async () => {
     const config = readConfig({ NODE_ENV: 'production', DOCS_ENABLED: 'auto' })
