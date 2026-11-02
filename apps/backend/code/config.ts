@@ -51,7 +51,7 @@ export function readConfig(environment: NodeJS.ProcessEnv = process.env): Backen
     }
     if (config.AUTH_MODE === 'demo') {
         if (config.NODE_ENV === 'production') throw new Error('Demo authentication is forbidden in production')
-        if (!config.AUTH_USERNAME || !config.AUTH_PASSWORD_HASH || !/^scrypt\\$[a-f0-9]{32}\\$[a-f0-9]{128}$/.test(config.AUTH_PASSWORD_HASH)) {
+        if (!config.AUTH_USERNAME || !config.AUTH_PASSWORD_HASH || !/^scrypt\$[a-f0-9]{32}\$[a-f0-9]{128}$/.test(config.AUTH_PASSWORD_HASH)) {
             throw new Error('Demo authentication requires AUTH_USERNAME and a valid AUTH_PASSWORD_HASH')
         }
         if (!config.AUTH_ALLOWED_ORIGINS.length) throw new Error('Demo authentication requires AUTH_ALLOWED_ORIGINS')

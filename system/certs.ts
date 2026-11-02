@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
@@ -38,4 +38,5 @@ execFileSync(
     ],
     { stdio: 'ignore' }
 )
+chmodSync(key, 0o600)
 process.stdout.write(`Self-signed cert created for ${service} in ${directory}\n`)

@@ -64,7 +64,22 @@ pnpm system:logs clear backend
 
 The systemd installer generates a reviewable unit without requiring root; `--apply` requires privileges. The default output uses journald, with optional app-level file logging via `LOG_OUTPUT=file`. Runtime directories and `.env` are gitignored.
 
-**Security:** `POST /auth/login` deliberately returns 501 until an actual identity provider is installed. WebSocket example requires a development-only token and allowed Origin. Never deploy examples as authentication.
+**Security:** Auth is disabled by default. An explicitly configured development-only scrypt-backed demo provider is available, but is rejected in production. WebSocket example requires a development-only token and allowed Origin. Never deploy examples as authentication.
+
+## Optional development authentication
+
+The example auth is deliberately unavailable in production. To try the working login UI through Caddy on port 8080:
+
+1. Generate a unique password hash without passing the plaintext in shell arguments:
+   `read -rs PASSWORD; printf %s "$PASSWORD" | pnpm system:password; unset PASSWORD`
+2. In `apps/backend/.env` set `AUTH_MODE=demo`, `AUTH_USERNAME=operator`, `AUTH_PASSWORD_HASH=<generated value>`, and `AUTH_ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080`.
+3. Start the backend and open `http://localhost:8080` with Caddy running. Login, `/auth/me`, and logout use an HttpOnly session cookie; browser code never stores credentials or tokens.
+
+**Do not use this single-user in-memory identity provider in production.** It has no persistent users/sessions or shared multi-process session store. A real storage adapter and stronger session policies must replace it before production login. The projects estimator runs without auth and demonstrates the full frontend-to-Fastify request path.
+
+## Integration smoke test
+
+With Next.js, backend, independent API and Caddy running, execute `pnpm system:smoke`. It verifies the ingress and public endpoints; unlike unit tests, it requires live services.
 
 ## Directory semantics and naming
 
