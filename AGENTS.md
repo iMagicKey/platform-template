@@ -8,6 +8,7 @@ Read **docs/ARCHITECTURE.md** before editing code. It is the single source of tr
 - Apps are independent processes; do not import another app's source. Create a shared package only for genuine reusable implementation.
 - No Markdown in `code/`. Do not add extra Markdown unless necessary; local agent instructions contain facts, not duplicated global rules.
 - Use Zod at external boundaries, Pino structured logs with secrets redacted, and per-app tests and lifecycle.
+- Put every test file under root `tests/<owner>/`, never under `apps/`, `packages/` or `system/`; keep the root test workspace and app-local test commands functional.
 - `system/*.ts` is a flat set of maintenance CLIs; `deploy/` tracked infrastructure, `runtime/` untracked certificates/secrets.
 - Check affected application tests, typecheck and build, plus `pnpm check:architecture`, `pnpm lint` and `pnpm format:check`; report any unexecuted check.
 - Node.js 26 LTS; follow Prettier formatting from the former service template.

@@ -98,6 +98,12 @@ The example auth is deliberately unavailable in production. To try the working l
 
 Application JSON endpoints in the independent Fastify services share `@platform/api-contract`: success `{ "data": ..., "error": null }`, failure `{ "data": null, "error": { "code": "...", "message": "...", "issues": [] } }` (with optional `issues`). Transport-only helpers are `sendData` and `sendError`. `/health`, `/openapi.json`, Swagger UI, and WebSocket frames retain native protocol formats. The full normative contract is in [ARCHITECTURE.md](docs/ARCHITECTURE.md). Generated OpenAPI includes common validation, rate-limit and internal-error responses.
 
+## Test layout
+
+All test files live in the root `tests/` directory: `tests/backend/`, `tests/api/`, `tests/bot/`, `tests/web/`, `tests/worker/`, `tests/api-contract/` and `tests/system/`. The private `@platform/tests` workspace provides dependencies imported directly by the suites; application build artifacts stay outside `tests/`.
+
+Run `pnpm test` for app and contract suites, `pnpm test:system` for system utilities, or `pnpm --filter @platform/backend test` for a specific app. CI also typechecks `tests/` and rejects test sources outside the root `tests/` tree.
+
 ## Integration smoke test
 
 With Next.js, backend, independent API and Caddy running, execute `pnpm system:smoke`. It verifies the ingress and public endpoints; unlike unit tests, it requires live services.

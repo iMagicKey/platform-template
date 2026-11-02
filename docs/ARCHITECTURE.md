@@ -6,11 +6,12 @@
 
 - `apps/*`: independent services, with their own build/start/test/config/logs and release lifecycle. No direct app-to-app source imports.
 - `packages/*`: only reusable in-house code with demonstrable need, including the shared `packages/api-contract` HTTP envelope; npm libraries (Pino, jose, grammY, iMagic Scheduler, Zod) are installed directly.
-- `system/*`: utilities for initialization, systemd, certificates, logs and architecture checks.
+- `system/*`: production utilities for initialization, systemd, certificates, logs and architecture checks. No test source lives in `system/`.
+- `tests/`: all test files, grouped by `api`, `backend`, `bot`, `web`, `worker`, `api-contract`, and `system`; this is the only test-source tree.
 - `deploy/*`: versioned deployment configuration, initially Caddy; no secrets.
 - `runtime/*`: untracked secrets/certificates; allow external location via environment.
-- Backend services: `code/` source, `data/` checked-in fixed data, `storage/` mutable files, `logs/` untracked logs, `tests/` tests, root `AGENTS.md` for _local facts_.
-- Next.js: `src/app` App Router; `src/components`, `containers`, `consts`, `hooks`, `libs`, `providers`, `store`, `tests`, `utils` for specific concerns; `public/` static assets.
+- Backend services: `code/` source, `data/` checked-in fixed data, `storage/` mutable files, `logs/` untracked logs, root `AGENTS.md` for _local facts_.
+- Next.js: `src/app` App Router; `src/components`, `containers`, `consts`, `hooks`, `libs`, `providers`, `store`, `utils` for specific concerns; `public/` static assets.
 - Documentation: this global architecture file and root/local `AGENTS.md`; add other Markdown only for a demonstrated need. Never Markdown in `code/`.
 
 ## Standards
@@ -34,7 +35,7 @@
 - Scheduler: existing **npm iMagic Scheduler** package, one designated worker/replica per job. No custom scheduler copied into packages.
 - TLS: direct Fastify HTTPS with manually supplied PEM or self-signed; Next.js behind TLS termination; Caddy offers single ingress for Next.js + Fastify/WS. Cloudflare Full or Full (strict) optional. Kubernetes and public IP CA automation explicitly excluded from v1.
 - Release: a documented operational policy (stop, update, restart, health-check) with brief downtime, not an implemented deployment automation. Set APP_RELEASE and NEXT_PUBLIC_RELEASE explicitly when adopting release tracking; no rolling/blue-green.
-- Tests: independent per app, contract tests, an architecture checker with negative fixtures for naming/import/duplicate routes, and no cross-app source imports. Database migrations and backups are outside v1.
+- Tests: all test sources reside in root `tests/<owner>/` and run using app-local scripts or `pnpm test:system`; a development-only `@platform/tests` workspace supplies direct test imports. No app-, package-, or system-local test files. The architecture checker includes negative fixtures for naming, imports, route uniqueness, and misplaced tests. Database migrations and backups are outside v1.
 
 ## HTTP API response contract — normative
 
@@ -92,7 +93,7 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `apps/web/src/libs/`                       | API clients, browser/server adapters, transport integrations                                               | Domain-driven UI components                                |
 | `packages/api-contract/`                   | Shared transport response types, Zod factories and sendData/sendError                                      | Fastify plugins, app/domain logic, app-to-app imports      |
 | `apps/web/src/utils/`                      | Pure reusable functions, formatters and transformations                                                    | API calls or React hooks                                   |
-| `apps/web/src/tests/`                      | UI/store/hook tests of this frontend                                                                       | Tests of unrelated service internals                       |
+| `tests/web/`                               | UI/store/hook tests of this frontend                                                                       | Tests of unrelated service internals                       |
 | `apps/backend/code/index.ts`               | Node process lifecycle, listen, signal handling                                                            | Business functions or HTTP route definitions               |
 | `apps/backend/code/app.ts`                 | Injectable Fastify construction, infrastructure registration                                               | Network listen, process exit                               |
 | `apps/*/code/config.ts`                    | Zod-validated environment and defaults                                                                     | Fixed business constants or passwords                      |
@@ -115,7 +116,7 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `apps/*/data/`                             | Immutable versioned reference data (no secrets)                                                            | Runtime uploads                                            |
 | `apps/*/storage/`                          | Mutable local runtime files, untracked                                                                     | Source code or credentials                                 |
 | `apps/*/logs/`                             | Untracked per-app file logs                                                                                | Git-tracked application output                             |
-| `apps/*/tests/`                            | Tests of this application only                                                                             | Another app's source imports                               |
+| `tests/<app>/`                             | Tests of this application only                                                                             | Another app's source imports                               |
 | `apps/*/AGENTS.md`                         | Actual app-level routes, commands, integration requirements and special cases                              | Global standards already defined here                      |
 | `system/*.ts`                              | Small standalone maintenance CLIs (`check.ts`, `init.ts`, `service.ts`, `certs.ts`, `logs.ts`)             | App business functionality; one-folder-per-script ceremony |
 | `deploy/`                                  | Tracked sample configurations for Caddy and future deployment modes                                        | Actual certificate PEM, tokens or secrets                  |

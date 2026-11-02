@@ -1,0 +1,10 @@
+{
+    "extends": "../apps/web/tsconfig.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "allowImportingTsExtensions": true,
+        "target": "ES2022"
+    },
+    "include": ["**/*.test.ts", "**/*.test.tsx", "../apps/worker/code/types/**/*.d.ts"],
+    "exclude": ["node_modules"]
+}

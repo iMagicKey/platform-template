@@ -10,9 +10,9 @@
         "dev": "tsx watch --env-file=.env code/index.ts",
         "build": "pnpm --filter @platform/api-contract build && tsc -p tsconfig.json",
         "start": "node --env-file-if-exists=.env dist/index.js",
-        "test": "pnpm --filter @platform/api-contract build && tsx --test tests/*.test.ts",
+        "test": "pnpm --filter @platform/api-contract build && tsx --test ../../tests/api/*.test.ts",
         "typecheck": "pnpm --filter @platform/api-contract build && tsc --noEmit -p tsconfig.json",
-        "lint": "eslint code tests"
+        "lint": "eslint code"
     },
     "dependencies": {
         "@platform/api-contract": "workspace:*",

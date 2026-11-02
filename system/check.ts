@@ -124,6 +124,16 @@ function checkSource(file: string, owner: string): void {
     }
 }
 
+// Keep test code entirely outside production application, package and system trees.
+for (const directory of [apps, packages, join(root, 'system')]) {
+    visit(directory, (file) => {
+        const path = relative(root, file).split(sep).join('/')
+        if (/(?:^|\/)(?:tests?|__tests__)\/|\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path)) {
+            errors.push(`Test files must live under root tests/: ${path}`)
+        }
+    })
+}
+
 for (const name of appNames) visit(join(apps, name), (file) => checkSource(file, name))
 for (const name of packageNames) visit(join(packages, name), (file) => checkSource(file, `package:${name}`))
 

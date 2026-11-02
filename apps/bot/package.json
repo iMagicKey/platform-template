@@ -13,9 +13,9 @@
         "dev": "tsx watch --env-file=.env code/index.ts",
         "build": "tsc -p tsconfig.json",
         "start": "node --env-file-if-exists=.env dist/index.js",
-        "test": "tsx --test tests/*.test.ts",
+        "test": "tsx --test ../../tests/bot/*.test.ts",
         "typecheck": "tsc --noEmit -p tsconfig.json",
-        "lint": "eslint code tests"
+        "lint": "eslint code"
     },
     "dependencies": {
         "grammy": "^1.46.0",
