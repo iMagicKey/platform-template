@@ -22,6 +22,26 @@ jobs:
           node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Temporary dependency audit: removed before merge.
+      - name: Audit available dependency updates
+        shell: bash
+        run: |
+          pnpm outdated --recursive > dependency-outdated.txt 2>&1 || true
+          (pnpm up --workspace-root --lockfile-only && pnpm up --recursive --lockfile-only) > dependency-update.txt 2>&1
+          echo "=== OUTDATED ==="
+          cat dependency-outdated.txt
+          echo "=== LOCKFILE REFRESH ==="
+          tail -n 80 dependency-update.txt
+      - name: Upload dependency audit files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit
+          path: |
+            dependency-outdated.txt
+            dependency-update.txt
+            pnpm-lock.yaml
+          if-no-files-found: error
       - run: pnpm system:init
       - run: pnpm system:certs self-signed backend localhost
       - run: pnpm system:service install backend --user platform
