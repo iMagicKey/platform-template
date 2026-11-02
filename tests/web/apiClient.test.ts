@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { ApiRequestError, readApiResponse } from '../libs/apiClient'
+import { ApiRequestError, readApiResponse } from '../../apps/web/src/libs/apiClient'
 
 test('web client reads a successful typed envelope with null and scalar data', async () => {
     const success = await readApiResponse<number>(Response.json({ data: 17, error: null }))

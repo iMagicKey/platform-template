@@ -2,10 +2,10 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { PlatformHeader } from '../components/PlatformHeader'
-import { PlatformHero } from '../components/PlatformHero'
-import { CapabilityCard } from '../components/CapabilityCard'
-import { FeatureTile } from '../components/FeatureTile'
+import { PlatformHeader } from '../../apps/web/src/components/PlatformHeader'
+import { PlatformHero } from '../../apps/web/src/components/PlatformHero'
+import { CapabilityCard } from '../../apps/web/src/components/CapabilityCard'
+import { FeatureTile } from '../../apps/web/src/components/FeatureTile'
 
 test('platform header has a home landmark, in-page navigation and documentation', () => {
     const markup = renderToStaticMarkup(createElement(PlatformHeader))

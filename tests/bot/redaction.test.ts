@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import pino from 'pino'
 import { Writable } from 'node:stream'
-import { telegramErrorType } from '../code/bot.js'
+import { telegramErrorType } from '../../apps/bot/code/bot.js'
 
 test('Telegram errors never expose canary token or message in logged fields', () => {
     const secret = 'CANARY-BOT-TOKEN-SECRET'

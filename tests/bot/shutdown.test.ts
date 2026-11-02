@@ -3,7 +3,7 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { Writable } from 'node:stream'
 import test from 'node:test'
 import pino from 'pino'
-import { stopBotSafely } from '../code/shutdown.js'
+import { stopBotSafely } from '../../apps/bot/code/shutdown.js'
 
 const logger = pino({ enabled: false })
 

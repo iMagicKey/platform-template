@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { waitForTaskDrain } from '../code/shutdown.js'
+import { waitForTaskDrain } from '../../apps/worker/code/shutdown.js'
 
 test('scheduler shutdown returns immediately when no task is active', async () => {
     assert.equal(await waitForTaskDrain(() => false, 0), true)

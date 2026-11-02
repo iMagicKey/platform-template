@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { validateCommitSubject } from './commit.ts'
+import { validateCommitSubject } from '../../system/commit.ts'
 
 test('accepts conventional subjects and breaking-change notation', () => {
     for (const message of [

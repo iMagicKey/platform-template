@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import test from 'node:test'
 
-const cli = resolve(import.meta.dirname, 'service.ts')
+const cli = resolve(import.meta.dirname, '../../system/service.ts')
 
 test('systemd service generator requires non-root account and applies sandboxing', () => {
     const runtime = mkdtempSync(join(tmpdir(), 'platform-systemd-'))

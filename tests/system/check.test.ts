@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import test from 'node:test'
 
-const checker = resolve(import.meta.dirname, 'check.ts')
+const checker = resolve(import.meta.dirname, '../../system/check.ts')
 const scripts = { dev: 'true', build: 'true', start: 'true', test: 'true', typecheck: 'true', lint: 'true' }
 
 test('architecture checker catches filename, route and cross-boundary violations', () => {
