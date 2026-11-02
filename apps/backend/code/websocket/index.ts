@@ -33,16 +33,16 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig): 
             alive = false
             socket.ping()
         }, 30_000)
-        socket.on('message', (raw) => {
+        socket.on('message', (raw: unknown) => {
             try {
-                const message = messageSchema.parse(JSON.parse(raw.toString()))
+                const message = messageSchema.parse(JSON.parse(String(raw)))
                 if (message.type === 'ping') socket.send(JSON.stringify({ type: 'pong' }))
             } catch {
                 socket.send(JSON.stringify({ error: 'INVALID_MESSAGE' }))
             }
         })
         socket.on('close', () => { clearInterval(heartbeat); clients.delete(socket) })
-        socket.on('error', (error) => app.log.warn({ err: error }, 'WebSocket connection error'))
+        socket.on('error', (error: unknown) => app.log.warn({ err: error }, 'WebSocket connection error'))
     })
     app.addHook('onClose', async () => {
         for (const socket of clients) socket.close(1001, 'Server shutdown')
