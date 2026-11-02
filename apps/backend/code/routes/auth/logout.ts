@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { commonErrorResponses, dataResponseSchema, sendData, sendError } from '@platform/api-contract'
+import { commonErrorResponses, errorResponseSchema, dataResponseSchema, sendData, sendError } from '@platform/api-contract'
 import { demoCookieName, type DemoAuthService } from '../../modules/auth/auth.service.js'
 import { requireAllowedOrigin } from '../../modules/auth/origin.js'
 import type { BackendConfig } from '../../config.js'
