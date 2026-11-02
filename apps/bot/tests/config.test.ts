@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { readConfig } from '../../apps/bot/code/config.js'
+import { readConfig } from '../code/config.js'
 
 test('telegram bot is disabled by default', () => {
     assert.equal(readConfig({ NODE_ENV: 'test' }).BOT_ENABLED, false)
