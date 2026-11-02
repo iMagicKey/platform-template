@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-const root = resolve(import.meta.dirname, '../..')
+const root = resolve(import.meta.dirname, '..')
 const [action, service, hostname = 'localhost'] = process.argv.slice(2)
 if (action !== 'self-signed' || !service || !/^[a-z0-9][a-z0-9-]*$/.test(service)) {
     process.stderr.write('Usage: pnpm system:certs self-signed <service> [hostname]\n')

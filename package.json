@@ -10,19 +10,21 @@
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "check": "node system/check/index.mjs && pnpm typecheck && pnpm test",
-    "check:architecture": "node system/check/index.mjs",
+    "typecheck": "turbo run typecheck && tsc --noEmit -p tsconfig.system.json",
+    "lint": "turbo run lint && eslint system",
+    "check": "pnpm check:architecture && pnpm typecheck && pnpm test",
+    "check:architecture": "node system/check.ts",
     "dev:web": "pnpm --filter @platform/web dev",
     "dev:backend": "pnpm --filter @platform/backend dev",
     "dev:api": "pnpm --filter @platform/api dev",
-    "system:init": "node system/init/index.mjs",
-    "system:certs": "node system/certs/index.mjs",
-    "system:service": "node system/service/index.mjs",
-    "system:logs": "node system/logs/index.mjs",
+    "system:init": "node system/init.ts",
+    "system:certs": "node system/certs.ts",
+    "system:service": "node system/service.ts",
+    "system:logs": "node system/logs.ts",
     "dev:worker": "pnpm --filter @platform/worker dev",
-    "dev:bot": "pnpm --filter @platform/bot dev"
+    "dev:bot": "pnpm --filter @platform/bot dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
@@ -31,6 +33,11 @@
     "tsx": "^4.20.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0",
-    "turbo": "^2.5.0"
-  }
+    "turbo": "^2.5.0",
+    "prettier": "^3.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-promise": "^7.2.1"
+  },
+  "type": "module"
 }

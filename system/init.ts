@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-const root = resolve(import.meta.dirname, '../..')
+const root = resolve(import.meta.dirname, '..')
 const apps = join(root, 'apps')
 const runtime = process.env.PLATFORM_RUNTIME_DIR ? resolve(process.env.PLATFORM_RUNTIME_DIR) : join(root, 'runtime')
 for (const name of ['certs', 'secrets']) mkdirSync(join(runtime, name), { recursive: true })

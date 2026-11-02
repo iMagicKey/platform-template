@@ -1,12 +1,12 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 
-const root = resolve(import.meta.dirname, '../..')
+const root = resolve(import.meta.dirname, '..')
 const apps = join(root, 'apps')
-const errors = []
+const errors: string[] = []
 const appNames = existsSync(apps) ? readdirSync(apps, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name) : []
 
-function visit(directory, visitor) {
+function visit(directory: string, visitor: (file: string) => void) {
     if (!existsSync(directory)) return
     for (const item of readdirSync(directory, { withFileTypes: true })) {
         if (['node_modules', 'dist', '.next', 'logs', 'storage'].includes(item.name)) continue
