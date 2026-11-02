@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildApp } from '../code/app.js'
-import { readConfig } from '../code/config.js'
+import { buildApp } from '../../apps/backend/code/app.js'
+import { readConfig } from '../../apps/backend/code/config.js'
 
 test('backend exposes one unprefixed health route and no-store metadata', async () => {
     const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))

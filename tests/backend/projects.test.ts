@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildApp } from '../code/app.js'
-import { readConfig } from '../code/config.js'
-import { estimateProject, listProjects } from '../code/modules/projects/projects.service.js'
+import { buildApp } from '../../apps/backend/code/app.js'
+import { readConfig } from '../../apps/backend/code/config.js'
+import { estimateProject, listProjects } from '../../apps/backend/code/modules/projects/projects.service.js'
 
 test('domain service returns versioned reference data', () => {
     const projects = listProjects()
