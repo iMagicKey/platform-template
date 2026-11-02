@@ -17,3 +17,5 @@ Actual features:
 - Public `/api/*` and `/ws` belong to Fastify behind Caddy. Do not create `src/app/api`.
 
 Start `pnpm dev:web`, test `pnpm --filter @platform/web test`, build `pnpm --filter @platform/web build`. Backend health `/api/health` is available only through the Caddy origin, not directly on :3000. Development-only optional auth is implemented behind Caddy; real production identity is not.
+
+- `src/libs/apiClient.ts` validates `@platform/api-contract` JSON envelopes and surfaces typed API errors. `authClient.ts` and `projectsClient.ts` consume its data payloads; `/health` remains a separate raw infrastructure check.

@@ -19,3 +19,5 @@ Actual implementations:
 - `GET /openapi.json`, optional `/docs` Swagger UI.
 
 See `.env.example` for `HOST`, `PORT`, `LOG_OUTPUT`, `DOCS_ENABLED`, `HTTPS_ENABLED`, TLS paths and WS development settings. Use `pnpm dev:backend` and `pnpm --filter @platform/backend test`; no real user database/auth is configured.
+
+- Application JSON routes use `@platform/api-contract` (`sendData`, `sendError`, route-local `dataResponseSchema`/`errorResponseSchema`); `plugins/error-handler.ts` maps Fastify and validation errors. `POST /auth/logout` now returns 200 with `{ data: null, error: null }`. `/health` and `/openapi.json` retain infrastructure-native responses. Shared transport schemas belong to `packages/api-contract`, not a mirrored route-level `schemas/` tree.

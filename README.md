@@ -94,6 +94,10 @@ The example auth is deliberately unavailable in production. To try the working l
 
 **Do not use this single-user demo identity provider in production.** Sessions are stored as hashed-token records in untracked `apps/backend/storage/auth/sessions.json` (or `AUTH_FILE_PATH`) and survive a restart, but no concurrent writers, distributed locking, backups or production account management are provided. A real storage adapter and stronger session policies must replace it before production login. The projects estimator runs without auth and demonstrates the full frontend-to-Fastify request path.
 
+## HTTP JSON API contract
+
+Application JSON endpoints in the independent Fastify services share `@platform/api-contract`: success `{ "data": ..., "error": null }`, failure `{ "data": null, "error": { "code": "...", "message": "...", "issues": [] } }` (with optional `issues`). Transport-only helpers are `sendData` and `sendError`. `/health`, `/openapi.json`, Swagger UI, and WebSocket frames retain native protocol formats. The full normative contract is in [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## Integration smoke test
 
 With Next.js, backend, independent API and Caddy running, execute `pnpm system:smoke`. It verifies the ingress and public endpoints; unlike unit tests, it requires live services.

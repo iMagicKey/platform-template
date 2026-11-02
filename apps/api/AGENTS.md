@@ -12,3 +12,5 @@ Workspace `@platform/api`, independent Fastify HTTP process, internal port **320
 - Authentication, API-key management, persistent users and DB are NOT implemented yet.
 
 Start `pnpm dev:api`, test `pnpm --filter @platform/api test`, build `pnpm --filter @platform/api build`. See `.env.example` for local port, logging and Swagger UI switch.
+
+- `@platform/api-contract` owns JSON response envelopes for application routes such as `GET /v1/ping`; `code/plugins/error-handler.ts` maps Fastify errors. `/health` and `/openapi.json` keep native payloads.

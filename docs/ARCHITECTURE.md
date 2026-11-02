@@ -5,7 +5,7 @@
 ## Boundaries and filesystem
 
 - `apps/*`: independent services, with their own build/start/test/config/logs and release lifecycle. No direct app-to-app source imports.
-- `packages/*`: only reusable in-house code with demonstrable need; npm libraries (Pino, jose, grammY, iMagic Scheduler, Zod) are installed directly.
+- `packages/*`: only reusable in-house code with demonstrable need, including the shared `packages/api-contract` HTTP envelope; npm libraries (Pino, jose, grammY, iMagic Scheduler, Zod) are installed directly.
 - `system/*`: utilities for initialization, systemd, certificates, logs and architecture checks.
 - `deploy/*`: versioned deployment configuration, initially Caddy; no secrets.
 - `runtime/*`: untracked secrets/certificates; allow external location via environment.
@@ -36,6 +36,36 @@
 - Release: graceful stop, update, restart, health-check; brief downtime accepted. No rolling/blue-green.
 - Tests: independent per app, contract tests, public route ownership checks, no cross-app source imports. Database migrations and backups are outside v1.
 
+## HTTP API response contract — normative
+
+The shared `packages/api-contract` workspace package is the **single owner** of the transport-only JSON response contract. `apps/backend`, `apps/api`, and `apps/web` consume its `ApiResponse<T>`, Zod factories, `sendData`, and `sendError`. It depends on Zod, **not** Fastify or application source. Domain services (`modules/`) return normal domain data, `null`, or domain-specific failures; the envelope is created **only at the HTTP route boundary**.
+
+Every **application JSON endpoint** emits exactly the two required top-level fields `data` and `error`:
+
+```json
+{ "data": { "id": "example" }, "error": null }
+```
+
+```json
+{
+    "data": null,
+    "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request validation failed",
+        "issues": [{ "path": ["items", 0, "quantity"], "code": "too_small", "message": "Invalid quantity" }]
+    }
+}
+```
+
+- **Success:** `error: null`; `data` may be any valid JSON value, including `null`, an empty array, a number, a string, an object, or a boolean. `undefined` and `BigInt` are not directly JSON-serializable.
+- **Failure:** `data: null`; `error` is an object with required machine-readable `code` and safe human-readable `message`. `issues` is optional and describes multiple specific problems. Each issue has `path: (string | number)[]`, `code: string` and `message: string`. Do not return populated `data` alongside `error`.
+- Preserve meaningful **HTTP status codes** (`200`, `201`, `400`, `401`, `403`, `404`, `409`, `422`, `429`, `500`, etc.). An error is not a `200` response. For a successful application action without content, return `200` and `sendData(null)` instead of `204 No Content`, because `204` cannot carry a JSON body.
+- Keep route-local Zod response schemas above each route registrar. Use `dataResponseSchema(payloadSchema)` and `errorResponseSchema('EXACT_CODE')` from the common package, with explicit numeric HTTP keys. Return `sendData(value)` or `reply.code(status).send(sendError(code, message, issues?))`. These helpers build plain typed objects; they neither write to Fastify's `reply` nor determine HTTP status.
+- Each Fastify application owns `code/plugins/error-handler.ts`: normalize validator failures, malformed JSON, unknown routes, rate-limit responses, and unhandled exceptions. Never expose stack traces, internal exception messages, SQL, or secrets in public `5xx` responses. Log sensitive internals only using Pino and applicable redaction.
+- Infrastructure/protocol exceptions keep their native representations: `/health` readiness metadata, `/openapi.json`, Swagger UI (`/docs`), and WebSocket frames/upgrade protocol. Proxy-generated errors and network failures cannot be guaranteed to follow the application envelope.
+- **Partial success:** For operations whose contract permits per-item failures, represent those inside the successful `data` payload, not by returning both `data` and `error` populated. No automatic Fastify `onSend` wrapper: explicit Zod response serialization and endpoint ownership stay intact.
+- Changing existing application endpoints to the envelope is an **HTTP breaking change**; update frontend consumers, contract tests, and Caddy smoke checks together.
+
 ## Semantic ownership of directories — mandatory for agents
 
 A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest source file that implements the responsibility. Never create Markdown documentation inside source directories.
@@ -58,6 +88,7 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `apps/*/code/consts/`                      | Immutable domain constants                                                                                 | Env configuration                                          |
 | `apps/*/code/logging.ts`                   | Pino logger options and optional file transport; explicit configuration                                    | HTTP request hooks or business functionality               |
 | `apps/*/code/schemas/`                     | Only genuinely shared Zod HTTP contracts and validators                                                    | Mirrored route trees or isolated route schemas             |
+| `apps/*/code/plugins/error-handler.ts`                     | App-local Fastify HTTP error normalization                                                    | Domain business logic or shared transport schemas             |
 | `apps/*/code/store.ts`                     | Optional typed process-local shared state and `createStore()` factory                                      | Persistent data, user/request state, DB transactions       |
 | `apps/*/code/routes/index.ts`              | **Single central HTTP route registry**                                                                     | URL endpoint implementation                                |
 | `apps/*/code/routes/<segment>/index.ts`    | HTTP endpoint for `/<segment>`, no extra URL segment                                                       | Sub-route registry                                         |
