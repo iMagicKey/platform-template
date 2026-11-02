@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
-const [action, name, flag] = process.argv.slice(2)
+const [action = '', name = '', flag] = process.argv.slice(2)
 if (!['install', 'uninstall'].includes(action) || !name || !/^[a-z0-9-]+$/.test(name)) {
     process.stderr.write('Usage: pnpm system:service <install|uninstall> <app-name> [--apply]\n')
     process.exit(2)

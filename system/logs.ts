@@ -3,7 +3,7 @@ import { existsSync, readdirSync, truncateSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
-const [action, name] = process.argv.slice(2)
+const [action = '', name = ''] = process.argv.slice(2)
 if (!['clear', 'show'].includes(action) || !name || !/^[a-z0-9-]+$/.test(name)) {
     process.stderr.write('Usage: pnpm system:logs <clear|show> <app-name>\n')
     process.exit(2)
