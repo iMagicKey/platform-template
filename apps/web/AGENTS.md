@@ -11,6 +11,7 @@ Actual features:
 - `src/store/dashboardStore.ts` owns filter/favorites/reset and is intentionally in-memory without persistence.
 - `src/hooks/useDashboardStore.ts` consumes scoped Zustand state, `useRelease.ts` polls frontend health.
 - `src/consts/services.ts` is a fixed demo catalog, _not_ live service discovery; `src/utils/release.ts` compares releases.
+- `src/components/AuthPanel.tsx` with `hooks/useAuth.ts` and `libs/authClient.ts` implements the optional cookie-session demo; `ProjectEstimator.tsx` and `libs/projectsClient.ts` demonstrate the actual Zod project estimate POST.
 - `src/app/health/route.ts` owns `GET /health`, no-store and release metadata.
 - Public `/api/*` and `/ws` belong to Fastify behind Caddy. Do not create `src/app/api`.
 

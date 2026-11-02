@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from 'react'
 import { ServiceCard } from '../components/ServiceCard'
+import { AuthPanel } from '../components/AuthPanel'
+import { ProjectEstimator } from '../components/ProjectEstimator'
 import { StatusIndicator } from '../components/StatusIndicator'
 import { SERVICES } from '../consts/services'
 import { APP_VERSION } from '../consts/release'
@@ -162,6 +164,11 @@ export function HomeContainer() {
                             No matching applications. Try another filter.
                         </div>
                     )}
+                </section>
+
+                <section className="grid gap-5 lg:grid-cols-2" aria-label="Working fullstack examples">
+                    <AuthPanel />
+                    <ProjectEstimator />
                 </section>
 
                 <section className="grid gap-5 lg:grid-cols-2" aria-label="Useful endpoints and local development">
