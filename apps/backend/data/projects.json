@@ -1,0 +1,12 @@
+[
+    {
+        "id": "web",
+        "name": "Website",
+        "estimatedHours": 24
+    },
+    {
+        "id": "api",
+        "name": "Public API",
+        "estimatedHours": 40
+    }
+]

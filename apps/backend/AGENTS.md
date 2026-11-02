@@ -11,6 +11,7 @@ Actual implementations:
 - `code/modules/auth/auth.service.ts` is the currently disabled identity provider boundary; `jwt.ts` supplies jose JWT issue/verify primitives but no session backend.
 - `code/websocket/index.ts` supplies `/ws` heartbeat and development-only origin/token check. Never treat the demo ticket as production auth.
 - `code/db/client.ts`, `code/db/models/User.ts`: unconnected ORM-neutral database examples.
+- `GET /projects` returns tracked `data/projects.json` via `modules/projects/projects.service.ts`; `POST /projects/estimate` validates numeric cents with Zod, calculates costs in pure domain logic and generates OpenAPI. No persistent writes.
 - `GET /openapi.json`, optional `/docs` Swagger UI.
 
 See `.env.example` for `HOST`, `PORT`, `LOG_OUTPUT`, `DOCS_ENABLED`, `HTTPS_ENABLED`, TLS paths and WS development settings. Use `pnpm dev:backend` and `pnpm --filter @platform/backend test`; no real user database/auth is configured.
