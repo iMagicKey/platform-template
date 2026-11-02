@@ -32,6 +32,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y caddy
+          sudo systemctl stop caddy || true
           caddy validate --config deploy/caddy/Caddyfile
           pnpm --filter @platform/web start >/tmp/platform-web.log 2>&1 &
           WEB_PID=$!

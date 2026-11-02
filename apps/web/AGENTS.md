@@ -1,6 +1,6 @@
 # Web — local agent facts
 
-Workspace `@platform/web`: native Next.js App Router, port **3000**. Root ARCHITECTURE.md defines general semantics and naming; only concrete application facts appear here.
+Workspace `@platform/web`: native Next.js App Router, port **3000**. Production uses supported `next start`, with no standalone output mode. Root ARCHITECTURE.md defines general semantics and naming; only concrete application facts appear here.
 
 Actual features:
 

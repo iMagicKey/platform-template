@@ -1,9 +1,7 @@
-import path from 'node:path'
 import type { NextConfig } from 'next'
 
-const config: NextConfig = {
-    output: 'standalone',
-    outputFileTracingRoot: path.resolve(import.meta.dirname, '../..'),
-}
+// Native Next.js production server, started via next start. Standalone builds
+// require a different start command and can be added as a separate deploy mode.
+const config: NextConfig = {}
 
 export default config
