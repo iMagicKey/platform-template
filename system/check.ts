@@ -136,10 +136,7 @@ for (const directory of [apps, packages, join(root, 'system'), join(root, 'deplo
 
         let allowed = false
         if (parts[0] === 'apps' && appNames.includes(parts[1]!)) {
-            allowed =
-                parts[1] === 'web'
-                    ? parts[2] === 'src' && parts[3] === 'tests' && parts.length >= 5
-                    : parts[2] === 'tests' && parts.length >= 4
+            allowed = parts[1] === 'web' ? parts[2] === 'src' && parts[3] === 'tests' && parts.length >= 5 : parts[2] === 'tests' && parts.length >= 4
         } else if (parts[0] === 'packages' && packageNames.includes(parts[1]!)) {
             allowed = parts[2] === 'tests' && parts.length >= 4
         } else if (parts[0] === 'tests' && parts.length >= 3) {
