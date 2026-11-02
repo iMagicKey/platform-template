@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { dataResponseSchema, errorResponseSchema, sendData } from '@platform/api-contract'
 import type { ZodTypeProvider } from '@fastify/type-provider-zod'
 import { estimateProject, estimateRequestSchema, estimateResponseSchema, markProjectEstimated } from '../../modules/projects/projects.service.js'
 import type { RuntimeStore } from '../../store.js'
@@ -8,7 +9,7 @@ const estimateRouteSchema = {
     tags: ['projects'],
     summary: 'Estimate project cost in integer cents',
     body: estimateRequestSchema,
-    response: { 200: estimateResponseSchema },
+    response: { 200: dataResponseSchema(estimateResponseSchema), 400: errorResponseSchema('VALIDATION_ERROR') },
 }
 
 export function registerProjectEstimate(app: FastifyInstance, state: RuntimeStore): void {
@@ -20,7 +21,7 @@ export function registerProjectEstimate(app: FastifyInstance, state: RuntimeStor
         async (request) => {
             const estimate = estimateProject(request.body)
             markProjectEstimated(state)
-            return estimate
+            return sendData(estimate)
         }
     )
 }

@@ -1,11 +1,12 @@
 import type { FastifyInstance } from 'fastify'
+import { dataResponseSchema, sendData } from '@platform/api-contract'
 import { z } from 'zod'
 import { pingService } from '../../modules/ping.js'
 
 const pingRouteSchema = {
     tags: ['v1'],
     summary: 'Public service ping',
-    response: { 200: z.object({ message: z.literal('pong') }) },
+    response: { 200: dataResponseSchema(z.object({ message: z.literal('pong') })) },
 }
 
 export function registerPing(app: FastifyInstance) {
@@ -14,6 +15,6 @@ export function registerPing(app: FastifyInstance) {
         {
             schema: pingRouteSchema,
         },
-        async () => pingService()
+        async () => sendData(pingService())
     )
 }

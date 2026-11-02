@@ -1,4 +1,5 @@
 import { timingSafeEqual } from 'node:crypto'
+import { sendError } from '@platform/api-contract'
 import type { FastifyInstance } from 'fastify'
 import type { BackendConfig } from '../config.js'
 import { z } from 'zod'
@@ -31,7 +32,7 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig, s
                     !ticket ||
                     !constantTimeEqual(ticket, config.WS_DEMO_TOKEN)
                 ) {
-                    return reply.code(401).send({ error: 'UNAUTHORIZED' })
+                    return reply.code(401).send(sendError('UNAUTHORIZED', 'WebSocket authentication required'))
                 }
             },
         },
