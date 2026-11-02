@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { z } from 'zod'
-import { dataResponseSchema, errorResponseSchema, sendData, sendError } from '../../packages/api-contract/code/index.js'
+import { dataResponseSchema, errorResponseSchema, sendData, sendError } from '../code/index.js'
 
 test('success envelope retains array, scalar, null and object data', () => {
     const schema = dataResponseSchema(z.array(z.number()))

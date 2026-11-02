@@ -140,8 +140,10 @@ for (const directory of [apps, packages, join(root, 'system'), join(root, 'deplo
                 parts[1] === 'web'
                     ? parts[2] === 'src' && parts[3] === 'tests' && parts.length >= 5
                     : parts[2] === 'tests' && parts.length >= 4
+        } else if (parts[0] === 'packages' && packageNames.includes(parts[1]!)) {
+            allowed = parts[2] === 'tests' && parts.length >= 4
         } else if (parts[0] === 'tests' && parts.length >= 3) {
-            allowed = ['system', 'deploy'].includes(parts[1]!) || packageNames.includes(parts[1]!)
+            allowed = ['system', 'deploy'].includes(parts[1]!)
         }
         if (!allowed) errors.push(`Misplaced test source: ${path}`)
     })

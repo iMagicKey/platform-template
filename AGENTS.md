@@ -9,7 +9,7 @@ Read **docs/ARCHITECTURE.md** before editing code. It is the single source of tr
 - Apps are independent processes; do not import another app's source. Create a shared package only for genuine reusable implementation.
 - No Markdown in `code/`. Do not add extra Markdown unless necessary; local agent instructions contain facts, not duplicated global rules.
 - Use Zod at external boundaries, Pino structured logs with secrets redacted, and per-app tests and lifecycle.
-- Tests are owner-local: `apps/<app>/tests/` (non-web), `apps/web/src/tests/` (Next.js), and root `tests/system/`, `tests/<package>/`, optional `tests/deploy/` (repository-level only). No test sources in production `system/` or `packages/*/`.
+- Tests are owner-local: `apps/<app>/tests/` (non-web), `apps/web/src/tests/` (Next.js), `packages/<package>/tests/` (reusable packages), and root `tests/system/` or optional `tests/deploy/` (repository-level only). Never place tests in production `system/` or application/package `code/`. Root `tests/` is not a workspace.
 - `system/*.ts` is a flat set of maintenance CLIs; `deploy/` tracked infrastructure, `runtime/` untracked certificates/secrets.
 - Check affected application tests, typecheck and build, plus `pnpm check:architecture`, `pnpm lint` and `pnpm format:check`; report any unexecuted check.
 - Node.js 26 LTS; follow Prettier formatting from the former service template.

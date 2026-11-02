@@ -7,7 +7,7 @@
 - `apps/*`: independent services, with their own build/start/test/config/logs and release lifecycle. No direct app-to-app source imports.
 - `packages/*`: only reusable in-house code with demonstrable need, including the shared `packages/api-contract` HTTP envelope; npm libraries (Pino, jose, grammY, iMagic Scheduler, Zod) are installed directly.
 - `system/*`: production utilities for initialization, systemd, certificates, logs and architecture checks. No test source lives in `system/`.
-- `tests/`: repository-level suites only: `tests/system/`, shared-package suites such as `tests/api-contract/`, and optional `tests/deploy/`. App tests are never stored in root `tests/`.
+- `tests/`: repository-level suites only: `tests/system/` and optional `tests/deploy/`. App- and package-owned tests live with their owners, never in root `tests/`.
 - `deploy/*`: versioned deployment configuration, initially Caddy; no secrets.
 - `runtime/*`: untracked secrets/certificates; allow external location via environment.
 - Backend services: `code/` source, `tests/` app-owned tests, `data/` checked-in fixed data, `storage/` mutable files, `logs/` untracked logs, root `AGENTS.md` for _local facts_.
@@ -44,7 +44,7 @@ The directory boundaries, ownership rules, test layout, source imports, workspac
 - Scheduler: existing **npm iMagic Scheduler** package, one designated worker/replica per job. No custom scheduler copied into packages.
 - TLS: direct Fastify HTTPS with manually supplied PEM or self-signed; Next.js behind TLS termination; Caddy offers single ingress for Next.js + Fastify/WS. Cloudflare Full or Full (strict) optional. Kubernetes and public IP CA automation explicitly excluded from v1.
 - Release: a documented operational policy (stop, update, restart, health-check) with brief downtime, not an implemented deployment automation. Set APP_RELEASE and NEXT_PUBLIC_RELEASE explicitly when adopting release tracking; no rolling/blue-green.
-- Tests: each non-web app owns `apps/<app>/tests/`; Next.js owns `apps/web/src/tests/`. Each app runs, lints and typechecks its own tests. Root `tests/` owns only system, package contract and optional deploy suites; packages place their tests in `tests/<package>/`, not under `packages/*/`. The root `@platform/repo-tests` workspace provides only dependencies for repository-level suites. `pnpm test` runs app/package suites through Turborepo; `pnpm test:system` runs system tests. The architecture checker enforces test ownership, imports, naming and route uniqueness. Database migrations and backups are outside v1.
+- Tests: each non-web app owns `apps/<app>/tests/`; Next.js owns `apps/web/src/tests/`; each reusable package owns `packages/<package>/tests/`. Applications and packages run, lint and typecheck their own tests. Root `tests/` contains only cross-repository system and optional deployment/infrastructure suites; it is not a pnpm workspace. `pnpm test` runs app/package tests through Turborepo; `pnpm test:system` runs system tests. The architecture checker enforces test ownership, imports, naming and route uniqueness. Database migrations and backups are outside v1.
 
 ## HTTP API response contract — normative
 
@@ -126,7 +126,7 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 | `apps/*/storage/`                          | Mutable local runtime files, untracked                                                                     | Source code or credentials                                 |
 | `apps/*/logs/`                             | Untracked per-app file logs                                                                                | Git-tracked application output                             |
 | `apps/*/tests/`                            | Tests of this application only                                                                             | Another app's source imports                               |
-| `tests/<package>/`                         | Shared package-owned contract tests, such as `api-contract`                                                | App-owned tests                                            |
+| `packages/*/tests/`                         | Tests of this reusable package, such as `api-contract`                                                | App-owned tests                                            |
 | `tests/system/`                            | Repository-level architecture and system utility tests                                                     | App-owned tests                                            |
 | `tests/deploy/`                            | Optional tests for deployment configuration/infrastructure                                                 | App-owned tests                                            |
 | `apps/*/AGENTS.md`                         | Actual app-level routes, commands, integration requirements and special cases                              | Global standards already defined here                      |

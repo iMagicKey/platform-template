@@ -31,7 +31,7 @@ test('architecture checker catches filename, route and cross-boundary violations
             'apps/backend/tests/valid.test.ts',
             'apps/web/src/tests/valid.test.ts',
             'tests/system/valid.test.ts',
-            'tests/api-contract/valid.test.ts',
+            'packages/api-contract/tests/valid.test.ts',
             'tests/deploy/valid.test.ts',
         ]) add(path, 'export {}')
         assert.equal(spawnSync(process.execPath, [checker, root], { encoding: 'utf8' }).status, 0)
@@ -41,7 +41,10 @@ test('architecture checker catches filename, route and cross-boundary violations
             'tests/backend/helper.ts',
             'apps/backend/code/misplaced.test.ts',
             'apps/web/tests/misplaced.test.ts',
-            'packages/api-contract/tests/misplaced.test.ts',
+            'tests/api-contract/misplaced.test.ts',
+            'tests/api-contract/helper.ts',
+            'packages/api-contract/code/misplaced.test.ts',
+            'packages/api-contract/src/tests/misplaced.test.ts',
             'system/misplaced.test.ts',
             'deploy/misplaced.test.ts',
         ]) {
