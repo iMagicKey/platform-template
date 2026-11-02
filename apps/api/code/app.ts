@@ -15,7 +15,7 @@ export async function buildApp(config: ApiConfig = readConfig()) {
             base: { service: SERVICE_NAME, environment: config.NODE_ENV, release: config.APP_RELEASE },
             redact: { paths: ['req.headers.authorization', 'req.headers.cookie'], censor: '[REDACTED]' },
             ...(config.LOG_OUTPUT === 'file' ? {
-                transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', mkdir: true } },
+                transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', size: '20m', limit: { count: 14, removeOtherLogFiles: true }, mkdir: true } },
             } : {}),
         },
         disableRequestLogging: true,

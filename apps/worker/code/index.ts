@@ -9,7 +9,7 @@ const logger = pino({
     level: config.LOG_LEVEL,
     base: { service: 'worker', environment: config.NODE_ENV, release: config.APP_RELEASE },
     ...(config.LOG_OUTPUT === 'file' ? {
-        transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', mkdir: true } },
+        transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', size: '20m', limit: { count: 14, removeOtherLogFiles: true }, mkdir: true } },
     } : {}),
 })
 const scheduler = createWorker(config, logger)
