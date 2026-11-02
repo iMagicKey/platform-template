@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import type { ServerOptions as HttpsServerOptions } from 'node:https'
 import { resolve } from 'node:path'
 import Fastify, { type FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
@@ -19,7 +20,7 @@ import { APP_VERSION } from './consts/app.js'
 
 /** Fresh state per Fastify instance by default; production passes the process singleton. */
 export async function buildApp(config: BackendConfig = readConfig(), state: RuntimeStore = createStore()) {
-    const options: FastifyServerOptions = {
+    const options: FastifyServerOptions & { https?: HttpsServerOptions } = {
         logger: createLoggerOptions(config),
         disableRequestLogging: true,
     }
