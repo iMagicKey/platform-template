@@ -7,3 +7,5 @@
 runtime
 pnpm-lock.yaml
 .github/workflows/
+.turbo/
+**/next-env.d.ts
