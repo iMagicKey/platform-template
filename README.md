@@ -10,7 +10,7 @@ Read [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the architecture contract and [
 git clone https://github.com/iMagicKey/platform-template.git
 cd platform-template
 
-npm install -g pnpm@10.21.0
+npm install -g pnpm@12.16.1
 pnpm install
 pnpm system:init
 pnpm dev

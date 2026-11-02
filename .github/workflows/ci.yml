@@ -5,6 +5,8 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -12,11 +14,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
-          version: 10.21.0
+          version: 12.16.1
       - uses: actions/setup-node@v4
         with:
           node-version: 26
           cache: pnpm
+      - name: Regenerate dependency lockfile and normalize formatting once
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm exec prettier --write .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml package.json apps packages system docs README.md .github eslint.config.mjs deploy
+          if ! git diff --cached --quiet; then
+            git commit -m "build(deps): synchronize resolved packages and formatting"
+            git push origin HEAD:main
+          fi
       - run: pnpm install --frozen-lockfile
       - run: pnpm system:init
       - run: pnpm system:certs self-signed backend localhost

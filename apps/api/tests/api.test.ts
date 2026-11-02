@@ -18,8 +18,8 @@ test('independent API returns its own health and v1 ping', async () => {
         await app.close()
     }
 })
-test('public OpenAPI describes v1 routes', async () => {
-    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
+test('public OpenAPI describes v1 routes when explicitly enabled', async () => {
+    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'true' }))
     try {
         const response = await app.inject('/openapi.json')
         assert.equal(response.statusCode, 200)

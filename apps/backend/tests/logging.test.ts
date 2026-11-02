@@ -9,7 +9,19 @@ test('backend uses structured stdout logging by default with sensitive headers r
     assert.equal(logger.level, 'info')
     assert.deepEqual(logger.base, { service: 'backend', environment: 'test', release: 'dev' })
     assert.deepEqual(logger.redact, {
-        paths: ['req.headers.authorization', 'req.headers.cookie', 'headers.authorization', 'headers.cookie'],
+        paths: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'res.headers["set-cookie"]',
+            'headers.authorization',
+            'headers.cookie',
+            'headers["set-cookie"]',
+            'req.body.password',
+            'password',
+            'token',
+            '*.token',
+            'err.payload',
+        ],
         censor: '[REDACTED]',
     })
 })
