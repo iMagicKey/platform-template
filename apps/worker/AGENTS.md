@@ -6,4 +6,4 @@ Workspace: `@platform/worker`, no HTTP port, independent process. Uses npm `imag
 
 A scheduler task runs in _one designated instance_ only. The npm library marks a timed-out task as not in process while its underlying promise continues. Make tasks idempotent and never deploy multiple worker replicas for the same job without a future distributed lock.
 
-Tests are in `tests/`; the app has no route registry because it is not an HTTP service.
+Tests are in the root `tests/worker/`; the app has no route registry because it is not an HTTP service.
