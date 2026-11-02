@@ -1,9 +1,16 @@
 # Web — local agent facts
 
-Workspace: `@platform/web`, native Next.js App Router, internal port 3000. Public owner: `/`, `/health`; **NOT `/api/*` or `/ws`** when Fastify backend is present.
+Workspace `@platform/web`: native Next.js App Router, port **3000**. Root ARCHITECTURE.md defines general semantics and naming; only concrete application facts appear here.
 
-Real paths: `GET /` and `GET /health`. `/health` is no-store and includes the build release. Client release hook shows a manual refresh notice when a new build is deployed.
+Actual features:
+- `src/app/page.tsx` is the thin root page; it wraps `HomeContainer` in `DashboardStoreProvider`.
+- `src/containers/HomeContainer.tsx` composes the application explorer, search, category filters, service statistics, status and links.
+- `src/components/ServiceCard.tsx` is a reusable favorite-able service card; `StatusIndicator.tsx` probes health without fabricating online state; `UpdateBanner.tsx` prompts a manual reload for a newer release.
+- `src/providers/DashboardStoreProvider.tsx` creates a separate Zustand store instance per mounted subtree.
+- `src/store/dashboardStore.ts` owns filter/favorites/reset and is intentionally in-memory without persistence.
+- `src/hooks/useDashboardStore.ts` consumes scoped Zustand state, `useRelease.ts` polls frontend health.
+- `src/consts/services.ts` is a fixed demo catalog, *not* live service discovery; `src/utils/release.ts` compares releases.
+- `src/app/health/route.ts` owns `GET /health`, no-store and release metadata.
+- Public `/api/*` and `/ws` belong to Fastify behind Caddy. Do not create `src/app/api`.
 
-Source conventions: `src/app` routes, `components` reusable UI, `containers` screen composition, `hooks` client hooks, `libs` integration adapters, `providers` React contexts, `store` client state, `utils` pure utilities, `consts` fixed values. Directory presence is not a reason to create empty files.
-
-Do not put server credentials in `NEXT_PUBLIC_*`; Next config remains in app root. Read root `ARCHITECTURE.md`. Tests: `pnpm --filter @platform/web test`.
+Start `pnpm dev:web`, test `pnpm --filter @platform/web test`, build `pnpm --filter @platform/web build`. Backend health `/api/health` is available only through the Caddy origin, not directly on :3000. No authentication/login is implemented.
