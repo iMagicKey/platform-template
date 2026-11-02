@@ -16,9 +16,26 @@ const key = join(directory, 'privkey.pem')
 const cert = join(directory, 'fullchain.pem')
 if (existsSync(key) || existsSync(cert)) throw new Error('Existing certificate files must not be overwritten automatically')
 const san = /^\d+\.\d+\.\d+\.\d+$/.test(hostname) ? `IP:${hostname}` : `DNS:${hostname}`
-execFileSync('openssl', [
-    'req', '-x509', '-newkey', 'rsa:3072', '-sha256', '-nodes', '-days', '30',
-    '-keyout', key, '-out', cert, '-subj', `/CN=${hostname}`,
-    '-addext', `subjectAltName=${san}`,
-], { stdio: 'ignore' })
+execFileSync(
+    'openssl',
+    [
+        'req',
+        '-x509',
+        '-newkey',
+        'rsa:3072',
+        '-sha256',
+        '-nodes',
+        '-days',
+        '30',
+        '-keyout',
+        key,
+        '-out',
+        cert,
+        '-subj',
+        `/CN=${hostname}`,
+        '-addext',
+        `subjectAltName=${san}`,
+    ],
+    { stdio: 'ignore' }
+)
 process.stdout.write(`Self-signed cert created for ${service} in ${directory}\n`)

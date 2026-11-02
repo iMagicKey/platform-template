@@ -38,13 +38,14 @@ caddy run --config deploy/caddy/Caddyfile
 ```
 
 Sample Caddy routing:
+
 - `http://localhost:8080/` → Next.js
 - `http://localhost:8080/api/health` → backend internal `/health`
 - `http://localhost:8080/ws` → backend WebSocket
 - `http://localhost:8081/v1/ping` → independent API
 - `http://localhost:8081/docs` → API Swagger UI
 
-The example is deliberately HTTP for local work. A production HTTPS example with *imported* PEM is at `deploy/caddy/Caddyfile.production.example`. Certificates, keys and production proxy config never enter Git.
+The example is deliberately HTTP for local work. A production HTTPS example with _imported_ PEM is at `deploy/caddy/Caddyfile.production.example`. Certificates, keys and production proxy config never enter Git.
 
 ## Operations
 

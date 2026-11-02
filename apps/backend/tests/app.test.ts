@@ -11,7 +11,9 @@ test('backend exposes one unprefixed health route and no-store metadata', async 
         assert.equal(response.headers['cache-control'], 'no-store')
         assert.equal(response.json().service, 'backend')
         assert.equal((await app.inject('/api/health')).statusCode, 404)
-    } finally { await app.close() }
+    } finally {
+        await app.close()
+    }
 })
 
 test('demo login cannot authenticate without an identity provider', async () => {
@@ -21,13 +23,20 @@ test('demo login cannot authenticate without an identity provider', async () => 
         assert.equal(response.statusCode, 501)
         assert.equal(response.json().error, 'AUTH_NOT_CONFIGURED')
         assert.equal((await app.inject('/auth')).statusCode, 200)
-    } finally { await app.close() }
+    } finally {
+        await app.close()
+    }
 })
 
 test('WebSocket requires explicit authentication', async () => {
     const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
     try {
-        const response = await app.inject({ url: '/ws', headers: { origin: 'https://untrusted.example', upgrade: 'websocket', connection: 'Upgrade' } })
+        const response = await app.inject({
+            url: '/ws',
+            headers: { origin: 'https://untrusted.example', upgrade: 'websocket', connection: 'Upgrade' },
+        })
         assert.notEqual(response.statusCode, 200)
-    } finally { await app.close() }
+    } finally {
+        await app.close()
+    }
 })

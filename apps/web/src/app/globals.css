@@ -1,5 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root { color-scheme: dark; }
-body { background: #0b1220; color: #f8fafc; }
-a { text-underline-offset: 3px; }
+:root {
+    color-scheme: dark;
+}
+body {
+    background: #0b1220;
+    color: #f8fafc;
+}
+a {
+    text-underline-offset: 3px;
+}

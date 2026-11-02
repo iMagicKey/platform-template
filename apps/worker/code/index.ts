@@ -8,9 +8,20 @@ const config = readConfig()
 const logger = pino({
     level: config.LOG_LEVEL,
     base: { service: 'worker', environment: config.NODE_ENV, release: config.APP_RELEASE },
-    ...(config.LOG_OUTPUT === 'file' ? {
-        transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', size: '20m', limit: { count: 14, removeOtherLogFiles: true }, mkdir: true } },
-    } : {}),
+    ...(config.LOG_OUTPUT === 'file'
+        ? {
+              transport: {
+                  target: 'pino-roll',
+                  options: {
+                      file: resolve(process.cwd(), 'logs', 'app'),
+                      frequency: 'daily',
+                      size: '20m',
+                      limit: { count: 14, removeOtherLogFiles: true },
+                      mkdir: true,
+                  },
+              },
+          }
+        : {}),
 })
 const scheduler = createWorker(config, logger)
 scheduler.start()
@@ -30,5 +41,9 @@ async function shutdown(signal: string) {
     }
     logger.flush()
 }
-process.once('SIGINT', () => { void shutdown('SIGINT') })
-process.once('SIGTERM', () => { void shutdown('SIGTERM') })
+process.once('SIGINT', () => {
+    void shutdown('SIGINT')
+})
+process.once('SIGTERM', () => {
+    void shutdown('SIGTERM')
+})

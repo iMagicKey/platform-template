@@ -20,12 +20,18 @@ export function StatusIndicator({ url, label }: { url: string; label: string }) 
             }
         }
         void check()
-        return () => { active = false; controller.abort() }
+        return () => {
+            active = false
+            controller.abort()
+        }
     }, [url])
 
     const color = status === 'online' ? 'bg-emerald-400' : status === 'offline' ? 'bg-rose-400' : 'bg-amber-400'
     return (
-        <span aria-live="polite" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300">
+        <span
+            aria-live="polite"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+        >
             <span className={`size-2 rounded-full ${color}`} />
             {label}: {status === 'checking' ? 'Checking' : status === 'online' ? 'Reachable' : 'Unavailable'}
         </span>

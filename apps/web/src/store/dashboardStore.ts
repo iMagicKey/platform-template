@@ -17,9 +17,7 @@ export function createDashboardStore() {
         setFilter: (filter) => set({ filter }),
         toggleFavorite: (serviceId) =>
             set((state) => ({
-                favorites: state.favorites.includes(serviceId)
-                    ? state.favorites.filter((id) => id !== serviceId)
-                    : [...state.favorites, serviceId],
+                favorites: state.favorites.includes(serviceId) ? state.favorites.filter((id) => id !== serviceId) : [...state.favorites, serviceId],
             })),
         reset: () => set({ filter: 'all', favorites: ['web'] }),
     }))

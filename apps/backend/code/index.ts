@@ -14,12 +14,21 @@ async function shutdown(signal: string) {
         process.exit(1)
     }, 10_000)
     deadline.unref()
-    try { await app.close() }
-    catch (error) { app.log.error({ err: error }, 'Shutdown failed'); process.exitCode = 1 }
-    finally { clearTimeout(deadline) }
+    try {
+        await app.close()
+    } catch (error) {
+        app.log.error({ err: error }, 'Shutdown failed')
+        process.exitCode = 1
+    } finally {
+        clearTimeout(deadline)
+    }
 }
-process.once('SIGINT', () => { void shutdown('SIGINT') })
-process.once('SIGTERM', () => { void shutdown('SIGTERM') })
+process.once('SIGINT', () => {
+    void shutdown('SIGINT')
+})
+process.once('SIGTERM', () => {
+    void shutdown('SIGTERM')
+})
 try {
     await app.listen({ host: config.HOST, port: config.PORT })
 } catch (error) {

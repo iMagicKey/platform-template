@@ -14,20 +14,37 @@ export async function buildApp(config: ApiConfig = readConfig()) {
             level: config.LOG_LEVEL,
             base: { service: SERVICE_NAME, environment: config.NODE_ENV, release: config.APP_RELEASE },
             redact: { paths: ['req.headers.authorization', 'req.headers.cookie'], censor: '[REDACTED]' },
-            ...(config.LOG_OUTPUT === 'file' ? {
-                transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', size: '20m', limit: { count: 14, removeOtherLogFiles: true }, mkdir: true } },
-            } : {}),
+            ...(config.LOG_OUTPUT === 'file'
+                ? {
+                      transport: {
+                          target: 'pino-roll',
+                          options: {
+                              file: resolve(process.cwd(), 'logs', 'app'),
+                              frequency: 'daily',
+                              size: '20m',
+                              limit: { count: 14, removeOtherLogFiles: true },
+                              mkdir: true,
+                          },
+                      },
+                  }
+                : {}),
         },
         disableRequestLogging: true,
     })
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)
     app.addHook('onResponse', async (request, reply) => {
-        app.log.info({
-            event: 'http.request.completed', requestId: request.id, method: request.method,
-            route: request.routeOptions.url ?? '<unmatched>', statusCode: reply.statusCode,
-            durationMs: Math.round(reply.elapsedTime),
-        }, 'HTTP request')
+        app.log.info(
+            {
+                event: 'http.request.completed',
+                requestId: request.id,
+                method: request.method,
+                route: request.routeOptions.url ?? '<unmatched>',
+                statusCode: reply.statusCode,
+                durationMs: Math.round(reply.elapsedTime),
+            },
+            'HTTP request'
+        )
     })
     await app.register(rateLimit, { max: 180, timeWindow: '1 minute' })
     await app.register(swagger, {

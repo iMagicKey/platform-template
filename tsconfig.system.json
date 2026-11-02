@@ -1,11 +1,9 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "erasableSyntaxOnly": true,
-    "allowImportingTsExtensions": true
-  },
-  "include": [
-    "system/*.ts"
-  ]
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "erasableSyntaxOnly": true,
+        "allowImportingTsExtensions": true
+    },
+    "include": ["system/*.ts"]
 }

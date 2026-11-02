@@ -11,7 +11,9 @@ test('independent API returns its own health and v1 ping', async () => {
         assert.equal(health.json().service, 'api')
         assert.equal((await app.inject('/v1/ping')).json().message, 'pong')
         assert.equal((await app.inject('/auth')).statusCode, 404)
-    } finally { await app.close() }
+    } finally {
+        await app.close()
+    }
 })
 test('public OpenAPI describes v1 routes', async () => {
     const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
@@ -19,5 +21,7 @@ test('public OpenAPI describes v1 routes', async () => {
         const response = await app.inject('/openapi.json')
         assert.equal(response.statusCode, 200)
         assert.ok(response.json().paths['/v1/ping'])
-    } finally { await app.close() }
+    } finally {
+        await app.close()
+    }
 })

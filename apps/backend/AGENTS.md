@@ -3,6 +3,7 @@
 Workspace `@platform/backend`, Fastify port **3100**, public `/api/*` via Caddy prefix stripping, public WebSocket `/ws`. Global naming and directory rules are in root ARCHITECTURE.md.
 
 Actual implementations:
+
 - `code/index.ts` starts/stops the process; `code/app.ts` assembles Fastify/Zod/Pino/OpenAPI/WebSocket/rate limiting.
 - `code/config.ts` validates env; `code/consts/app.ts` holds fixed version and service name.
 - `code/routes/index.ts` is the single HTTP registry.

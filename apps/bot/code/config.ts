@@ -5,7 +5,10 @@ const envSchema = z.object({
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
     LOG_OUTPUT: z.enum(['stdout', 'file']).default('stdout'),
     APP_RELEASE: z.string().default('dev'),
-    BOT_ENABLED: z.enum(['true', 'false']).default('false').transform((x) => x === 'true'),
+    BOT_ENABLED: z
+        .enum(['true', 'false'])
+        .default('false')
+        .transform((x) => x === 'true'),
     BOT_TOKEN: z.string().default(''),
 })
 export type BotConfig = z.infer<typeof envSchema>

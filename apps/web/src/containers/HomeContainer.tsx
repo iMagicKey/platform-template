@@ -21,26 +21,41 @@ export function HomeContainer() {
     const reset = useDashboardStore((state) => state.reset)
     const [search, setSearch] = useState('')
 
-    const visible = useMemo(() => SERVICES.filter((service) => {
-        const matchesCategory = filter === 'all' || service.category === filter
-        const query = search.trim().toLowerCase()
-        return matchesCategory && (!query || `${service.name} ${service.description} ${service.role}`.toLowerCase().includes(query))
-    }), [filter, search])
+    const visible = useMemo(
+        () =>
+            SERVICES.filter((service) => {
+                const matchesCategory = filter === 'all' || service.category === filter
+                const query = search.trim().toLowerCase()
+                return matchesCategory && (!query || `${service.name} ${service.description} ${service.role}`.toLowerCase().includes(query))
+            }),
+        [filter, search]
+    )
 
     return (
         <main className="min-h-screen bg-[#0b1220] text-slate-100">
             <header className="border-b border-white/10 bg-[#10192a]">
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
                     <div className="flex items-center gap-3">
-                        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-violet-500 text-xl font-black text-[#0b1220]">P</div>
+                        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-violet-500 text-xl font-black text-[#0b1220]">
+                            P
+                        </div>
                         <div>
-                            <p className="text-base font-bold tracking-tight">Platform<span className="text-sky-400">Template</span></p>
+                            <p className="text-base font-bold tracking-tight">
+                                Platform<span className="text-sky-400">Template</span>
+                            </p>
                             <p className="text-xs text-slate-400">Application workspace</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="rounded-full border border-white/10 px-3 py-1.5 font-mono text-xs text-slate-400">v{APP_VERSION}</span>
-                        <a href="https://github.com/iMagicKey/platform-template" className="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium transition-colors hover:border-sky-400 hover:text-sky-300" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                        <a
+                            href="https://github.com/iMagicKey/platform-template"
+                            className="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium transition-colors hover:border-sky-400 hover:text-sky-300"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            GitHub ↗
+                        </a>
                     </div>
                 </div>
             </header>
@@ -52,10 +67,14 @@ export function HomeContainer() {
                         <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-medium text-sky-200">
                             <span className="size-1.5 rounded-full bg-sky-400" /> WORKSPACE OVERVIEW
                         </div>
-                        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">One repository.<br/><span className="text-sky-300">Independent services.</span></h1>
+                        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
+                            One repository.
+                            <br />
+                            <span className="text-sky-300">Independent services.</span>
+                        </h1>
                         <p className="max-w-2xl text-base leading-relaxed text-slate-300">
-                            A practical monorepo with native Next.js, independent Fastify APIs, a scheduler and a Telegram bot.
-                            Explore the structure and try the real Zustand-powered interface below.
+                            A practical monorepo with native Next.js, independent Fastify APIs, a scheduler and a Telegram bot. Explore the structure
+                            and try the real Zustand-powered interface below.
                         </p>
                         <div className="flex flex-wrap gap-3 pt-2">
                             <StatusIndicator url="/health" label="Frontend" />
@@ -86,10 +105,23 @@ export function HomeContainer() {
                     <div className="flex flex-wrap items-end justify-between gap-3">
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">SERVICES</p>
-                            <h2 id="applications-heading" className="mt-2 text-2xl font-semibold tracking-tight">Application explorer</h2>
-                            <p className="mt-2 text-sm text-slate-400">Filters and favorites use an isolated Zustand store. Service availability is never mocked.</p>
+                            <h2 id="applications-heading" className="mt-2 text-2xl font-semibold tracking-tight">
+                                Application explorer
+                            </h2>
+                            <p className="mt-2 text-sm text-slate-400">
+                                Filters and favorites use an isolated Zustand store. Service availability is never mocked.
+                            </p>
                         </div>
-                        <button onClick={() => { reset(); setSearch('') }} type="button" className="rounded-lg border border-white/15 px-3 py-2 text-sm text-slate-300 transition-colors hover:border-sky-400 hover:text-white">Reset view</button>
+                        <button
+                            onClick={() => {
+                                reset()
+                                setSearch('')
+                            }}
+                            type="button"
+                            className="rounded-lg border border-white/15 px-3 py-2 text-sm text-slate-300 transition-colors hover:border-sky-400 hover:text-white"
+                        >
+                            Reset view
+                        </button>
                     </div>
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div role="group" aria-label="Filter applications" className="flex flex-wrap gap-2">
@@ -106,17 +138,29 @@ export function HomeContainer() {
                             ))}
                         </div>
                         <label className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 focus-within:border-sky-400">
-                            <span aria-hidden="true" className="text-slate-500">⌕</span>
+                            <span aria-hidden="true" className="text-slate-500">
+                                ⌕
+                            </span>
                             <span className="sr-only">Search applications</span>
-                            <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search services…" className="w-44 bg-transparent text-sm text-white outline-none placeholder:text-slate-500" />
+                            <input
+                                type="search"
+                                value={search}
+                                onChange={(event) => setSearch(event.target.value)}
+                                placeholder="Search services…"
+                                className="w-44 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+                            />
                         </label>
                     </div>
                     {visible.length ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {visible.map((service) => <ServiceCard key={service.id} service={service} />)}
+                            {visible.map((service) => (
+                                <ServiceCard key={service.id} service={service} />
+                            ))}
                         </div>
                     ) : (
-                        <div className="rounded-2xl border border-dashed border-white/20 p-10 text-center text-slate-400">No matching applications. Try another filter.</div>
+                        <div className="rounded-2xl border border-dashed border-white/20 p-10 text-center text-slate-400">
+                            No matching applications. Try another filter.
+                        </div>
                     )}
                 </section>
 
@@ -130,9 +174,18 @@ export function HomeContainer() {
                                 { path: '/api/health', note: 'Fastify backend through Caddy' },
                                 { path: '/api/docs', note: 'Swagger UI through Caddy' },
                             ].map((endpoint) => (
-                                <a key={endpoint.path} href={endpoint.path} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 p-3 transition-colors hover:border-sky-400/40 hover:bg-white/5">
-                                    <div><p className="font-mono text-sm text-sky-300">{endpoint.path}</p><p className="mt-1 text-xs text-slate-400">{endpoint.note}</p></div>
-                                    <span aria-hidden="true" className="text-slate-500">↗</span>
+                                <a
+                                    key={endpoint.path}
+                                    href={endpoint.path}
+                                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 p-3 transition-colors hover:border-sky-400/40 hover:bg-white/5"
+                                >
+                                    <div>
+                                        <p className="font-mono text-sm text-sky-300">{endpoint.path}</p>
+                                        <p className="mt-1 text-xs text-slate-400">{endpoint.note}</p>
+                                    </div>
+                                    <span aria-hidden="true" className="text-slate-500">
+                                        ↗
+                                    </span>
                                 </a>
                             ))}
                         </div>
@@ -141,16 +194,29 @@ export function HomeContainer() {
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">GET STARTED</p>
                         <h2 className="mt-2 text-xl font-semibold">Run each app separately</h2>
                         <div className="mt-5 rounded-xl border border-white/10 bg-[#0b1220] p-4 font-mono text-sm leading-8 text-slate-300">
-                            <p><span className="text-slate-500">$</span> pnpm dev:web</p>
-                            <p><span className="text-slate-500">$</span> pnpm dev:backend</p>
-                            <p><span className="text-slate-500">$</span> pnpm dev:api</p>
-                            <p><span className="text-slate-500">$</span> pnpm dev:worker</p>
+                            <p>
+                                <span className="text-slate-500">$</span> pnpm dev:web
+                            </p>
+                            <p>
+                                <span className="text-slate-500">$</span> pnpm dev:backend
+                            </p>
+                            <p>
+                                <span className="text-slate-500">$</span> pnpm dev:api
+                            </p>
+                            <p>
+                                <span className="text-slate-500">$</span> pnpm dev:worker
+                            </p>
                         </div>
-                        <p className="mt-4 text-xs leading-relaxed text-slate-400">The bot is disabled by default; backend authentication is an explicit integration placeholder. This dashboard does not create accounts or credentials.</p>
+                        <p className="mt-4 text-xs leading-relaxed text-slate-400">
+                            The bot is disabled by default; backend authentication is an explicit integration placeholder. This dashboard does not
+                            create accounts or credentials.
+                        </p>
                     </div>
                 </section>
             </div>
-            <footer className="border-t border-white/10 py-7 text-center text-xs text-slate-500">Universal Platform Template · An extendable monorepo foundation</footer>
+            <footer className="border-t border-white/10 py-7 text-center text-xs text-slate-500">
+                Universal Platform Template · An extendable monorepo foundation
+            </footer>
         </main>
     )
 }

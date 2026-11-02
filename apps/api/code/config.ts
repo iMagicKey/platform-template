@@ -7,7 +7,10 @@ const schema = z.object({
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
     LOG_OUTPUT: z.enum(['stdout', 'file']).default('stdout'),
     APP_RELEASE: z.string().default('dev'),
-    DOCS_ENABLED: z.enum(['true', 'false']).default('true').transform((x) => x === 'true'),
+    DOCS_ENABLED: z
+        .enum(['true', 'false'])
+        .default('true')
+        .transform((x) => x === 'true'),
 })
 export type ApiConfig = z.infer<typeof schema>
 export function readConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
