@@ -30,6 +30,11 @@ if (!config.BOT_ENABLED) {
     async function shutdown(signal: string) {
         if (closing) return
         closing = true
+        const shutdownDeadline = setTimeout(() => {
+            logger.fatal({ event: 'service.shutdown.timeout' }, 'Bot shutdown deadline exceeded')
+            process.exit(1)
+        }, 10_000)
+        shutdownDeadline.unref()
         logger.info({ event: 'service.shutdown', signal }, 'Stopping Telegram bot')
         try {
             await bot.stop()
@@ -37,6 +42,7 @@ if (!config.BOT_ENABLED) {
             logger.error({ event: 'telegram.shutdown.failed', errorType: telegramErrorType(error) }, 'Telegram shutdown error')
         }
         logger.flush()
+        clearTimeout(shutdownDeadline)
     }
     process.once('SIGINT', () => {
         void shutdown('SIGINT')

@@ -30,6 +30,11 @@ let closing = false
 async function shutdown(signal: string) {
     if (closing) return
     closing = true
+    const timeout = setTimeout(() => {
+        logger.fatal({ event: 'service.shutdown.timeout' }, 'Worker shutdown deadline exceeded')
+        process.exit(1)
+    }, 10_000)
+    timeout.unref()
     logger.info({ event: 'service.shutdown', signal }, 'Worker stopping')
     scheduler.stop()
     const deadline = Date.now() + 5_000
@@ -40,6 +45,8 @@ async function shutdown(signal: string) {
         logger.warn('Active scheduler tasks exceeded shutdown deadline')
     }
     logger.flush()
+    clearTimeout(timeout)
+    if (Object.values(scheduler.getStatus()).some((task) => task.inProcess)) process.exitCode = 1
 }
 process.once('SIGINT', () => {
     void shutdown('SIGINT')

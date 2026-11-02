@@ -16,6 +16,7 @@ async function createDemoApp(file: string) {
             NODE_ENV: 'test',
             DOCS_ENABLED: 'false',
             AUTH_MODE: 'demo',
+            ALLOW_DEMO_AUTH: 'true',
             AUTH_USERNAME: 'operator',
             AUTH_PASSWORD_HASH: passwordHash,
             AUTH_ALLOWED_ORIGINS: ORIGIN,
@@ -78,6 +79,7 @@ test('demo identity provider refuses production and missing configuration', asyn
             readConfig({
                 NODE_ENV: 'production',
                 AUTH_MODE: 'demo',
+                ALLOW_DEMO_AUTH: 'true',
                 AUTH_USERNAME: 'user',
                 AUTH_PASSWORD_HASH: passwordHash,
                 AUTH_ALLOWED_ORIGINS: ORIGIN,

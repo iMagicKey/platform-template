@@ -44,16 +44,16 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
     await app.register(cookie)
     await app.register(rateLimit, { max: 120, timeWindow: '1 minute' })
     await app.register(swagger, {
-        openapi: { info: { title: 'Platform Backend', version: APP_VERSION }, servers: [] },
+        openapi: { info: { title: 'Platform Backend', version: APP_VERSION }, servers: [{ url: '/api' }] },
         transform: jsonSchemaTransform,
     })
     if (config.DOCS_ENABLED) {
-        await app.register(swaggerUi, { routePrefix: '/docs' })
+        await app.register(swaggerUi, { routePrefix: '/docs', indexPrefix: '/api' })
     }
     await app.register(websocket)
     const auth = createAuthService(config)
     registerRoutes(app, config, auth, state)
     registerWebsocket(app, config, state)
-    app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
+    if (config.DOCS_ENABLED) app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
     return app
 }

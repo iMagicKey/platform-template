@@ -39,7 +39,7 @@ export function registerAuthLogin(app: FastifyInstance, config: BackendConfig, a
                 httpOnly: true,
                 path: '/',
                 sameSite: 'lax',
-                secure: false,
+                secure: config.HTTPS_ENABLED,
                 maxAge: DEMO_SESSION_SECONDS,
             })
             reply.header('Cache-Control', 'no-store')

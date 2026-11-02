@@ -16,6 +16,7 @@ export async function issueApiToken(
 }
 
 export async function verifyApiToken(token: string, secret: Uint8Array, issuer: string, audience: string): Promise<JWTPayload> {
-    const { payload } = await jwtVerify(token, secret, { issuer, audience, algorithms: ['HS256'] })
+    if (secret.length < 32) throw new Error('JWT secret must be at least 32 bytes')
+    const { payload } = await jwtVerify(token, secret, { issuer, audience, algorithms: ['HS256'], requiredClaims: ['exp', 'iat', 'sub'], maxTokenAge: '10m' })
     return payload
 }

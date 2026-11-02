@@ -8,11 +8,13 @@ const schema = z.object({
     LOG_OUTPUT: z.enum(['stdout', 'file']).default('stdout'),
     APP_RELEASE: z.string().default('dev'),
     DOCS_ENABLED: z
-        .enum(['true', 'false'])
-        .default('true')
-        .transform((x) => x === 'true'),
+        .enum(['auto', 'true', 'false'])
+        .default('auto')
+        .transform((x) => (x === 'auto' ? undefined : x === 'true')),
 })
 export type ApiConfig = z.infer<typeof schema>
 export function readConfig(env: NodeJS.ProcessEnv = process.env): ApiConfig {
-    return schema.parse(env)
+    const config = schema.parse(env)
+    config.DOCS_ENABLED ??= config.NODE_ENV !== 'production'
+    return config
 }

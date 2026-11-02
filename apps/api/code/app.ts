@@ -27,6 +27,6 @@ export async function buildApp(config: ApiConfig = readConfig()) {
     })
     if (config.DOCS_ENABLED) await app.register(swaggerUi, { routePrefix: '/docs' })
     registerRoutes(app, config)
-    app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
+    if (config.DOCS_ENABLED) app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
     return app
 }
