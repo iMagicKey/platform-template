@@ -4,11 +4,6 @@
         "noEmit": true,
         "allowImportingTsExtensions": true
     },
-    "include": [
-        "**/*.test.ts",
-        "**/*.test.tsx"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+    "include": ["**/*.test.ts", "**/*.test.tsx"],
+    "exclude": ["node_modules"]
 }
