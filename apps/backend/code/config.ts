@@ -26,6 +26,10 @@ const envSchema = z.object({
         .transform((x) => x === 'true'),
     TLS_CERT_PATH: z.string().optional(),
     TLS_KEY_PATH: z.string().optional(),
+    AUTH_MODE: z.enum(['disabled', 'demo']).default('disabled'),
+    AUTH_USERNAME: z.string().optional(),
+    AUTH_PASSWORD_HASH: z.string().optional(),
+    AUTH_ALLOWED_ORIGINS: z.string().default('').transform((v) => v.split(',').map((x) => x.trim()).filter(Boolean)),
     WS_DEMO_TOKEN: z.string().optional(),
     WS_ALLOWED_ORIGINS: z
         .string()
@@ -44,6 +48,13 @@ export function readConfig(environment: NodeJS.ProcessEnv = process.env): Backen
     const config = envSchema.parse(environment)
     if (config.HTTPS_ENABLED && (!config.TLS_CERT_PATH || !config.TLS_KEY_PATH)) {
         throw new Error('HTTPS_ENABLED requires TLS_CERT_PATH and TLS_KEY_PATH')
+    }
+    if (config.AUTH_MODE === 'demo') {
+        if (config.NODE_ENV === 'production') throw new Error('Demo authentication is forbidden in production')
+        if (!config.AUTH_USERNAME || !config.AUTH_PASSWORD_HASH || !/^scrypt\\$[a-f0-9]{32}\\$[a-f0-9]{128}$/.test(config.AUTH_PASSWORD_HASH)) {
+            throw new Error('Demo authentication requires AUTH_USERNAME and a valid AUTH_PASSWORD_HASH')
+        }
+        if (!config.AUTH_ALLOWED_ORIGINS.length) throw new Error('Demo authentication requires AUTH_ALLOWED_ORIGINS')
     }
     if (config.NODE_ENV === 'production' && config.WS_DEMO_TOKEN) {
         throw new Error('WS_DEMO_TOKEN is a development-only example, not production authentication')

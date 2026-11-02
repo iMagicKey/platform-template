@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import cookie from '@fastify/cookie'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
@@ -10,6 +11,7 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from '@fas
 import { readConfig, type BackendConfig } from './config.js'
 import { registerRoutes } from './routes/index.js'
 import { registerWebsocket } from './websocket/index.js'
+import { DemoAuthService } from './modules/auth/auth.service.js'
 import { APP_VERSION, SERVICE_NAME } from './consts/app.js'
 
 export async function buildApp(config: BackendConfig = readConfig()) {
@@ -62,6 +64,7 @@ export async function buildApp(config: BackendConfig = readConfig()) {
     if (config.CORS_ORIGINS.length) {
         await app.register(cors, { origin: config.CORS_ORIGINS, credentials: false })
     }
+    await app.register(cookie)
     await app.register(rateLimit, { max: 120, timeWindow: '1 minute' })
     await app.register(swagger, {
         openapi: { info: { title: 'Platform Backend', version: APP_VERSION }, servers: [] },
@@ -71,7 +74,9 @@ export async function buildApp(config: BackendConfig = readConfig()) {
         await app.register(swaggerUi, { routePrefix: '/docs' })
     }
     await app.register(websocket)
-    registerRoutes(app, config)
+    const auth = config.AUTH_MODE === 'demo' ? new DemoAuthService(config.AUTH_USERNAME!, config.AUTH_PASSWORD_HASH!) : undefined
+    app.addHook('onClose', async () => auth?.close())
+    registerRoutes(app, config, auth)
     registerWebsocket(app, config)
     app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
     return app
