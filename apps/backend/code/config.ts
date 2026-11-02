@@ -29,6 +29,7 @@ const envSchema = z.object({
     AUTH_MODE: z.enum(['disabled', 'demo']).default('disabled'),
     AUTH_USERNAME: z.string().optional(),
     AUTH_PASSWORD_HASH: z.string().optional(),
+    AUTH_FILE_PATH: z.string().min(1).optional(),
     AUTH_ALLOWED_ORIGINS: z
         .string()
         .default('')

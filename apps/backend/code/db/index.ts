@@ -1,2 +1,6 @@
 export type { DatabaseClient } from './client.js'
 export type { UserRecord } from './models/User.js'
+export type { SessionStore } from './client.js'
+export { FileSessionStore } from './FileSessionStore.js'
+export { FileJsonStore } from './FileJsonStore.js'
+export type { UserSession } from './models/UserSession.js'

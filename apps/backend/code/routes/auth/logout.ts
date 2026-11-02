@@ -23,7 +23,7 @@ export function registerAuthLogout(app: FastifyInstance, config: BackendConfig, 
             if (!requireAllowedOrigin(request.headers.origin, config.AUTH_ALLOWED_ORIGINS)) {
                 return reply.code(403).send({ error: 'ORIGIN_NOT_ALLOWED' })
             }
-            auth.revoke(request.cookies[demoCookieName])
+            await auth.revoke(request.cookies[demoCookieName])
             reply.clearCookie(demoCookieName, { path: '/' })
             return reply.code(204).send()
         }

@@ -19,7 +19,7 @@ export function registerAuthMe(app: FastifyInstance, auth: DemoAuthService | und
         async (request, reply) => {
             reply.header('Cache-Control', 'no-store')
             if (!auth) return reply.code(501).send({ error: 'AUTH_NOT_CONFIGURED' })
-            const session = auth.getSession(request.cookies[demoCookieName])
+            const session = await auth.getSession(request.cookies[demoCookieName])
             if (!session) return reply.code(401).send({ error: 'UNAUTHENTICATED' })
             return { user: { id: session.userId } }
         }

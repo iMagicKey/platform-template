@@ -31,7 +31,7 @@ export function registerAuthLogin(app: FastifyInstance, config: BackendConfig, a
             if (!(await auth.authenticate(login, password))) {
                 return reply.code(401).send({ error: 'INVALID_CREDENTIALS' })
             }
-            const { token, session } = auth.createSession()
+            const { token, session } = await auth.createSession()
             reply.setCookie(demoCookieName, token, {
                 httpOnly: true,
                 path: '/',
