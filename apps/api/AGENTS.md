@@ -8,7 +8,7 @@ Workspace `@platform/api`, independent Fastify HTTP process, internal port **320
 - `code/config.ts`: Zod env. `code/consts/app.ts`: service name/version.
 - `code/routes/index.ts`: only central HTTP registrar; `routes/health/index.ts` maps `GET /health`; `routes/v1/ping.ts` maps `GET /v1/ping`.
 - `code/modules/ping.ts`: example isolated domain function (returns pong).
-- `GET /openapi.json`, `/docs` optionally expose public API docs.
+- `GET /openapi.json` and `/docs` are both disabled by default in production and require DOCS_ENABLED=true to publish.
 - Authentication, API-key management, persistent users and DB are NOT implemented yet.
 
 Start `pnpm dev:api`, test `pnpm --filter @platform/api test`, build `pnpm --filter @platform/api build`. See `.env.example` for local port, logging and Swagger UI switch.

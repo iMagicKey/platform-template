@@ -64,24 +64,24 @@ Sample Caddy routing:
 - `http://localhost:8081/v1/ping` → independent API
 - `http://localhost:8081/docs` → API Swagger UI
 
-The example is deliberately HTTP for local work. It uses `handle_path /api/*` to strip the `/api` prefix before forwarding requests to Fastify. You can change the internal ports in `deploy/caddy/Caddyfile`.
+The example is deliberately HTTP for local work. In development, backend docs are available at `/api/docs/` (trailing slash); Swagger assets are prefix-aware. Documentation and `/openapi.json` are disabled by default in production (`DOCS_ENABLED=auto`), and publishing them requires an explicit opt-in. It uses `handle_path /api/*` to strip the `/api` prefix before forwarding requests to Fastify. You can change the internal ports in `deploy/caddy/Caddyfile`.
 
-For a managed service on a VPS, start from `deploy/caddy/Caddyfile.production.example`: copy it to `/etc/caddy/Caddyfile`, set hostnames and certificate paths, and use `sudo caddy validate --config /etc/caddy/Caddyfile` followed by `sudo systemctl reload caddy`. Keep imported PEM/key files out of Git and readable only by the appropriate service account. Never run a second manual Caddy instance alongside the system service. See [Caddy documentation](https://caddyserver.com/docs/) for detailed setup.
+For a managed service on a VPS **only after the independent security audit and manual owner approval**, start from `deploy/caddy/Caddyfile.production.example`: copy it to `/etc/caddy/Caddyfile`, set hostnames and certificate paths, and use `sudo caddy validate --config /etc/caddy/Caddyfile` followed by `sudo systemctl reload caddy`. Keep imported PEM/key files out of Git and readable only by the appropriate service account. Never run a second manual Caddy instance alongside the system service. See [Caddy documentation](https://caddyserver.com/docs/) for detailed setup.
 
 ## Operations
 
 ```bash
 pnpm system:certs self-signed backend localhost
 pnpm build
-pnpm system:service install backend # preview unit
-pnpm system:service install backend --apply # needs permissions
+pnpm system:service install backend --user platform # preview (review before installing) unit
+pnpm system:service install backend --user platform --apply # privileged operation; only after manual approval
 pnpm system:logs show backend
 pnpm system:logs clear backend
 ```
 
-The systemd installer generates a reviewable unit without requiring root; `--apply` requires privileges. The default output uses journald, with optional app-level file logging via `LOG_OUTPUT=file`. Runtime directories and `.env` are gitignored.
+The systemd installer generates a reviewable hardened unit without requiring root. It requires `--user` with an existing **non-root service account**; `--apply` needs elevated privileges and must not be used before independent review and owner approval. Install the repository outside `/home` (for example `/opt/platform`), make application files readable by that service account, and provision service-owned writable `apps/<service>/storage` and `logs` directories. The unit enables `ProtectSystem=strict`, `ProtectHome=true`, and `NoNewPrivileges=true`; inspect paths and permissions before deployment. The default output uses journald; optional file logging uses `LOG_OUTPUT=file`. Runtime directories and `.env` are gitignored.
 
-**Security:** Auth is disabled by default. An explicitly configured development-only scrypt-backed demo provider is available, but is rejected in production. WebSocket example requires a development-only token and allowed Origin. Never deploy examples as authentication.
+**Security:** Auth is disabled by default. An explicitly configured scrypt-backed demo provider requires `ALLOW_DEMO_AUTH=true`, a loopback `HOST` and non-production mode; it is rejected in production. WebSocket example requires a development-only token and allowed Origin. Never deploy examples as authentication.
 
 ## Optional development authentication
 
@@ -89,14 +89,14 @@ The example auth is deliberately unavailable in production. To try the working l
 
 1. Generate a unique password hash without passing the plaintext in shell arguments:
    `read -rs PASSWORD; printf %s "$PASSWORD" | pnpm system:password; unset PASSWORD`
-2. In `apps/backend/.env` set `AUTH_MODE=demo`, `AUTH_USERNAME=operator`, `AUTH_PASSWORD_HASH=<generated value>`, and `AUTH_ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080`.
+2. In `apps/backend/.env` set `ALLOW_DEMO_AUTH=true`, `AUTH_MODE=demo`, `AUTH_USERNAME=operator`, `AUTH_PASSWORD_HASH=<generated value>`, and `AUTH_ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080`.
 3. Start the backend and open `http://localhost:8080` with Caddy running. Login, `/auth/me`, and logout use an HttpOnly session cookie; browser code never stores credentials or tokens.
 
 **Do not use this single-user demo identity provider in production.** Sessions are stored as hashed-token records in untracked `apps/backend/storage/auth/sessions.json` (or `AUTH_FILE_PATH`) and survive a restart, but no concurrent writers, distributed locking, backups or production account management are provided. A real storage adapter and stronger session policies must replace it before production login. The projects estimator runs without auth and demonstrates the full frontend-to-Fastify request path.
 
 ## HTTP JSON API contract
 
-Application JSON endpoints in the independent Fastify services share `@platform/api-contract`: success `{ "data": ..., "error": null }`, failure `{ "data": null, "error": { "code": "...", "message": "...", "issues": [] } }` (with optional `issues`). Transport-only helpers are `sendData` and `sendError`. `/health`, `/openapi.json`, Swagger UI, and WebSocket frames retain native protocol formats. The full normative contract is in [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Application JSON endpoints in the independent Fastify services share `@platform/api-contract`: success `{ "data": ..., "error": null }`, failure `{ "data": null, "error": { "code": "...", "message": "...", "issues": [] } }` (with optional `issues`). Transport-only helpers are `sendData` and `sendError`. `/health`, `/openapi.json`, Swagger UI, and WebSocket frames retain native protocol formats. The full normative contract is in [ARCHITECTURE.md](docs/ARCHITECTURE.md). Generated OpenAPI includes common validation, rate-limit and internal-error responses.
 
 ## Integration smoke test
 
@@ -113,8 +113,14 @@ provider and independent store tests.
 
 - `apps/*/AGENTS.md` documents only app-specific facts. No Markdown in backend `code/`.
 - Per-app `.env.example` is committed; `.env` and `runtime/` are not.
-- Worker uses the published imagic-scheduler npm package; bot uses grammY but remains disabled without BOT_ENABLED and BOT_TOKEN.
+- Worker uses the published imagic-scheduler npm package; bot uses grammY but remains disabled without BOT_ENABLED and BOT_TOKEN. Never enable the demo WebSocket token or authentication on a publicly exposed backend; no production WebSocket authentication exists yet.
 - `apps/backend/code/db/FileJsonStore.ts` and `FileSessionStore.ts` demonstrate validated, atomic single-process JSON storage for dev auth; no mandatory database or migrations.
+
+## Dependency management and verification
+
+The workspace uses Node.js 26, pnpm 12.16.1, ESLint 10, Fastify 5 and a compatible TypeScript 5.9 toolchain. TypeScript 7 is not yet officially within the supported range of the pinned typescript-eslint release. The pnpm 12 workspace policy permits only the reviewed `esbuild` install script and has a version-specific age exception for the previously locked `jose@6.2.15`; do not disable those supply-chain controls globally.
+
+Run `pnpm outdated -r`, `pnpm audit --prod`, and verify updated peers before changing major versions; use `pnpm install --frozen-lockfile` to verify reproducibility. Root and per-app scripts build the shared API contract as needed. For local WebSocket testing, `/ws` accepts an **explicitly configured development-only** `ticket.<token>` subprotocol with an allowlisted Origin (default includes local Caddy on port 8080). This is not a production authentication scheme; external WebSocket validation requires a separate approved restricted staging plan.
 
 ## Commit conventions
 

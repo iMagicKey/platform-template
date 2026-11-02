@@ -11,12 +11,12 @@ Actual implementations:
 - `code/config.ts` validates env; `code/consts/app.ts` holds fixed version and service name.
 - `code/store.ts` exports the process-local singleton and `createStore()`. Current fields are `activeConnections` (written directly by WebSocket) and `lastProjectEstimateAt` (written through `modules/projects/projects.service.ts`). `code/index.ts` supplies the singleton to `buildApp`; tests default to fresh isolated stores.
 - `code/routes/index.ts` is the single HTTP registry.
-- `code/routes/health/index.ts`: `GET /health`; `auth/index.ts`: `GET /auth`; `auth/login.ts`: `POST /auth/login`, returns **501** by default, or authenticates a single demo account when AUTH_MODE=demo on non-production. `POST /auth/logout` and `GET /auth/me` use the same revocable file-backed development cookie session. Production auth requires a real persistent identity/session provider; demo mode is blocked in production.
+- `code/routes/health/index.ts`: `GET /health`; `auth/index.ts`: `GET /auth`; `auth/login.ts`: `POST /auth/login`, returns **501** by default, or authenticates a single demo account when AUTH_MODE=demo on non-production. `POST /auth/logout` and `GET /auth/me` use the same revocable file-backed development cookie session. Demo authentication requires ALLOW_DEMO_AUTH=true and loopback HOST. Production auth requires a real persistent identity/session provider; demo mode is blocked in production.
 - `code/modules/auth/auth.service.ts` is the currently disabled identity provider boundary; `jwt.ts` supplies jose JWT issue/verify primitives but no session backend.
 - `code/websocket/index.ts` supplies `/ws` heartbeat and development-only origin/token check. Never treat the demo ticket as production auth.
 - `code/db/FileJsonStore.ts` is a Zod-validated atomic JSON file adapter; `FileSessionStore.ts` persists hashed dev-session tokens through the `SessionStore` interface, using untracked `storage/auth/sessions.json` or `AUTH_FILE_PATH`. One writer only, not production-safe. `code/db/models/UserSession.ts` is its storage model; `User.ts` remains ORM-neutral example.
 - `GET /projects` returns tracked `data/projects.json` via `modules/projects/projects.service.ts`; `POST /projects/estimate` validates numeric cents with Zod, calculates costs in pure domain logic and generates OpenAPI. No persistent writes.
-- `GET /openapi.json`, optional `/docs` Swagger UI.
+- `GET /openapi.json` and `/docs` Swagger UI are both disabled by default in production; development docs use a Caddy-aware `/api` prefix.
 
 See `.env.example` for `HOST`, `PORT`, `LOG_OUTPUT`, `DOCS_ENABLED`, `HTTPS_ENABLED`, TLS paths and WS development settings. Use `pnpm dev:backend` and `pnpm --filter @platform/backend test`; no real user database/auth is configured.
 
