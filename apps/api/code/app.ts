@@ -1,4 +1,4 @@
-import Fastify from 'fastify'
+import Fastify, { LogController } from 'fastify'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
@@ -13,7 +13,7 @@ import { registerErrorHandlers } from './plugins/error-handler.js'
 export async function buildApp(config: ApiConfig = readConfig()) {
     const app = Fastify({
         logger: createLoggerOptions(config),
-        disableRequestLogging: true,
+        logController: new LogController({ disableRequestLogging: true }),
         trustProxy: '127.0.0.1',
     })
     app.setValidatorCompiler(validatorCompiler)

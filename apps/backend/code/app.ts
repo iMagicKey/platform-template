@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import type { ServerOptions as HttpsServerOptions } from 'node:https'
-import Fastify, { type FastifyServerOptions } from 'fastify'
+import Fastify, { LogController, type FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
 import cookie from '@fastify/cookie'
 import rateLimit from '@fastify/rate-limit'
@@ -22,7 +22,7 @@ import { APP_VERSION } from './consts/app.js'
 export async function buildApp(config: BackendConfig = readConfig(), state: RuntimeStore = createStore()) {
     const options: FastifyServerOptions & { https?: HttpsServerOptions } = {
         logger: createLoggerOptions(config),
-        disableRequestLogging: true,
+        logController: new LogController({ disableRequestLogging: true }),
         trustProxy: '127.0.0.1',
     }
 
@@ -50,7 +50,21 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
     if (config.DOCS_ENABLED) {
         await app.register(swaggerUi, { routePrefix: '/docs', indexPrefix: '/api' })
     }
-    await app.register(websocket)
+    await app.register(websocket, {
+        options: { maxPayload: 16 * 1024 },
+        preClose: function (done) {
+            const server = this.websocketServer
+            for (const socket of server.clients) socket.close(1001, 'Server shutdown')
+            const timer = setTimeout(() => {
+                for (const socket of server.clients) socket.terminate()
+            }, 1_000)
+            timer.unref()
+            server.close(() => {
+                clearTimeout(timer)
+                done()
+            })
+        },
+    })
     const auth = createAuthService(config)
     registerRoutes(app, config, auth, state)
     registerWebsocket(app, config, state)

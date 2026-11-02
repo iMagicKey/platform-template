@@ -25,14 +25,11 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig, s
                     .split(',')
                     .map((x) => x.trim())
                 const ticket = protocols.find((value) => value.startsWith('ticket.'))?.slice(7)
-                if (
-                    !config.WS_DEMO_TOKEN ||
-                    !origin ||
-                    !config.WS_ALLOWED_ORIGINS.includes(origin) ||
-                    !ticket ||
-                    !constantTimeEqual(ticket, config.WS_DEMO_TOKEN)
-                ) {
-                    return reply.code(401).send(sendError('UNAUTHORIZED', 'WebSocket authentication required'))
+                if (!origin || !config.WS_ALLOWED_ORIGINS.includes(origin)) {
+                    return reply.code(403).send(sendError('ORIGIN_NOT_ALLOWED', 'WebSocket origin is not allowed'))
+                }
+                if (!config.WS_DEMO_TOKEN || !ticket || !constantTimeEqual(ticket, config.WS_DEMO_TOKEN)) {
+                    return reply.code(401).send(sendError('UNAUTHENTICATED', 'WebSocket authentication required'))
                 }
             },
         },
@@ -68,10 +65,4 @@ export function registerWebsocket(app: FastifyInstance, config: BackendConfig, s
             socket.on('error', (error: unknown) => app.log.warn({ err: error }, 'WebSocket connection error'))
         }
     )
-    app.addHook('onClose', async () => {
-        for (const socket of clients) socket.close(1001, 'Server shutdown')
-        // A bounded shutdown; never block process exit on stale sockets.
-        await new Promise((resolve) => setTimeout(resolve, 200))
-        for (const socket of clients) socket.terminate()
-    })
 }
