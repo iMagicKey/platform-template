@@ -150,3 +150,7 @@ chore: synchronize workspace lockfile
 ### Demonstration database adapter
 
 The first backend storage example uses `code/db/FileJsonStore.ts` with Zod validation, temporary-file atomic rename and in-process serialized updates. `FileSessionStore.ts` implements the `SessionStore` contract, persisting hashed development session tokens beneath untracked `apps/backend/storage/`. It is intentionally **single-writer**: atomic rename does not provide distributed locking or transactions. It must not be used for production authentication, and `AUTH_MODE=demo` is rejected in production. No ORM or database daemon is required by the template.
+
+### Review gate before external deployment
+
+Before any real VPS installation or additional external WebSocket deployment test, obtain an **independent read-only review** of the full repository, then the repository owner's manual approval. Review findings take precedence over extending scope. Local CI smoke tests on GitHub-hosted runners do not constitute external VPS deployment and may continue.
