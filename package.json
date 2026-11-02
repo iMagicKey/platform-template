@@ -7,7 +7,7 @@
         "node": ">=26 <27"
     },
     "scripts": {
-        "dev": "turbo run dev --parallel",
+        "dev": "pnpm --filter @platform/api-contract build && turbo run dev --parallel",
         "build": "turbo run build",
         "test": "turbo run test",
         "typecheck": "turbo run typecheck && tsc --noEmit -p tsconfig.system.json",
@@ -15,8 +15,8 @@
         "check": "pnpm check:architecture && pnpm typecheck && pnpm test",
         "check:architecture": "node system/check.ts",
         "dev:web": "pnpm --filter @platform/web dev",
-        "dev:backend": "pnpm --filter @platform/backend dev",
-        "dev:api": "pnpm --filter @platform/api dev",
+        "dev:backend": "pnpm --filter @platform/api-contract build && pnpm --filter @platform/backend dev",
+        "dev:api": "pnpm --filter @platform/api-contract build && pnpm --filter @platform/api dev",
         "system:init": "node system/init.ts",
         "system:certs": "node system/certs.ts",
         "system:service": "node system/service.ts",
