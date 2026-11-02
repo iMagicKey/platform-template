@@ -9,3 +9,8 @@ minimumReleaseAgeExclude:
 # Only the reviewed esbuild installer may execute postinstall scripts.
 allowBuilds:
     esbuild: true
+
+# Limit the security override to Fastify static assets; glob 14 fixes the
+# cancellation advisory and brings minimatch 11 for the traversal dependency.
+overrides:
+    '@fastify/static>glob': '^14.0.2'
