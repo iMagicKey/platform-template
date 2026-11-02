@@ -33,7 +33,9 @@ export function ProjectEstimator() {
                 </span>
                 <div>
                     <p className="eyebrow">API INTEGRATION</p>
-                    <h3 id="estimate-heading" className="mt-1 text-xl font-bold tracking-tight text-[#18355f]">Project estimator</h3>
+                    <h3 id="estimate-heading" className="mt-1 text-xl font-bold tracking-tight text-[#18355f]">
+                        Project estimator
+                    </h3>
                     <p className="mt-2 text-sm leading-6 text-[#7185a0]">
                         Send a real request to Fastify and see typed Zod-validated business logic in action.
                     </p>

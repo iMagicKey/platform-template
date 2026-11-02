@@ -4,12 +4,17 @@ const technologies = ['Next.js', 'Fastify', 'TypeScript', 'Zustand', 'Monorepo']
 
 export function PlatformHero() {
     return (
-        <section id="overview" aria-labelledby="hero-heading" className="relative isolate overflow-hidden rounded-[28px] border border-[#dceafe] bg-gradient-to-[115deg] from-[#f8fbff] via-[#e9f3ff] to-[#cfe5ff] shadow-[0_22px_70px_-40px_rgba(34,99,183,0.32)]">
+        <section
+            id="overview"
+            aria-labelledby="hero-heading"
+            className="relative isolate overflow-hidden rounded-[28px] border border-[#dceafe] bg-gradient-to-[115deg] from-[#f8fbff] via-[#e9f3ff] to-[#cfe5ff] shadow-[0_22px_70px_-40px_rgba(34,99,183,0.32)]"
+        >
             <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-60"
                 style={{
-                    backgroundImage: 'linear-gradient(130deg,transparent 35%,rgba(255,255,255,.48) 50%,transparent 63%),radial-gradient(ellipse at 89% 18%,rgba(96,169,255,.4),transparent 42%)',
+                    backgroundImage:
+                        'linear-gradient(130deg,transparent 35%,rgba(255,255,255,.48) 50%,transparent 63%),radial-gradient(ellipse at 89% 18%,rgba(96,169,255,.4),transparent 42%)',
                 }}
             />
             <div className="relative grid items-center gap-10 px-7 py-12 sm:px-12 sm:py-15 lg:grid-cols-[1.14fr_.86fr] lg:gap-2 lg:px-16 lg:py-18">
@@ -17,7 +22,10 @@ export function PlatformHero() {
                     <span className="inline-flex items-center gap-2 rounded-full border border-[#c7dfff] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#266bcb]">
                         <PlatformIcon name="sparkles" size={14} /> A better starting point for your next project
                     </span>
-                    <h1 id="hero-heading" className="mt-6 max-w-[680px] text-[clamp(2.5rem,5vw,4rem)] leading-[1.07] font-extrabold tracking-[-0.065em] text-[#0b3177]">
+                    <h1
+                        id="hero-heading"
+                        className="mt-6 max-w-[680px] text-[clamp(2.5rem,5vw,4rem)] leading-[1.07] font-extrabold tracking-[-0.065em] text-[#0b3177]"
+                    >
                         iMagic
                         <span className="block">Platform Template</span>
                     </h1>

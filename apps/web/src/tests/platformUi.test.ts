@@ -25,14 +25,23 @@ test('platform hero names the template and leads to working sections', () => {
 })
 
 test('cards preserve semantic links and architecture descriptions', () => {
-    const demo = renderToStaticMarkup(createElement(CapabilityCard, {
-        title: 'Demo', description: 'A working example', icon: 'calculator', href: '#project-estimator',
-    }))
+    const demo = renderToStaticMarkup(
+        createElement(CapabilityCard, {
+            title: 'Demo',
+            description: 'A working example',
+            icon: 'calculator',
+            href: '#project-estimator',
+        })
+    )
     assert.match(demo, /href="#project-estimator"/)
     assert.match(demo, /A working example/)
-    const feature = renderToStaticMarkup(createElement(FeatureTile, {
-        title: 'Runtime Store', description: 'Local typed state', icon: 'layers',
-    }))
+    const feature = renderToStaticMarkup(
+        createElement(FeatureTile, {
+            title: 'Runtime Store',
+            description: 'Local typed state',
+            icon: 'layers',
+        })
+    )
     assert.match(feature, /Runtime Store/)
     assert.match(feature, /Local typed state/)
 })

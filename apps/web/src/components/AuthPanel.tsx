@@ -23,7 +23,9 @@ export function AuthPanel() {
                 </span>
                 <div>
                     <p className="eyebrow">SESSION AUTH</p>
-                    <h3 id="auth-heading" className="mt-1 text-xl font-bold tracking-tight text-[#18355f]">Demo authentication</h3>
+                    <h3 id="auth-heading" className="mt-1 text-xl font-bold tracking-tight text-[#18355f]">
+                        Demo authentication
+                    </h3>
                     <p className="mt-2 text-sm leading-6 text-[#7185a0]">
                         Fastify sessions with an HttpOnly cookie. Demo credentials are configured explicitly and never enabled in production.
                     </p>
@@ -64,7 +66,9 @@ export function AuthPanel() {
                             <p className="flex items-center gap-2 text-sm font-semibold text-[#21764b]">
                                 <PlatformIcon name="check" size={18} /> Session active
                             </p>
-                            <p className="mt-2 text-sm text-[#466c5c]">Signed in as <strong>{auth.user?.id}</strong>. No tokens are saved in localStorage.</p>
+                            <p className="mt-2 text-sm text-[#466c5c]">
+                                Signed in as <strong>{auth.user?.id}</strong>. No tokens are saved in localStorage.
+                            </p>
                         </div>
                         <button type="button" disabled={auth.busy} onClick={() => void auth.logout()} className="action-secondary">
                             {auth.busy ? 'Signing out…' : 'Sign out'} <PlatformIcon name="arrow-right" size={16} />
@@ -109,9 +113,7 @@ export function AuthPanel() {
                     </p>
                 )}
             </div>
-            <div className="border-t border-[#edf2fa] bg-[#fbfdff] px-6 py-3 text-xs text-[#8a9cb3]">
-                Development example · No real user accounts
-            </div>
+            <div className="border-t border-[#edf2fa] bg-[#fbfdff] px-6 py-3 text-xs text-[#8a9cb3]">Development example · No real user accounts</div>
         </section>
     )
 }

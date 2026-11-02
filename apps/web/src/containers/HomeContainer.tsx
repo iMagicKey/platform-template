@@ -117,7 +117,9 @@ export function HomeContainer() {
                     </div>
 
                     <div className="mb-4 flex flex-wrap justify-between gap-2 px-1 text-xs text-[#7a8da7]" aria-live="polite">
-                        <span>Showing {visible.length} of {SERVICES.length} applications</span>
+                        <span>
+                            Showing {visible.length} of {SERVICES.length} applications
+                        </span>
                         <span>{favorites.length} favorites · Stored in scoped Zustand state</span>
                     </div>
                     {visible.length ? (
@@ -136,7 +138,9 @@ export function HomeContainer() {
                                         <PlatformIcon name="shield" size={24} />
                                     </span>
                                     <span className="mt-4 font-bold text-[#17355f]">Shared standards</span>
-                                    <span className="mt-2 text-sm leading-6 text-[#7085a0]">Architecture, naming rules and clear conventions for every service.</span>
+                                    <span className="mt-2 text-sm leading-6 text-[#7085a0]">
+                                        Architecture, naming rules and clear conventions for every service.
+                                    </span>
                                     <span className="mt-auto flex items-center gap-2 pt-4 text-xs font-semibold text-[#116ad3]">
                                         Read architecture <PlatformIcon name="arrow-up-right" size={14} />
                                     </span>
@@ -223,11 +227,23 @@ export function HomeContainer() {
                 <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-7 text-xs text-[#7488a6] sm:px-8">
                     <span>© iMagic · Platform Template · v{APP_VERSION}</span>
                     <div className="flex flex-wrap items-center gap-5">
-                        <a href="#overview" className="hover:text-[#0866df]">Back to top</a>
-                        <a href="https://github.com/iMagicKey/platform-template" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-[#0866df]">
+                        <a href="#overview" className="hover:text-[#0866df]">
+                            Back to top
+                        </a>
+                        <a
+                            href="https://github.com/iMagicKey/platform-template"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 hover:text-[#0866df]"
+                        >
                             <PlatformIcon name="github" size={14} /> GitHub
                         </a>
-                        <a href="https://github.com/iMagicKey/platform-template/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener noreferrer" className="hover:text-[#0866df]">
+                        <a
+                            href="https://github.com/iMagicKey/platform-template/blob/main/docs/ARCHITECTURE.md"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-[#0866df]"
+                        >
                             Architecture
                         </a>
                     </div>

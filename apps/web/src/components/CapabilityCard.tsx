@@ -1,18 +1,11 @@
 import { PlatformIcon, type PlatformIconName } from './PlatformIcon'
 
-export function CapabilityCard({
-    title,
-    description,
-    icon,
-    href,
-}: {
-    title: string
-    description: string
-    icon: PlatformIconName
-    href: string
-}) {
+export function CapabilityCard({ title, description, icon, href }: { title: string; description: string; icon: PlatformIconName; href: string }) {
     return (
-        <a href={href} className="surface-card group flex min-h-40 flex-col items-start p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#a7cefc] hover:shadow-[0_14px_34px_-18px_rgba(28,98,180,0.3)]">
+        <a
+            href={href}
+            className="surface-card group flex min-h-40 flex-col items-start p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#a7cefc] hover:shadow-[0_14px_34px_-18px_rgba(28,98,180,0.3)]"
+        >
             <span className="flex size-11 items-center justify-center rounded-xl bg-[#edf5ff] text-[#126fdf]">
                 <PlatformIcon name={icon} size={22} />
             </span>

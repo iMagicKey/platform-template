@@ -27,7 +27,9 @@ export function ServiceCard({ service }: { service: ServiceDefinition }) {
     return (
         <article className="surface-card group flex min-h-55 flex-col p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#b5d6ff] hover:shadow-[0_16px_34px_-20px_rgba(27,94,176,0.35)]">
             <div className="flex items-start justify-between gap-3">
-                <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl ${accents[service.accent] ?? 'bg-[#edf5ff] text-[#0d6de0]'}`}>
+                <div
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-xl ${accents[service.accent] ?? 'bg-[#edf5ff] text-[#0d6de0]'}`}
+                >
                     <PlatformIcon name={icons[service.id] ?? 'boxes'} size={25} />
                 </div>
                 <button

@@ -28,7 +28,10 @@ export function StatusIndicator({ url, label }: { url: string; label: string }) 
 
     const color = status === 'online' ? 'bg-[#16ba82]' : status === 'offline' ? 'bg-[#ed6277]' : 'bg-[#f3b84f]'
     return (
-        <span aria-live="polite" className="inline-flex items-center gap-2 rounded-full border border-[#e0ebf7] bg-[#f9fbff] px-3 py-2 text-xs font-medium text-[#536b8d]">
+        <span
+            aria-live="polite"
+            className="inline-flex items-center gap-2 rounded-full border border-[#e0ebf7] bg-[#f9fbff] px-3 py-2 text-xs font-medium text-[#536b8d]"
+        >
             <span className={`size-2 rounded-full ${color}`} />
             {label}: {status === 'checking' ? 'Checking' : status === 'online' ? 'Reachable' : 'Unavailable'}
         </span>

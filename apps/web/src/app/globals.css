@@ -25,11 +25,14 @@ a {
     text-underline-offset: 3px;
 }
 
-button:not(:disabled), a {
+button:not(:disabled),
+a {
     -webkit-tap-highlight-color: transparent;
 }
 
-button:focus-visible, a:focus-visible, input:focus-visible {
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
     outline: 3px solid #60b8ff;
     outline-offset: 3px;
 }
