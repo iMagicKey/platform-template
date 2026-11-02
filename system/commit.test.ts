@@ -7,7 +7,7 @@ test('accepts conventional subjects and breaking-change notation', () => {
         'feat(web): add dashboard filters',
         'fix: resolve unhandled shutdown',
         'docs(architecture): clarify database naming',
-        'feat(api)!: replace response contract\\n\\nBREAKING CHANGE: clients must upgrade',
+        'feat(api)!: replace response contract\n\nBREAKING CHANGE: clients must upgrade',
         'ci: verify commit subjects',
     ]) {
         assert.deepEqual(validateCommitSubject(message), [], message)
