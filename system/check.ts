@@ -124,13 +124,25 @@ function checkSource(file: string, owner: string): void {
     }
 }
 
-// Keep test code entirely outside production application, package and system trees.
-for (const directory of [apps, packages, join(root, 'system')]) {
+// A test belongs either to its application or to the repository-level system/package/deploy suite.
+for (const directory of [apps, packages, join(root, 'system'), join(root, 'deploy'), join(root, 'tests')]) {
     visit(directory, (file) => {
         const path = relative(root, file).split(sep).join('/')
-        if (/(?:^|\/)(?:tests?|__tests__)\/|\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path)) {
-            errors.push(`Test files must live under root tests/: ${path}`)
+        const parts = path.split('/')
+        const inTestFolder = parts.slice(1).some((part) => ['test', 'tests', '__tests__'].includes(part))
+        const isTestFile = /\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path)
+        if (!inTestFolder && !isTestFile) return
+
+        let allowed = false
+        if (parts[0] === 'apps' && appNames.includes(parts[1]!)) {
+            allowed =
+                parts[1] === 'web'
+                    ? parts[2] === 'src' && parts[3] === 'tests' && parts.length >= 5
+                    : parts[2] === 'tests' && parts.length >= 4
+        } else if (parts[0] === 'tests' && parts.length >= 3) {
+            allowed = ['system', 'deploy'].includes(parts[1]!) || packageNames.includes(parts[1]!)
         }
+        if (!allowed) errors.push(`Misplaced test source: ${path}`)
     })
 }
 
