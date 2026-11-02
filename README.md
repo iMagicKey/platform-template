@@ -7,6 +7,9 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) for the architecture contract and [AGENT
 ## Quick start
 
 ```bash
+git clone https://github.com/iMagicKey/platform-template.git
+cd platform-template
+
 npm install -g pnpm@10.21.0
 pnpm install
 pnpm system:init
@@ -23,6 +26,7 @@ pnpm dev:worker
 pnpm dev:bot
 pnpm --filter @platform/backend test
 pnpm check:architecture
+pnpm format:check
 pnpm typecheck
 pnpm lint
 pnpm test
@@ -51,8 +55,9 @@ The example is deliberately HTTP for local work. A production HTTPS example with
 
 ```bash
 pnpm system:certs self-signed backend localhost
-pnpm system:service install backend
-pnpm system:service install backend --apply
+pnpm build
+pnpm system:service install backend # preview unit
+pnpm system:service install backend --apply # needs permissions
 pnpm system:logs show backend
 pnpm system:logs clear backend
 ```
@@ -60,6 +65,13 @@ pnpm system:logs clear backend
 The systemd installer generates a reviewable unit without requiring root; `--apply` requires privileges. The default output uses journald, with optional app-level file logging via `LOG_OUTPUT=file`. Runtime directories and `.env` are gitignored.
 
 **Security:** `POST /auth/login` deliberately returns 501 until an actual identity provider is installed. WebSocket example requires a development-only token and allowed Origin. Never deploy examples as authentication.
+
+## Directory semantics and naming
+
+[ARCHITECTURE.md](ARCHITECTURE.md) defines the exact responsibilities of every `apps/*/code` and `apps/web/src` directory,
+plus React PascalCase naming, camelCase TypeScript, lowercase routes and snake_case SQL. The rules are checked by ESLint and
+`pnpm check:architecture`. UI examples include a Zustand-powered service explorer: filters, favorites, search, scoped store
+provider and independent store tests.
 
 ## Notes
 
