@@ -38,6 +38,7 @@ test('architecture checker catches filename, route and cross-boundary violations
 
         for (const path of [
             'tests/backend/misplaced.test.ts',
+            'tests/backend/helper.ts',
             'apps/backend/code/misplaced.test.ts',
             'apps/web/tests/misplaced.test.ts',
             'packages/api-contract/tests/misplaced.test.ts',

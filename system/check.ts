@@ -131,7 +131,8 @@ for (const directory of [apps, packages, join(root, 'system'), join(root, 'deplo
         const parts = path.split('/')
         const inTestFolder = parts.slice(1).some((part) => ['test', 'tests', '__tests__'].includes(part))
         const isTestFile = /\.(?:test|spec)\.[cm]?[jt]sx?$/.test(path)
-        if (!inTestFolder && !isTestFile) return
+        const isRootSuiteFile = parts[0] === 'tests' && parts.length >= 3
+        if (!isRootSuiteFile && !inTestFolder && !isTestFile) return
 
         let allowed = false
         if (parts[0] === 'apps' && appNames.includes(parts[1]!)) {
