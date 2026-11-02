@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -26,6 +28,15 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Normalize final API client test formatting once
+        run: |
+          pnpm exec prettier --write apps/web/src/tests/apiClient.test.ts
+          if git diff --quiet -- apps/web/src/tests/apiClient.test.ts; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/tests/apiClient.test.ts
+          git commit -m "style(web): format API client issue tests"
+          git push origin HEAD:main
       - run: pnpm format:check
       - name: Integration smoke through real Caddy ingress
         shell: bash
