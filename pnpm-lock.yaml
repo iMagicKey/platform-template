@@ -173,7 +173,7 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.14.0(jiti@2.7.0)(supports-color@7.2.0))
       '@types/node':
-        specifier: ^26.0.0
+        specifier: ^26.6.6
         version: 26.6.6
       eslint:
         specifier: ^10.14.0
@@ -182,19 +182,19 @@ importers:
         specifier: ^10.1.8
         version: 10.1.8(eslint@10.14.0(jiti@2.7.0)(supports-color@7.2.0))
       prettier:
-        specifier: ^3.8.1
+        specifier: ^3.9.10
         version: 3.9.10
       tsx:
-        specifier: ^4.20.0
+        specifier: ^4.23.15
         version: 4.23.15
       turbo:
-        specifier: ^2.5.0
+        specifier: ^2.11.10
         version: 2.11.10
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.46.0
+        specifier: ^8.72.1
         version: 8.72.1(eslint@10.14.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
 
   apps/api:
@@ -203,7 +203,7 @@ importers:
         specifier: ^11.2.1
         version: 11.2.1
       '@fastify/swagger':
-        specifier: ^9.5.0
+        specifier: ^9.9.3
         version: 9.9.3(supports-color@7.2.0)
       '@fastify/swagger-ui':
         specifier: ^6.1.2
@@ -215,7 +215,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/api-contract
       fastify:
-        specifier: ^5.6.0
+        specifier: ^5.12.7
         version: 5.12.7
       pino:
         specifier: ^10.4.0
@@ -224,22 +224,22 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       zod:
-        specifier: ^4.2.0
+        specifier: ^4.6.7
         version: 4.6.7
 
   apps/backend:
     dependencies:
       '@fastify/cookie':
-        specifier: ^11.1.3
+        specifier: ^11.1.5
         version: 11.1.5
       '@fastify/cors':
-        specifier: ^11.0.0
+        specifier: ^11.3.1
         version: 11.3.1
       '@fastify/rate-limit':
         specifier: ^11.2.1
         version: 11.2.1
       '@fastify/swagger':
-        specifier: ^9.5.0
+        specifier: ^9.9.3
         version: 9.9.3(supports-color@7.2.0)
       '@fastify/swagger-ui':
         specifier: ^6.1.2
@@ -248,16 +248,16 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(@fastify/swagger@9.9.3(supports-color@7.2.0))(fastify@5.12.7)(openapi-types@12.1.3)(zod@4.6.7)
       '@fastify/websocket':
-        specifier: ^11.0.0
+        specifier: ^11.3.6
         version: 11.3.6
       '@platform/api-contract':
         specifier: workspace:*
         version: link:../../packages/api-contract
       fastify:
-        specifier: ^5.6.0
+        specifier: ^5.12.7
         version: 5.12.7
       jose:
-        specifier: ^6.1.0
+        specifier: ^6.2.15
         version: 6.2.15
       pino:
         specifier: ^10.4.0
@@ -266,7 +266,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       zod:
-        specifier: ^4.2.0
+        specifier: ^4.6.7
         version: 4.6.7
 
   apps/bot:
@@ -281,7 +281,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       zod:
-        specifier: ^4.2.0
+        specifier: ^4.6.7
         version: 4.6.7
 
   apps/web:
@@ -293,29 +293,29 @@ importers:
         specifier: ^16.4.3
         version: 16.4.3(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
-        specifier: ^19.2.0
+        specifier: ^19.3.1
         version: 19.3.1
       react-dom:
-        specifier: ^19.2.0
+        specifier: ^19.3.1
         version: 19.3.1(react@19.3.1)
       zustand:
-        specifier: ^5.0.8
+        specifier: ^5.0.16
         version: 5.0.16(@types/react@19.3.0)(react@19.3.1)
     devDependencies:
       '@tailwindcss/postcss':
-        specifier: ^4.1.0
+        specifier: ^4.3.3
         version: 4.3.3
       '@types/react':
-        specifier: ^19.2.0
+        specifier: ^19.3.0
         version: 19.3.0
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: ^19.3.0
         version: 19.3.0(@types/react@19.3.0)
       postcss:
-        specifier: ^8.5.0
+        specifier: ^8.5.32
         version: 8.5.32
       tailwindcss:
-        specifier: ^4.1.0
+        specifier: ^4.3.3
         version: 4.3.3
 
   apps/worker:
@@ -330,13 +330,13 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       zod:
-        specifier: ^4.2.0
+        specifier: ^4.6.7
         version: 4.6.7
 
   packages/api-contract:
     dependencies:
       zod:
-        specifier: ^4.2.0
+        specifier: ^4.6.7
         version: 4.6.7
 
 
