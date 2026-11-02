@@ -28,7 +28,8 @@ test('frontend receives every structured validation issue', async () => {
         { path: ['items', 0, 'quantity'], code: 'too_small', message: 'Invalid quantity' },
     ]
     await assert.rejects(
-        () => readApiResponse(Response.json({ data: null, error: { code: 'VALIDATION_ERROR', message: 'Invalid request', issues } }, { status: 400 })),
+        () =>
+            readApiResponse(Response.json({ data: null, error: { code: 'VALIDATION_ERROR', message: 'Invalid request', issues } }, { status: 400 })),
         (error: unknown) =>
             error instanceof ApiRequestError && error.code === 'VALIDATION_ERROR' && JSON.stringify(error.issues) === JSON.stringify(issues)
     )
