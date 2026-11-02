@@ -14,6 +14,7 @@ export async function buildApp(config: ApiConfig = readConfig()) {
     const app = Fastify({
         logger: createLoggerOptions(config),
         disableRequestLogging: true,
+        trustProxy: '127.0.0.1',
     })
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)

@@ -56,11 +56,15 @@ export async function readApiResponse<T>(response: Response): Promise<ApiSuccess
 }
 
 export async function requestApi<T>(url: string, options: RequestInit = {}): Promise<T> {
+    const headers = new Headers(options.headers)
+    if (options.body !== undefined && options.body !== null && !headers.has('Content-Type')) {
+        headers.set('Content-Type', 'application/json')
+    }
     const response = await fetch(url, {
         ...options,
         cache: 'no-store',
         credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json', ...options.headers },
+        headers,
     })
     const envelope = await readApiResponse<T>(response)
     return envelope.data

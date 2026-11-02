@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import pino from 'pino'
 import { readConfig } from './config.js'
-import { createBot } from './bot.js'
+import { createBot, telegramErrorType } from './bot.js'
 
 const config = readConfig()
 const logger = pino({
@@ -34,7 +34,7 @@ if (!config.BOT_ENABLED) {
         try {
             await bot.stop()
         } catch (error) {
-            logger.error({ err: error }, 'Telegram shutdown error')
+            logger.error({ event: 'telegram.shutdown.failed', errorType: telegramErrorType(error) }, 'Telegram shutdown error')
         }
         logger.flush()
     }
@@ -47,7 +47,7 @@ if (!config.BOT_ENABLED) {
     try {
         await bot.start({ onStart: () => logger.info({ event: 'service.started' }, 'Telegram bot started') })
     } catch (error) {
-        logger.fatal({ err: error }, 'Telegram bot failed')
+        logger.fatal({ event: 'telegram.start.failed', errorType: telegramErrorType(error) }, 'Telegram bot failed')
         process.exitCode = 1
     }
 }

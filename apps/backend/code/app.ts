@@ -23,6 +23,7 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
     const options: FastifyServerOptions & { https?: HttpsServerOptions } = {
         logger: createLoggerOptions(config),
         disableRequestLogging: true,
+        trustProxy: '127.0.0.1',
     }
 
     if (config.HTTPS_ENABLED) {

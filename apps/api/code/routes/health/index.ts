@@ -21,6 +21,7 @@ export function registerHealth(app: FastifyInstance, config: ApiConfig) {
         '/health',
         {
             schema: healthRouteSchema,
+            config: { rateLimit: false },
         },
         async (_request, reply) => {
             reply.header('Cache-Control', 'no-store')

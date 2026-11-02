@@ -34,3 +34,21 @@ test('frontend receives every structured validation issue', async () => {
             error instanceof ApiRequestError && error.code === 'VALIDATION_ERROR' && JSON.stringify(error.issues) === JSON.stringify(issues)
     )
 })
+
+test('requestApi does not send JSON content type on bodyless logout', async () => {
+    const { requestApi } = await import('../libs/apiClient')
+    const originalFetch = globalThis.fetch
+    let sentHeaders: Headers | undefined
+    globalThis.fetch = async (_url, init) => {
+        sentHeaders = new Headers(init?.headers)
+        return Response.json({ data: null, error: null })
+    }
+    try {
+        await requestApi<null>('/api/auth/logout', { method: 'POST' })
+        assert.equal(sentHeaders?.has('Content-Type'), false)
+        await requestApi<null>('/api/auth/logout', { method: 'POST', body: '{}' })
+        assert.equal(sentHeaders?.get('Content-Type'), 'application/json')
+    } finally {
+        globalThis.fetch = originalFetch
+    }
+})
