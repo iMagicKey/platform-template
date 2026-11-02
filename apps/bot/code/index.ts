@@ -2,6 +2,7 @@ import { resolve } from 'node:path'
 import pino from 'pino'
 import { readConfig } from './config.js'
 import { createBot, telegramErrorType } from './bot.js'
+import { stopBotSafely } from './shutdown.js'
 
 const config = readConfig()
 const logger = pino({
@@ -30,19 +31,7 @@ if (!config.BOT_ENABLED) {
     async function shutdown(signal: string) {
         if (closing) return
         closing = true
-        const shutdownDeadline = setTimeout(() => {
-            logger.fatal({ event: 'service.shutdown.timeout' }, 'Bot shutdown deadline exceeded')
-            process.exit(1)
-        }, 10_000)
-        shutdownDeadline.unref()
-        logger.info({ event: 'service.shutdown', signal }, 'Stopping Telegram bot')
-        try {
-            await bot.stop()
-        } catch (error) {
-            logger.error({ event: 'telegram.shutdown.failed', errorType: telegramErrorType(error) }, 'Telegram shutdown error')
-        }
-        logger.flush()
-        clearTimeout(shutdownDeadline)
+        await stopBotSafely(() => bot.stop(), logger, signal)
     }
     process.once('SIGINT', () => {
         void shutdown('SIGINT')
