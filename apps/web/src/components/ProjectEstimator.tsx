@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from 'react'
 import { estimateProjectCost, type Estimate } from '../libs/projectsClient'
+import { PlatformIcon } from './PlatformIcon'
 
 export function ProjectEstimator() {
     const [hours, setHours] = useState(8)
@@ -14,10 +15,10 @@ export function ProjectEstimator() {
         event.preventDefault()
         setBusy(true)
         setError(null)
+        setEstimate(null)
         try {
             setEstimate(await estimateProjectCost(hours, Math.round(rate * 100)))
         } catch (cause) {
-            setEstimate(null)
             setError(cause instanceof Error ? cause.message : 'Unable to estimate')
         } finally {
             setBusy(false)
@@ -25,59 +26,68 @@ export function ProjectEstimator() {
     }
 
     return (
-        <section className="rounded-2xl border border-white/10 bg-[#131d2d] p-6" aria-labelledby="estimate-heading">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">API INTEGRATION</p>
-            <h2 className="mt-2 text-xl font-semibold" id="estimate-heading">
-                Project estimator
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                A real POST /api/projects/estimate request with Zod validation and pure, separately tested backend logic.
-            </p>
-            <form onSubmit={(event) => void handleEstimate(event)} className="mt-5 grid gap-3 sm:grid-cols-2">
-                <label className="block text-sm text-slate-300">
-                    Estimated hours
-                    <input
-                        type="number"
-                        min={1}
-                        max={1000}
-                        step={1}
-                        required
-                        value={hours}
-                        onChange={(event) => setHours(Number(event.target.value))}
-                        className="mt-1 w-full rounded-lg border border-white/20 bg-[#0b1220] px-3 py-2 text-white focus:border-emerald-400"
-                    />
-                </label>
-                <label className="block text-sm text-slate-300">
-                    Hourly rate
-                    <input
-                        type="number"
-                        min={0.01}
-                        max={10000000}
-                        step={0.01}
-                        required
-                        value={rate}
-                        onChange={(event) => setRate(Number(event.target.value))}
-                        className="mt-1 w-full rounded-lg border border-white/20 bg-[#0b1220] px-3 py-2 text-white focus:border-emerald-400"
-                    />
-                </label>
-                <button
-                    type="submit"
-                    disabled={busy}
-                    className="rounded-lg bg-emerald-400 px-4 py-2 font-medium text-slate-950 hover:bg-emerald-300 disabled:opacity-50 sm:col-span-2"
-                >
-                    {busy ? 'Calculating…' : 'Calculate with Fastify'}
-                </button>
-            </form>
-            {estimate && (
-                <p role="status" className="mt-4 rounded-lg border border-emerald-400/25 bg-emerald-400/5 p-4 text-sm text-emerald-200">
-                    Total: {(estimate.totalCents / 100).toFixed(2)} (demo currency units)
-                </p>
-            )}
-            {error && (
-                <p role="alert" className="mt-4 text-sm text-rose-300">
-                    {error}
-                </p>
-            )}
+        <section aria-labelledby="estimate-heading" className="surface-card flex h-full flex-col overflow-hidden">
+            <div className="flex items-start gap-4 border-b border-[#edf2fa] p-6">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#ebf8f6] text-[#168b82]">
+                    <PlatformIcon name="calculator" size={24} />
+                </span>
+                <div>
+                    <p className="eyebrow">API INTEGRATION</p>
+                    <h3 id="estimate-heading" className="mt-1 text-xl font-bold tracking-tight text-[#18355f]">Project estimator</h3>
+                    <p className="mt-2 text-sm leading-6 text-[#7185a0]">
+                        Send a real request to Fastify and see typed Zod-validated business logic in action.
+                    </p>
+                </div>
+            </div>
+            <div className="flex-1 p-6">
+                <form onSubmit={(event) => void handleEstimate(event)} className="grid gap-4 sm:grid-cols-2">
+                    <label className="block text-sm font-medium text-[#3e597e]">
+                        Estimated hours
+                        <input
+                            type="number"
+                            min={1}
+                            max={1000}
+                            step={1}
+                            required
+                            value={hours}
+                            onChange={(event) => setHours(Number(event.target.value))}
+                            className="form-control"
+                        />
+                    </label>
+                    <label className="block text-sm font-medium text-[#3e597e]">
+                        Hourly rate
+                        <input
+                            type="number"
+                            min={0.01}
+                            max={10000000}
+                            step={0.01}
+                            required
+                            value={rate}
+                            onChange={(event) => setRate(Number(event.target.value))}
+                            className="form-control"
+                        />
+                    </label>
+                    <button type="submit" disabled={busy} className="action-primary sm:col-span-2">
+                        {busy ? 'Calculating…' : 'Calculate estimate'}
+                        <PlatformIcon name="arrow-right" size={17} />
+                    </button>
+                </form>
+                {estimate && (
+                    <div role="status" className="mt-5 rounded-xl border border-[#c6eadd] bg-[#f1fbf6] p-4">
+                        <p className="text-xs font-medium text-[#547b6a]">Estimated total · demo currency units</p>
+                        <p className="mt-1 text-2xl font-bold tracking-tight text-[#177c55]">{(estimate.totalCents / 100).toFixed(2)}</p>
+                        <p className="mt-1 text-xs text-[#5e907c]">{estimate.hours} hours · integer-cent backend calculation</p>
+                    </div>
+                )}
+                {error && (
+                    <p role="alert" className="mt-5 rounded-lg bg-[#fff3f2] px-3 py-2.5 text-sm text-[#a9404e]">
+                        {error}
+                    </p>
+                )}
+            </div>
+            <div className="border-t border-[#edf2fa] bg-[#fbfdff] px-6 py-3 font-mono text-xs text-[#8a9cb3]">
+                POST /api/projects/estimate · via Caddy
+            </div>
         </section>
     )
 }
