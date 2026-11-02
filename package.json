@@ -24,7 +24,9 @@
         "dev:worker": "pnpm --filter @platform/worker dev",
         "dev:bot": "pnpm --filter @platform/bot dev",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "check:commit": "node system/commit.ts",
+        "test:system": "node --test system/commit.test.ts"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.0",

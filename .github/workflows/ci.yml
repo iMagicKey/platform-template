@@ -20,6 +20,8 @@ jobs:
       - run: pnpm system:certs self-signed backend localhost
       - run: pnpm system:service install backend
       - run: pnpm check:architecture
+      - run: pnpm check:commit
+      - run: pnpm test:system
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

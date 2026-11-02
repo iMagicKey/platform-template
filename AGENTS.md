@@ -11,3 +11,4 @@ Read **ARCHITECTURE.md** before editing code. It is the single source of truth f
 - `system/*.ts` is a flat set of maintenance CLIs; `deploy/` tracked infrastructure, `runtime/` untracked certificates/secrets.
 - Check affected application tests, typecheck and build, plus `pnpm check:architecture`, `pnpm lint` and `pnpm format:check`; report any unexecuted check.
 - Node.js 26 LTS; follow Prettier formatting from the former service template.
+- Commit messages: follow the Conventional Commits rules in `ARCHITECTURE.md`; use a concise English imperative summary and run `pnpm check:commit`.

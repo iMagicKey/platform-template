@@ -112,3 +112,37 @@ Use **PascalCase** for React components/classes/entities, **camelCase** for Java
 **Enum-like wire values:** use explicit stable lower-case tokens, e.g. `'active'`, `'pending_review'`. Renaming wire/storage values is a compatibility change. Prefer `as const` or string unions when a TypeScript `enum` is unnecessary.
 
 **Formatting:** adopt the old nodejs-service-template Prettier style: 4 spaces, single quotes, no semicolons, printWidth 150, trailingComma es5, arrowParens always. Prettier formats source but **does not** enforce file names or rename symbols; ESLint controls supported identifier conventions, while `system/check.ts` validates relevant file/path conventions. Avoid aggressive naming lint on external schema keys and generated files. Add no new Markdown files just for naming: keep this rule in the single architecture document.
+
+## Commit messages — Conventional Commits
+
+All new commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```text
+type(scope): short imperative summary
+
+Optional body: why and what was changed, beyond the subject.
+
+BREAKING CHANGE: explain compatibility impact and any migration
+```
+
+- Allowed types: `feat` (new behavior), `fix` (bug), `refactor` (behavior-preserving code change), `perf` (performance), `docs` (documentation only), `test` (tests), `style` (formatting only; **not UI features**), `build` (dependencies or build tools), `ci` (automation), `chore` (other maintenance), `revert` (revert).
+- A scope is optional, but preferred when one area is affected: `web`, `backend`, `api`, `worker`, `bot`, `system`, `deploy`, `architecture`, `deps`, `ci`. New app names may become scopes. Use lowercase/kebab-case.
+- Write subjects **in English**, beginning with a lowercase imperative verb (e.g. `add`, `fix`, `remove`, `document`). Maximum **72 characters including type and scope**, no trailing period, no emoji. The subject describes the change, not a status report.
+- One coherent purpose per commit. Separate refactoring, new behavior and unrelated formatting. Do not claim tests passed unless they actually ran.
+- Use a blank line and an optional body to explain non-obvious rationale, risks, migration and test results. For an incompatible change append `!` before the colon (e.g. `feat(api)!: change token response`) and explain the impact in a `BREAKING CHANGE:` footer.
+- No automatic semantic versioning, changelog generation, release automation or Git hooks in v1. This convention applies from its adoption onward; do not rewrite existing commit history.
+- Run `pnpm check:commit` locally. GitHub Actions checks the **HEAD commit message** on each push; direct pushes are not blocked pre-receive, so a failed CI is retrospective.
+
+Examples:
+
+```text
+feat(web): add dashboard filters with Zustand
+fix(backend): reject invalid WebSocket tickets
+refactor(system): flatten service maintenance scripts
+docs(architecture): define route and model naming
+test(api): cover OpenAPI contract responses
+style(web): normalize JSX formatting
+build(deps): update Fastify and Zod versions
+ci: validate commit subjects on push
+chore: synchronize workspace lockfile
+```

@@ -79,3 +79,9 @@ provider and independent store tests.
 - Per-app `.env.example` is committed; `.env` and `runtime/` are not.
 - Worker uses the published imagic-scheduler npm package; bot uses grammY but remains disabled without BOT_ENABLED and BOT_TOKEN.
 - Database adapter is an unconnected example; no mandatory DB or migrations.
+ 
+## Commit conventions
+
+Use `type(scope): imperative summary` (Conventional Commits). For example, `feat(web): add dashboard filters` or
+`fix(backend): reject invalid tokens`. Scope is optional; keep the header at most 72 characters. Detailed rules and
+breaking-change notation are in [ARCHITECTURE.md](ARCHITECTURE.md). Validate with `pnpm check:commit`.
