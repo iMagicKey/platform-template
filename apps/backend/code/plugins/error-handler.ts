@@ -46,11 +46,12 @@ export function registerErrorHandlers(app: FastifyInstance): void {
     })
 
     app.setErrorHandler((error, request, reply) => {
-        if (error.validation) {
-            return reply.code(400).send(sendError('VALIDATION_ERROR', 'Request validation failed', validationIssues(error.validation)))
+        const failure = error as { validation?: unknown; statusCode?: number }
+        if (failure.validation) {
+            return reply.code(400).send(sendError('VALIDATION_ERROR', 'Request validation failed', validationIssues(failure.validation)))
         }
 
-        const status = error.statusCode && error.statusCode >= 400 && error.statusCode < 600 ? error.statusCode : 500
+        const status = failure.statusCode && failure.statusCode >= 400 && failure.statusCode < 600 ? failure.statusCode : 500
         if (status >= 500) {
             app.log.error({ err: error, requestId: request.id }, 'Unhandled HTTP error')
             return reply.code(status).send(sendError('INTERNAL_SERVER_ERROR', 'An unexpected server error occurred'))
