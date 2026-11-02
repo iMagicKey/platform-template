@@ -49,7 +49,10 @@ export class FileJsonStore<T> {
             }
             return result
         })
-        this.pending = operation.then(() => undefined, () => undefined)
+        this.pending = operation.then(
+            () => undefined,
+            () => undefined
+        )
         return operation
     }
 }

@@ -13,9 +13,7 @@ test('file adapter serializes concurrent writes and retains data across instance
     const schema = z.object({ count: z.number().int().min(0) })
     try {
         const first = new FileJsonStore(file, schema, () => ({ count: 0 }))
-        await Promise.all(Array.from({ length: 20 }, () =>
-            first.update((value) => ({ value: { count: value.count + 1 }, result: undefined }))
-        ))
+        await Promise.all(Array.from({ length: 20 }, () => first.update((value) => ({ value: { count: value.count + 1 }, result: undefined }))))
         const second = new FileJsonStore(file, schema, () => ({ count: 0 }))
         assert.equal((await second.read()).count, 20)
         assert.equal((await stat(file)).mode & 0o777, process.platform === 'win32' ? (await stat(file)).mode & 0o777 : 0o600)

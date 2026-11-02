@@ -75,12 +75,14 @@ export async function buildApp(config: BackendConfig = readConfig()) {
         await app.register(swaggerUi, { routePrefix: '/docs' })
     }
     await app.register(websocket)
-    const auth = config.AUTH_MODE === 'demo'
-        ? new DemoAuthService(
-              config.AUTH_USERNAME!, config.AUTH_PASSWORD_HASH!,
-              new FileSessionStore(config.AUTH_FILE_PATH ?? resolve(process.cwd(), 'storage', 'auth', 'sessions.json'))
-          )
-        : undefined
+    const auth =
+        config.AUTH_MODE === 'demo'
+            ? new DemoAuthService(
+                  config.AUTH_USERNAME!,
+                  config.AUTH_PASSWORD_HASH!,
+                  new FileSessionStore(config.AUTH_FILE_PATH ?? resolve(process.cwd(), 'storage', 'auth', 'sessions.json'))
+              )
+            : undefined
     registerRoutes(app, config, auth)
     registerWebsocket(app, config)
     app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())
