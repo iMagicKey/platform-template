@@ -1,10 +1,11 @@
-import type { ApiSuccess } from '@platform/api-contract'
+import type { ApiIssue, ApiSuccess } from '@platform/api-contract'
 
 export class ApiRequestError extends Error {
     constructor(
         readonly status: number,
         readonly code: string,
-        message: string
+        message: string,
+        readonly issues?: ApiIssue[]
     ) {
         super(message)
         this.name = 'ApiRequestError'
@@ -33,7 +34,25 @@ export async function readApiResponse<T>(response: Response): Promise<ApiSuccess
     }
     if (response.ok) throw new Error('Successful HTTP response cannot contain an API error')
 
-    throw new ApiRequestError(response.status, raw.error.code, raw.error.message)
+    let issues: ApiIssue[] | undefined
+    if ('issues' in raw.error && raw.error.issues !== undefined) {
+        if (
+            !Array.isArray(raw.error.issues) ||
+            !raw.error.issues.every(
+                (issue: unknown) =>
+                    record(issue) &&
+                    Array.isArray(issue.path) &&
+                    issue.path.every((segment) => typeof segment === 'string' || typeof segment === 'number') &&
+                    typeof issue.code === 'string' &&
+                    typeof issue.message === 'string'
+            )
+        ) {
+            throw new Error('Invalid API error issues')
+        }
+        issues = raw.error.issues as ApiIssue[]
+    }
+
+    throw new ApiRequestError(response.status, raw.error.code, raw.error.message, issues)
 }
 
 export async function requestApi<T>(url: string, options: RequestInit = {}): Promise<T> {

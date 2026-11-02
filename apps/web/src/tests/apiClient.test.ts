@@ -21,3 +21,15 @@ test('web client uses API error codes and rejects malformed envelopes', async ()
     )
     await assert.rejects(() => readApiResponse(new Response('<html>Proxy error</html>', { status: 502 })), /invalid JSON response/)
 })
+
+test('frontend receives every structured validation issue', async () => {
+    const issues = [
+        { path: ['profile', 'email'], code: 'invalid_format', message: 'Invalid email' },
+        { path: ['items', 0, 'quantity'], code: 'too_small', message: 'Invalid quantity' },
+    ]
+    await assert.rejects(
+        () => readApiResponse(Response.json({ data: null, error: { code: 'VALIDATION_ERROR', message: 'Invalid request', issues } }, { status: 400 })),
+        (error: unknown) =>
+            error instanceof ApiRequestError && error.code === 'VALIDATION_ERROR' && JSON.stringify(error.issues) === JSON.stringify(issues)
+    )
+})
