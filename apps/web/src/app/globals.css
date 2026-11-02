@@ -1,12 +1,72 @@
 @import 'tailwindcss';
 
 :root {
-    color-scheme: dark;
+    color-scheme: light;
+    --canvas: #f7faff;
+    --ink: #10254c;
+    --muted: #607393;
+    --line: #deebfa;
+    --primary: #0866df;
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    background: #0b1220;
-    color: #f8fafc;
+    min-width: 320px;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
+
 a {
     text-underline-offset: 3px;
+}
+
+button:not(:disabled), a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 3px solid #60b8ff;
+    outline-offset: 3px;
+}
+
+::selection {
+    background: #c9e7ff;
+    color: #124590;
+}
+
+@layer components {
+    .surface-card {
+        @apply rounded-2xl border border-[#e0eaf7] bg-white shadow-[0_6px_24px_-12px_rgba(35,81,146,0.18)];
+    }
+
+    .action-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[#0967e8] px-5 py-3 text-sm font-semibold text-white shadow-[0_9px_18px_-10px_rgba(0,95,219,0.55)] transition-colors hover:bg-[#0757c6] disabled:cursor-not-allowed disabled:opacity-55;
+    }
+
+    .action-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-[#d5e2f5] bg-white px-5 py-3 text-sm font-semibold text-[#17335d] shadow-sm transition-colors hover:border-[#9dc8fa] hover:bg-[#f5faff] disabled:cursor-not-allowed disabled:opacity-55;
+    }
+
+    .form-control {
+        @apply mt-1.5 block w-full rounded-xl border border-[#d4e2f1] bg-white px-3.5 py-2.5 text-sm text-[#19345b] outline-none transition-colors placeholder:text-[#9caec3] focus:border-[#2686f1];
+    }
+
+    .eyebrow {
+        @apply text-[11px] font-bold tracking-[0.19em] text-[#1375e1] uppercase;
+    }
+
+    .subtle-tag {
+        @apply inline-flex items-center gap-2 rounded-full border border-[#dce9f8] bg-white/85 px-3 py-1.5 text-xs font-medium text-[#395477];
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
 }
