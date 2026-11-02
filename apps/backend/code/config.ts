@@ -29,7 +29,15 @@ const envSchema = z.object({
     AUTH_MODE: z.enum(['disabled', 'demo']).default('disabled'),
     AUTH_USERNAME: z.string().optional(),
     AUTH_PASSWORD_HASH: z.string().optional(),
-    AUTH_ALLOWED_ORIGINS: z.string().default('').transform((v) => v.split(',').map((x) => x.trim()).filter(Boolean)),
+    AUTH_ALLOWED_ORIGINS: z
+        .string()
+        .default('')
+        .transform((v) =>
+            v
+                .split(',')
+                .map((x) => x.trim())
+                .filter(Boolean)
+        ),
     WS_DEMO_TOKEN: z.string().optional(),
     WS_ALLOWED_ORIGINS: z
         .string()

@@ -4,11 +4,15 @@ import { listProjects, projectSchema } from '../../modules/projects/projects.ser
 
 /** GET /projects. No database or authentication requirements. */
 export function registerProjectsRoot(app: FastifyInstance): void {
-    app.get('/projects', {
-        schema: {
-            tags: ['projects'],
-            summary: 'List reference projects',
-            response: { 200: z.object({ projects: z.array(projectSchema) }) },
+    app.get(
+        '/projects',
+        {
+            schema: {
+                tags: ['projects'],
+                summary: 'List reference projects',
+                response: { 200: z.object({ projects: z.array(projectSchema) }) },
+            },
         },
-    }, async () => ({ projects: listProjects() }))
+        async () => ({ projects: listProjects() })
+    )
 }

@@ -8,23 +8,41 @@ const ORIGIN = 'http://localhost:8080'
 
 async function createDemoApp() {
     const passwordHash = await hashPassword('nontrivial-test-password')
-    return buildApp(readConfig({
-        NODE_ENV: 'test', DOCS_ENABLED: 'false', AUTH_MODE: 'demo',
-        AUTH_USERNAME: 'operator', AUTH_PASSWORD_HASH: passwordHash, AUTH_ALLOWED_ORIGINS: ORIGIN,
-    }))
+    return buildApp(
+        readConfig({
+            NODE_ENV: 'test',
+            DOCS_ENABLED: 'false',
+            AUTH_MODE: 'demo',
+            AUTH_USERNAME: 'operator',
+            AUTH_PASSWORD_HASH: passwordHash,
+            AUTH_ALLOWED_ORIGINS: ORIGIN,
+        })
+    )
 }
 
 test('demo login, cookie session, identity and revocable logout', async () => {
     const app = await createDemoApp()
     try {
-        const bad = await app.inject({ method: 'POST', url: '/auth/login',
-            headers: { origin: ORIGIN }, payload: { login: 'operator', password: 'wrong' } })
+        const bad = await app.inject({
+            method: 'POST',
+            url: '/auth/login',
+            headers: { origin: ORIGIN },
+            payload: { login: 'operator', password: 'wrong' },
+        })
         assert.equal(bad.statusCode, 401)
-        const blocked = await app.inject({ method: 'POST', url: '/auth/login',
-            headers: { origin: 'https://untrusted.example' }, payload: { login: 'operator', password: 'nontrivial-test-password' } })
+        const blocked = await app.inject({
+            method: 'POST',
+            url: '/auth/login',
+            headers: { origin: 'https://untrusted.example' },
+            payload: { login: 'operator', password: 'nontrivial-test-password' },
+        })
         assert.equal(blocked.statusCode, 403)
-        const loggedIn = await app.inject({ method: 'POST', url: '/auth/login',
-            headers: { origin: ORIGIN }, payload: { login: 'operator', password: 'nontrivial-test-password' } })
+        const loggedIn = await app.inject({
+            method: 'POST',
+            url: '/auth/login',
+            headers: { origin: ORIGIN },
+            payload: { login: 'operator', password: 'nontrivial-test-password' },
+        })
         assert.equal(loggedIn.statusCode, 200)
         const rawCookie = loggedIn.headers['set-cookie']
         assert.equal(typeof rawCookie, 'string')
@@ -44,7 +62,16 @@ test('demo login, cookie session, identity and revocable logout', async () => {
 
 test('demo identity provider refuses production and missing configuration', async () => {
     const passwordHash = await hashPassword('test-password')
-    assert.throws(() => readConfig({ NODE_ENV: 'production', AUTH_MODE: 'demo',
-        AUTH_USERNAME: 'user', AUTH_PASSWORD_HASH: passwordHash, AUTH_ALLOWED_ORIGINS: ORIGIN }), /forbidden in production/)
+    assert.throws(
+        () =>
+            readConfig({
+                NODE_ENV: 'production',
+                AUTH_MODE: 'demo',
+                AUTH_USERNAME: 'user',
+                AUTH_PASSWORD_HASH: passwordHash,
+                AUTH_ALLOWED_ORIGINS: ORIGIN,
+            }),
+        /forbidden in production/
+    )
     assert.throws(() => readConfig({ NODE_ENV: 'test', AUTH_MODE: 'demo' }), /AUTH_USERNAME/)
 })

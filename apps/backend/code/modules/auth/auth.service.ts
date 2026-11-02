@@ -33,7 +33,10 @@ function tokenKey(token: string): string {
 export class DemoAuthService {
     private readonly sessions = new Map<string, Session>()
 
-    constructor(private readonly username: string, private readonly passwordHash: string) {}
+    constructor(
+        private readonly username: string,
+        private readonly passwordHash: string
+    ) {}
 
     async authenticate(username: string, password: string): Promise<boolean> {
         // Keep a hash calculation even on an unknown username to avoid an obvious timing oracle.

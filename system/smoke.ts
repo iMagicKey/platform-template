@@ -33,7 +33,8 @@ async function main() {
     assert.ok(Array.isArray(object(await projects.json()).projects))
 
     const estimate = await fetch(`${origin}/api/projects/estimate`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hours: 3, rateCents: 1250 }),
         signal: AbortSignal.timeout(2000),
     })

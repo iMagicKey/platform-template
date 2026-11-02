@@ -19,7 +19,7 @@ export function useAuth() {
                 const current = configured ? await getCurrentUser() : null
                 if (active) {
                     setUser(current)
-                    setStatus(configured ? current ? 'authenticated' : 'anonymous' : 'disabled')
+                    setStatus(configured ? (current ? 'authenticated' : 'anonymous') : 'disabled')
                 }
             } catch (cause) {
                 if (active) {
@@ -29,7 +29,9 @@ export function useAuth() {
             }
         }
         void load()
-        return () => { active = false }
+        return () => {
+            active = false
+        }
     }, [])
 
     const login = async (username: string, password: string): Promise<boolean> => {
