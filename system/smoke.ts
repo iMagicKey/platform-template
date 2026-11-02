@@ -50,6 +50,10 @@ async function main() {
     assert.match(swaggerHtml, /\.\/static\/swagger-ui\.css/)
     const swaggerStyles = await waitFor(`${origin}/api/docs/static/swagger-ui.css`)
     assert.match(swaggerStyles.headers.get('content-type') ?? '', /text\/css/)
+    const swaggerScript = await waitFor(`${origin}/api/docs/static/swagger-ui-bundle.js`)
+    assert.match(swaggerScript.headers.get('content-type') ?? '', /javascript/)
+    const swaggerInitializer = await waitFor(`${origin}/api/docs/static/swagger-initializer.js`)
+    assert.match(swaggerInitializer.headers.get('content-type') ?? '', /javascript/)
 
     const api = await waitFor(`${apiOrigin}/v1/ping`)
     assert.equal(object(object(await api.json()).data).message, 'pong')
