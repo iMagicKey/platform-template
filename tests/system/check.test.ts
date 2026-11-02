@@ -33,7 +33,8 @@ test('architecture checker catches filename, route and cross-boundary violations
             'tests/system/valid.test.ts',
             'packages/api-contract/tests/valid.test.ts',
             'tests/deploy/valid.test.ts',
-        ]) add(path, 'export {}')
+        ])
+            add(path, 'export {}')
         assert.equal(spawnSync(process.execPath, [checker, root], { encoding: 'utf8' }).status, 0)
 
         for (const path of [
