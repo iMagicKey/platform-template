@@ -21,7 +21,8 @@ test('demo login cannot authenticate without an identity provider', async () => 
     try {
         const response = await app.inject({ method: 'POST', url: '/auth/login', payload: { login: 'example', password: 'invalid' } })
         assert.equal(response.statusCode, 501)
-        assert.equal(response.json().error, 'AUTH_NOT_CONFIGURED')
+        assert.equal(response.json().data, null)
+        assert.equal(response.json().error.code, 'AUTH_NOT_CONFIGURED')
         assert.equal((await app.inject('/auth')).statusCode, 200)
     } finally {
         await app.close()

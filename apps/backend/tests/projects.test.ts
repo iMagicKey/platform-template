@@ -24,7 +24,8 @@ test('route transport validates request and produces OpenAPI contract', async ()
     try {
         const root = await app.inject('/projects')
         assert.equal(root.statusCode, 200)
-        assert.equal(root.json().projects[0].id, 'web')
+        assert.equal(root.json().data.projects[0].id, 'web')
+        assert.equal(root.json().error, null)
 
         const estimate = await app.inject({
             method: 'POST',
@@ -32,7 +33,8 @@ test('route transport validates request and produces OpenAPI contract', async ()
             payload: { hours: 8, rateCents: 2999 },
         })
         assert.equal(estimate.statusCode, 200)
-        assert.equal(estimate.json().totalCents, 23992)
+        assert.equal(estimate.json().data.totalCents, 23992)
+        assert.equal(estimate.json().error, null)
 
         const invalid = await app.inject({
             method: 'POST',
@@ -40,10 +42,15 @@ test('route transport validates request and produces OpenAPI contract', async ()
             payload: { hours: -1, rateCents: 'invalid' },
         })
         assert.equal(invalid.statusCode, 400)
+        assert.equal(invalid.json().data, null)
+        assert.equal(invalid.json().error.code, 'VALIDATION_ERROR')
+        assert.ok(Array.isArray(invalid.json().error.issues))
 
         const openapi = (await app.inject('/openapi.json')).json()
         assert.ok(openapi.paths['/projects'])
         assert.ok(openapi.paths['/projects/estimate'])
+        assert.ok(openapi.paths['/projects/estimate'].post.responses['200'])
+        assert.ok(openapi.paths['/projects/estimate'].post.responses['400'])
     } finally {
         await app.close()
     }

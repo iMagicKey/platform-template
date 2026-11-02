@@ -35,6 +35,8 @@ test('demo login, cookie session, identity and revocable logout', async () => {
             payload: { login: 'operator', password: 'wrong' },
         })
         assert.equal(bad.statusCode, 401)
+        assert.equal(bad.json().data, null)
+        assert.equal(bad.json().error.code, 'INVALID_CREDENTIALS')
         const blocked = await app.inject({
             method: 'POST',
             url: '/auth/login',
@@ -42,6 +44,7 @@ test('demo login, cookie session, identity and revocable logout', async () => {
             payload: { login: 'operator', password: 'nontrivial-test-password' },
         })
         assert.equal(blocked.statusCode, 403)
+        assert.equal(blocked.json().error.code, 'ORIGIN_NOT_ALLOWED')
         const loggedIn = await app.inject({
             method: 'POST',
             url: '/auth/login',
@@ -49,6 +52,7 @@ test('demo login, cookie session, identity and revocable logout', async () => {
             payload: { login: 'operator', password: 'nontrivial-test-password' },
         })
         assert.equal(loggedIn.statusCode, 200)
+        assert.deepEqual(loggedIn.json(), { data: { user: { id: 'operator' } }, error: null })
         const rawCookie = loggedIn.headers['set-cookie']
         assert.equal(typeof rawCookie, 'string')
         const cookie = String(rawCookie).split(';')[0]!
@@ -56,9 +60,10 @@ test('demo login, cookie session, identity and revocable logout', async () => {
         assert.match(String(rawCookie), /HttpOnly/)
         const user = await app.inject({ method: 'GET', url: '/auth/me', headers: { cookie } })
         assert.equal(user.statusCode, 200)
-        assert.equal(user.json().user.id, 'operator')
+        assert.equal(user.json().data.user.id, 'operator')
         const logout = await app.inject({ method: 'POST', url: '/auth/logout', headers: { cookie, origin: ORIGIN } })
-        assert.equal(logout.statusCode, 204)
+        assert.equal(logout.statusCode, 200)
+        assert.deepEqual(logout.json(), { data: null, error: null })
         assert.equal((await app.inject({ url: '/auth/me', headers: { cookie } })).statusCode, 401)
     } finally {
         await app.close()
@@ -105,7 +110,7 @@ test('file-backed demo sessions survive app restart and are revoked across resta
         try {
             const current = await second.inject({ url: '/auth/me', headers: { cookie } })
             assert.equal(current.statusCode, 200)
-            assert.equal(current.json().user.id, 'operator')
+            assert.equal(current.json().data.user.id, 'operator')
             const logout = await second.inject({ method: 'POST', url: '/auth/logout', headers: { cookie, origin: ORIGIN } })
             assert.equal(logout.statusCode, 204)
         } finally {

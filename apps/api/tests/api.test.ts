@@ -9,8 +9,11 @@ test('independent API returns its own health and v1 ping', async () => {
         const health = await app.inject('/health')
         assert.equal(health.statusCode, 200)
         assert.equal(health.json().service, 'api')
-        assert.equal((await app.inject('/v1/ping')).json().message, 'pong')
-        assert.equal((await app.inject('/auth')).statusCode, 404)
+        assert.deepEqual((await app.inject('/v1/ping')).json(), { data: { message: 'pong' }, error: null })
+        const missing = await app.inject('/auth')
+        assert.equal(missing.statusCode, 404)
+        assert.equal(missing.json().data, null)
+        assert.equal(missing.json().error.code, 'NOT_FOUND')
     } finally {
         await app.close()
     }

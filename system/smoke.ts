@@ -30,7 +30,7 @@ async function main() {
     assert.equal(object(await backend.json()).service, 'backend')
 
     const projects = await waitFor(`${origin}/api/projects`)
-    assert.ok(Array.isArray(object(await projects.json()).projects))
+    assert.ok(Array.isArray(object(object(await projects.json()).data).projects))
 
     const estimate = await fetch(`${origin}/api/projects/estimate`, {
         method: 'POST',
@@ -39,16 +39,19 @@ async function main() {
         signal: AbortSignal.timeout(2000),
     })
     assert.equal(estimate.status, 200)
-    assert.equal(object(await estimate.json()).totalCents, 3750)
+    assert.equal(object(object(await estimate.json()).data).totalCents, 3750)
 
     const api = await waitFor(`${apiOrigin}/v1/ping`)
-    assert.equal(object(await api.json()).message, 'pong')
+    assert.equal(object(object(await api.json()).data).message, 'pong')
 
     const docs = await waitFor(`${apiOrigin}/openapi.json`)
     assert.ok(object(object(await docs.json()).paths)['/v1/ping'])
 
     const forbidden = await fetch(`${origin}/api/auth/me`, { signal: AbortSignal.timeout(2000) })
     assert.ok([401, 501].includes(forbidden.status))
+    const forbiddenBody = object(await forbidden.json())
+    assert.equal(forbiddenBody.data, null)
+    assert.equal(object(forbiddenBody.error).code, 'AUTH_NOT_CONFIGURED')
     process.stdout.write('Caddy integration smoke passed: web, backend, projects, API, OpenAPI and default auth boundary.\n')
 }
 
