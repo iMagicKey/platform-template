@@ -1,8 +1,8 @@
-import { setTimeout as delay } from 'node:timers/promises'
 import { resolve } from 'node:path'
 import pino from 'pino'
 import { readConfig } from './config.js'
 import { createWorker } from './worker.js'
+import { waitForTaskDrain } from './shutdown.js'
 
 const config = readConfig()
 const logger = pino({
@@ -37,16 +37,12 @@ async function shutdown(signal: string) {
     timeout.unref()
     logger.info({ event: 'service.shutdown', signal }, 'Worker stopping')
     scheduler.stop()
-    const deadline = Date.now() + 5_000
-    while (Object.values(scheduler.getStatus()).some((task) => task.inProcess) && Date.now() < deadline) {
-        await delay(100)
-    }
-    if (Object.values(scheduler.getStatus()).some((task) => task.inProcess)) {
-        logger.warn('Active scheduler tasks exceeded shutdown deadline')
-    }
+    const drained = await waitForTaskDrain(() => Object.values(scheduler.getStatus()).some((task) => task.inProcess))
+    if (!drained) logger.warn('Active scheduler tasks exceeded shutdown deadline')
     logger.flush()
     clearTimeout(timeout)
-    if (Object.values(scheduler.getStatus()).some((task) => task.inProcess)) process.exitCode = 1
+    // Setting exitCode alone is not sufficient: the unresolved task may keep Node alive.
+    if (!drained) process.exit(1)
 }
 process.once('SIGINT', () => {
     void shutdown('SIGINT')
