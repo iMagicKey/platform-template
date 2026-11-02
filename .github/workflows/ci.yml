@@ -5,11 +5,15 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
         with:
           version: 12.16.1
@@ -22,7 +26,15 @@ jobs:
       - run: pnpm system:certs self-signed backend localhost
       - run: pnpm system:service install backend --user platform
       - run: pnpm check:architecture
-      - run: pnpm check:commit
+      - name: Validate commit subject
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ -n "$PR_HEAD_SHA" ]; then
+            pnpm check:commit "$(git log -1 --format=%B "$PR_HEAD_SHA")"
+          else
+            pnpm check:commit
+          fi
       - run: pnpm test:system
       - run: pnpm audit --prod
       - run: pnpm lint
