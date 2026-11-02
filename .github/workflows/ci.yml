@@ -3,8 +3,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-permissions:
-  contents: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -17,7 +15,7 @@ jobs:
         with:
           node-version: 26
           cache: pnpm
-      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - run: pnpm system:init
       - run: pnpm system:certs self-signed backend localhost
       - run: pnpm system:service install backend
@@ -28,13 +26,26 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm format
       - run: pnpm format:check
-      - name: Normalize lockfile and sources
+      - name: Integration smoke through real Caddy ingress
+        shell: bash
         run: |
-          if git diff --quiet; then exit 0; fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -u
-          git commit -m "chore: synchronize lockfile and source formatting"
-          git push origin HEAD:main
+          sudo apt-get update -qq
+          sudo apt-get install -y caddy
+          caddy validate --config deploy/caddy/Caddyfile
+          pnpm --filter @platform/web start >/tmp/platform-web.log 2>&1 &
+          WEB_PID=$!
+          pnpm --filter @platform/backend start >/tmp/platform-backend.log 2>&1 &
+          BACKEND_PID=$!
+          pnpm --filter @platform/api start >/tmp/platform-api.log 2>&1 &
+          API_PID=$!
+          caddy run --config deploy/caddy/Caddyfile >/tmp/platform-caddy.log 2>&1 &
+          CADDY_PID=$!
+          trap 'kill "$WEB_PID" "$BACKEND_PID" "$API_PID" "$CADDY_PID" 2>/dev/null || true' EXIT
+          if ! pnpm system:smoke; then
+            for log in /tmp/platform-{web,backend,api,caddy}.log; do
+              echo "=== $log ==="
+              tail -n 100 "$log"
+            done
+            exit 1
+          fi
