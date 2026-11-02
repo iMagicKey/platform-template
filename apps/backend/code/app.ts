@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import Fastify from 'fastify'
+import Fastify, { type FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
 import cookie from '@fastify/cookie'
 import rateLimit from '@fastify/rate-limit'
@@ -11,59 +11,30 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from '@fas
 import { readConfig, type BackendConfig } from './config.js'
 import { registerRoutes } from './routes/index.js'
 import { registerWebsocket } from './websocket/index.js'
-import { DemoAuthService } from './modules/auth/auth.service.js'
-import { FileSessionStore } from './db/FileSessionStore.js'
+import { createAuthService } from './modules/auth/auth.factory.js'
+import { createLoggerOptions } from './logging.js'
+import { registerRequestLogging } from './plugins/request-logging.js'
 import { createStore, type RuntimeStore } from './store.js'
-import { APP_VERSION, SERVICE_NAME } from './consts/app.js'
+import { APP_VERSION } from './consts/app.js'
 
 /** Fresh state per Fastify instance by default; production passes the process singleton. */
 export async function buildApp(config: BackendConfig = readConfig(), state: RuntimeStore = createStore()) {
-    const logger = {
-        level: config.LOG_LEVEL,
-        base: { service: SERVICE_NAME, environment: config.NODE_ENV, release: config.APP_RELEASE },
-        redact: { paths: ['req.headers.authorization', 'req.headers.cookie', 'headers.authorization', 'headers.cookie'], censor: '[REDACTED]' },
-        ...(config.LOG_OUTPUT === 'file'
-            ? {
-                  transport: {
-                      target: 'pino-roll',
-                      options: {
-                          file: resolve(process.cwd(), 'logs', 'app'),
-                          frequency: 'daily',
-                          size: '20m',
-                          limit: { count: 14, removeOtherLogFiles: true },
-                          mkdir: true,
-                      },
-                  },
-              }
-            : {}),
-    }
-    const app = Fastify({
-        logger,
+    const options: FastifyServerOptions = {
+        logger: createLoggerOptions(config),
         disableRequestLogging: true,
-        ...(config.HTTPS_ENABLED
-            ? {
-                  https: {
-                      cert: readFileSync(config.TLS_CERT_PATH!),
-                      key: readFileSync(config.TLS_KEY_PATH!),
-                  },
-              }
-            : {}),
-    })
+    }
+
+    if (config.HTTPS_ENABLED) {
+        options.https = {
+            cert: readFileSync(config.TLS_CERT_PATH!),
+            key: readFileSync(config.TLS_KEY_PATH!),
+        }
+    }
+
+    const app = Fastify(options)
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)
-    app.addHook('onResponse', async (request, reply) => {
-        app.log.info(
-            {
-                event: 'http.request.completed',
-                requestId: request.id,
-                method: request.method,
-                route: request.routeOptions.url ?? '<unmatched>',
-                statusCode: reply.statusCode,
-                durationMs: Math.round(reply.elapsedTime),
-            },
-            'HTTP request'
-        )
-    })
+    registerRequestLogging(app)
     if (config.CORS_ORIGINS.length) {
         await app.register(cors, { origin: config.CORS_ORIGINS, credentials: false })
     }
@@ -77,14 +48,7 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
         await app.register(swaggerUi, { routePrefix: '/docs' })
     }
     await app.register(websocket)
-    const auth =
-        config.AUTH_MODE === 'demo'
-            ? new DemoAuthService(
-                  config.AUTH_USERNAME!,
-                  config.AUTH_PASSWORD_HASH!,
-                  new FileSessionStore(config.AUTH_FILE_PATH ?? resolve(process.cwd(), 'storage', 'auth', 'sessions.json'))
-              )
-            : undefined
+    const auth = createAuthService(config)
     registerRoutes(app, config, auth, state)
     registerWebsocket(app, config, state)
     app.get('/openapi.json', { schema: { hide: true } }, async () => app.swagger())

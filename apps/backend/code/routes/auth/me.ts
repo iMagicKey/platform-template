@@ -1,20 +1,23 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { demoCookieName, type DemoAuthService } from '../../modules/auth/auth.service.js'
+import { errorResponseSchema } from '../../schemas/common.js'
+
+const meRouteSchema = {
+                tags: ['auth'],
+                summary: 'Read current development session',
+                response: {
+                    200: z.object({ user: z.object({ id: z.string() }) }),
+                    401: errorResponseSchema('UNAUTHENTICATED'),
+                    501: errorResponseSchema('AUTH_NOT_CONFIGURED'),
+                },
+            }
 
 export function registerAuthMe(app: FastifyInstance, auth: DemoAuthService | undefined): void {
     app.get(
         '/auth/me',
         {
-            schema: {
-                tags: ['auth'],
-                summary: 'Read current development session',
-                response: {
-                    200: z.object({ user: z.object({ id: z.string() }) }),
-                    401: z.object({ error: z.literal('UNAUTHENTICATED') }),
-                    501: z.object({ error: z.literal('AUTH_NOT_CONFIGURED') }),
-                },
-            },
+            schema: meRouteSchema,
         },
         async (request, reply) => {
             reply.header('Cache-Control', 'no-store')

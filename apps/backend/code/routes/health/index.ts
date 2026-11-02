@@ -3,11 +3,7 @@ import { z } from 'zod'
 import { APP_VERSION, SERVICE_NAME } from '../../consts/app.js'
 import type { BackendConfig } from '../../config.js'
 
-export function registerHealthRoute(app: FastifyInstance, config: BackendConfig): void {
-    app.get(
-        '/health',
-        {
-            schema: {
+const healthRouteSchema = {
                 hide: true,
                 response: {
                     200: z.object({
@@ -18,7 +14,13 @@ export function registerHealthRoute(app: FastifyInstance, config: BackendConfig)
                         release: z.string(),
                     }),
                 },
-            },
+            }
+
+export function registerHealthRoute(app: FastifyInstance, config: BackendConfig): void {
+    app.get(
+        '/health',
+        {
+            schema: healthRouteSchema,
         },
         async (_request, reply) => {
             reply.header('Cache-Control', 'no-store')
