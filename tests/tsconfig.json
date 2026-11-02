@@ -1,0 +1,14 @@
+{
+    "extends": "../apps/web/tsconfig.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "allowImportingTsExtensions": true
+    },
+    "include": [
+        "**/*.test.ts",
+        "**/*.test.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

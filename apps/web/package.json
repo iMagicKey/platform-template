@@ -10,7 +10,7 @@
         "dev": "next dev --hostname 127.0.0.1 --port 3000",
         "build": "pnpm --filter @platform/api-contract build && next build",
         "start": "next start --hostname 127.0.0.1 --port 3000",
-        "test": "pnpm --filter @platform/api-contract build && tsx --tsconfig tsconfig.test.json --test src/tests/*.test.ts",
+        "test": "pnpm --filter @platform/api-contract build && tsx --tsconfig ../../tests/tsconfig.json --test ../../tests/web/*.test.ts",
         "typecheck": "pnpm --filter @platform/api-contract build && tsc --noEmit",
         "lint": "eslint src"
     },
