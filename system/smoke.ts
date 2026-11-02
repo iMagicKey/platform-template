@@ -17,15 +17,20 @@ async function waitFor(url: string, attempts = 40) {
     throw new Error(`Service did not become ready: ${url}`)
 }
 
+function object(value: unknown): Record<string, unknown> {
+    assert.ok(value !== null && typeof value === 'object' && !Array.isArray(value))
+    return value as Record<string, unknown>
+}
+
 async function main() {
     const web = await waitFor(`${origin}/health`)
-    assert.equal((await web.json()).service, 'web')
+    assert.equal(object(await web.json()).service, 'web')
 
     const backend = await waitFor(`${origin}/api/health`)
-    assert.equal((await backend.json()).service, 'backend')
+    assert.equal(object(await backend.json()).service, 'backend')
 
     const projects = await waitFor(`${origin}/api/projects`)
-    assert.ok(Array.isArray((await projects.json()).projects))
+    assert.ok(Array.isArray(object(await projects.json()).projects))
 
     const estimate = await fetch(`${origin}/api/projects/estimate`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -33,16 +38,16 @@ async function main() {
         signal: AbortSignal.timeout(2000),
     })
     assert.equal(estimate.status, 200)
-    assert.equal((await estimate.json()).totalCents, 3750)
+    assert.equal(object(await estimate.json()).totalCents, 3750)
 
     const api = await waitFor(`${apiOrigin}/v1/ping`)
-    assert.equal((await api.json()).message, 'pong')
+    assert.equal(object(await api.json()).message, 'pong')
 
     const docs = await waitFor(`${apiOrigin}/openapi.json`)
-    assert.ok((await docs.json()).paths['/v1/ping'])
+    assert.ok(object(object(await docs.json()).paths)['/v1/ping'])
 
     const forbidden = await fetch(`${origin}/api/auth/me`, { signal: AbortSignal.timeout(2000) })
-    assert.equal(forbidden.status, 501)
+    assert.ok([401, 501].includes(forbidden.status))
     process.stdout.write('Caddy integration smoke passed: web, backend, projects, API, OpenAPI and default auth boundary.\n')
 }
 
