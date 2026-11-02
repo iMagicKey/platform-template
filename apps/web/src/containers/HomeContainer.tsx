@@ -1,9 +1,16 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ServiceCard } from '../components/ServiceCard'
 import { AuthPanel } from '../components/AuthPanel'
+import { CapabilityCard } from '../components/CapabilityCard'
+import { FeatureTile } from '../components/FeatureTile'
+import { PlatformHeader } from '../components/PlatformHeader'
+import { PlatformHero } from '../components/PlatformHero'
+import { PlatformIcon } from '../components/PlatformIcon'
 import { ProjectEstimator } from '../components/ProjectEstimator'
+import { QuickStartBanner } from '../components/QuickStartBanner'
+import { SectionHeading } from '../components/SectionHeading'
+import { ServiceCard } from '../components/ServiceCard'
 import { StatusIndicator } from '../components/StatusIndicator'
 import { SERVICES } from '../consts/services'
 import { APP_VERSION } from '../consts/release'
@@ -14,6 +21,22 @@ const categories: { id: ServiceCategory; label: string }[] = [
     { id: 'all', label: 'All applications' },
     { id: 'http', label: 'HTTP services' },
     { id: 'automation', label: 'Automation' },
+]
+
+const capabilities = [
+    { title: 'Authentication', description: 'Session login & current-user flow', icon: 'user' as const, href: '#auth-demo' },
+    { title: 'Project estimator', description: 'Real Fastify + Zod request', icon: 'calculator' as const, href: '#project-estimator' },
+    { title: 'Service health', description: 'Live HTTP readiness probes', icon: 'activity' as const, href: '#service-health' },
+    { title: 'API documentation', description: 'Swagger / OpenAPI reference', icon: 'file-code' as const, href: '/api/docs' },
+]
+
+const features = [
+    { title: 'Runtime Store', description: 'Typed, isolated process state', icon: 'layers' as const },
+    { title: 'Zod validation', description: 'Schemas for input and output', icon: 'shield' as const },
+    { title: 'OpenAPI', description: 'Generated API contracts', icon: 'file-code' as const },
+    { title: 'Caddy ingress', description: 'One origin for web and API', icon: 'cloud' as const },
+    { title: 'File adapter', description: 'Local JSON storage example', icon: 'database' as const },
+    { title: 'Independent apps', description: 'Separate builds and lifecycles', icon: 'boxes' as const },
 ]
 
 export function HomeContainer() {
@@ -34,196 +57,182 @@ export function HomeContainer() {
     )
 
     return (
-        <main className="min-h-screen bg-[#0b1220] text-slate-100">
-            <header className="border-b border-white/10 bg-[#10192a]">
-                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
-                    <div className="flex items-center gap-3">
-                        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-violet-500 text-xl font-black text-[#0b1220]">
-                            P
-                        </div>
-                        <div>
-                            <p className="text-base font-bold tracking-tight">
-                                Platform<span className="text-sky-400">Template</span>
-                            </p>
-                            <p className="text-xs text-slate-400">Application workspace</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <span className="rounded-full border border-white/10 px-3 py-1.5 font-mono text-xs text-slate-400">v{APP_VERSION}</span>
-                        <a
-                            href="https://github.com/iMagicKey/platform-template"
-                            className="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium transition-colors hover:border-sky-400 hover:text-sky-300"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            GitHub ↗
-                        </a>
-                    </div>
-                </div>
-            </header>
+        <div className="min-h-screen bg-[#f7faff]">
+            <PlatformHeader />
+            <main className="mx-auto max-w-7xl space-y-18 px-5 pt-7 pb-18 sm:px-8 sm:pt-9 lg:space-y-22">
+                <PlatformHero />
 
-            <div className="mx-auto max-w-7xl space-y-9 px-5 py-10 sm:px-8">
-                <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#172c47] via-[#15223a] to-[#221b3a] p-7 sm:p-10">
-                    <div className="pointer-events-none absolute -right-20 -top-24 size-80 rounded-full bg-sky-400/10 blur-3xl" />
-                    <div className="relative max-w-3xl space-y-5">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-medium text-sky-200">
-                            <span className="size-1.5 rounded-full bg-sky-400" /> WORKSPACE OVERVIEW
-                        </div>
-                        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-                            One repository.
-                            <br />
-                            <span className="text-sky-300">Independent services.</span>
-                        </h1>
-                        <p className="max-w-2xl text-base leading-relaxed text-slate-300">
-                            A practical monorepo with native Next.js, independent Fastify APIs, a scheduler and a Telegram bot. Explore the structure
-                            and try the real Zustand-powered interface below.
-                        </p>
-                        <div className="flex flex-wrap gap-3 pt-2">
-                            <StatusIndicator url="/health" label="Frontend" />
-                            <StatusIndicator url="/api/health" label="Backend via Caddy" />
-                        </div>
-                    </div>
-                </section>
+                <section id="services" aria-labelledby="services-heading" className="scroll-mt-28">
+                    <SectionHeading
+                        id="services-heading"
+                        eyebrow="THE PLATFORM"
+                        title="Everything you need to get started"
+                        description="Five independent applications with clear responsibilities, predictable conventions and room to grow."
+                        centered
+                    />
 
-                <section aria-label="Workspace statistics" className="grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-white/10 bg-[#131d2d] p-5">
-                        <p className="text-sm text-slate-400">Applications in template</p>
-                        <p className="mt-3 text-3xl font-semibold tabular-nums">{SERVICES.length}</p>
-                        <p className="mt-2 text-xs text-slate-500">Each starts and tests separately</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-[#131d2d] p-5">
-                        <p className="text-sm text-slate-400">HTTP applications</p>
-                        <p className="mt-3 text-3xl font-semibold tabular-nums">{SERVICES.filter((service) => service.category === 'http').length}</p>
-                        <p className="mt-2 text-xs text-slate-500">Native ports and optional Caddy</p>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-[#131d2d] p-5">
-                        <p className="text-sm text-slate-400">Your saved favorites</p>
-                        <p className="mt-3 text-3xl font-semibold tabular-nums">{favorites.length}</p>
-                        <p className="mt-2 text-xs text-slate-500">Local Zustand state, not persisted</p>
-                    </div>
-                </section>
-
-                <section aria-labelledby="applications-heading" className="space-y-5">
-                    <div className="flex flex-wrap items-end justify-between gap-3">
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-400">SERVICES</p>
-                            <h2 id="applications-heading" className="mt-2 text-2xl font-semibold tracking-tight">
-                                Application explorer
-                            </h2>
-                            <p className="mt-2 text-sm text-slate-400">
-                                Filters and favorites use an isolated Zustand store. Service availability is never mocked.
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => {
-                                reset()
-                                setSearch('')
-                            }}
-                            type="button"
-                            className="rounded-lg border border-white/15 px-3 py-2 text-sm text-slate-300 transition-colors hover:border-sky-400 hover:text-white"
-                        >
-                            Reset view
-                        </button>
-                    </div>
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div role="group" aria-label="Filter applications" className="flex flex-wrap gap-2">
+                    <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#e1ecfa] bg-white/75 p-3.5 sm:px-5">
+                        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter applications">
                             {categories.map((category) => (
                                 <button
                                     key={category.id}
                                     type="button"
                                     aria-pressed={filter === category.id}
                                     onClick={() => setFilter(category.id)}
-                                    className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ${filter === category.id ? 'bg-sky-400 text-slate-950' : 'border border-white/15 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+                                    className={`rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm ${
+                                        filter === category.id
+                                            ? 'bg-[#e6f2ff] text-[#0961c9] shadow-[inset_0_0_0_1px_#cce5ff]'
+                                            : 'text-[#657e9c] hover:bg-[#f1f7ff] hover:text-[#164b8b]'
+                                    }`}
                                 >
                                     {category.label}
                                 </button>
                             ))}
                         </div>
-                        <label className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 focus-within:border-sky-400">
-                            <span aria-hidden="true" className="text-slate-500">
-                                ⌕
-                            </span>
-                            <span className="sr-only">Search applications</span>
-                            <input
-                                type="search"
-                                value={search}
-                                onChange={(event) => setSearch(event.target.value)}
-                                placeholder="Search services…"
-                                className="w-44 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
-                            />
-                        </label>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <label className="flex items-center gap-2 rounded-lg border border-[#e0eaf6] bg-white px-3 py-2 focus-within:border-[#338be9]">
+                                <PlatformIcon name="search" size={16} className="text-[#9aacc4]" />
+                                <span className="sr-only">Search applications</span>
+                                <input
+                                    type="search"
+                                    value={search}
+                                    onChange={(event) => setSearch(event.target.value)}
+                                    placeholder="Search services"
+                                    className="w-33 bg-transparent text-xs text-[#23436c] outline-none placeholder:text-[#99acc1] sm:w-44"
+                                />
+                            </label>
+                            <button
+                                type="button"
+                                aria-label="Reset service filters and favorites"
+                                title="Reset view"
+                                onClick={() => {
+                                    reset()
+                                    setSearch('')
+                                }}
+                                className="inline-flex size-9 items-center justify-center rounded-lg border border-[#e0eaf6] bg-white text-[#6683a8] transition-colors hover:bg-[#eaf4ff] hover:text-[#0966d8]"
+                            >
+                                <PlatformIcon name="reset" size={17} />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mb-4 flex flex-wrap justify-between gap-2 px-1 text-xs text-[#7a8da7]" aria-live="polite">
+                        <span>Showing {visible.length} of {SERVICES.length} applications</span>
+                        <span>{favorites.length} favorites · Stored in scoped Zustand state</span>
                     </div>
                     {visible.length ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {visible.map((service) => (
                                 <ServiceCard key={service.id} service={service} />
                             ))}
+                            {filter === 'all' && !search.trim() && (
+                                <a
+                                    href="https://github.com/iMagicKey/platform-template/blob/main/docs/ARCHITECTURE.md"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group flex min-h-55 flex-col items-start rounded-2xl border border-dashed border-[#b8d6f7] bg-[#eaf4ff]/55 p-6 transition-colors hover:bg-[#deefff]"
+                                >
+                                    <span className="flex size-12 items-center justify-center rounded-xl bg-white text-[#1973d3]">
+                                        <PlatformIcon name="shield" size={24} />
+                                    </span>
+                                    <span className="mt-4 font-bold text-[#17355f]">Shared standards</span>
+                                    <span className="mt-2 text-sm leading-6 text-[#7085a0]">Architecture, naming rules and clear conventions for every service.</span>
+                                    <span className="mt-auto flex items-center gap-2 pt-4 text-xs font-semibold text-[#116ad3]">
+                                        Read architecture <PlatformIcon name="arrow-up-right" size={14} />
+                                    </span>
+                                </a>
+                            )}
                         </div>
                     ) : (
-                        <div className="rounded-2xl border border-dashed border-white/20 p-10 text-center text-slate-400">
-                            No matching applications. Try another filter.
+                        <div className="surface-card p-10 text-center">
+                            <PlatformIcon name="search" size={27} className="mx-auto text-[#7eaddb]" />
+                            <p className="mt-3 font-semibold text-[#284c7a]">No matching applications</p>
+                            <p className="mt-1 text-sm text-[#7a8da7]">Try another search or category.</p>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setFilter('all')
+                                    setSearch('')
+                                }}
+                                className="mt-4 text-sm font-semibold text-[#116cdb] hover:underline"
+                            >
+                                Clear filters
+                            </button>
                         </div>
                     )}
                 </section>
 
-                <section className="grid gap-5 lg:grid-cols-2" aria-label="Working fullstack examples">
-                    <AuthPanel />
-                    <ProjectEstimator />
+                <section id="demo" aria-labelledby="demo-heading" className="scroll-mt-28">
+                    <SectionHeading
+                        id="demo-heading"
+                        eyebrow="LIVE CAPABILITIES"
+                        title="Explore the platform in action"
+                        description="Real interactions with the template's backend. Demo authentication is optional; nothing is presented as online without a check."
+                        centered
+                    />
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        {capabilities.map((capability) => (
+                            <CapabilityCard key={capability.title} {...capability} />
+                        ))}
+                    </div>
+
+                    <div id="service-health" className="surface-card mt-6 flex scroll-mt-28 flex-wrap items-center justify-between gap-4 p-5 sm:px-6">
+                        <div className="flex items-center gap-3">
+                            <span className="flex size-11 items-center justify-center rounded-xl bg-[#edf6ff] text-[#1473dd]">
+                                <PlatformIcon name="activity" size={22} />
+                            </span>
+                            <div>
+                                <h3 className="text-sm font-bold text-[#1d395e]">Live service checks</h3>
+                                <p className="mt-0.5 text-xs text-[#8192a9]">Probes run from your browser. Backend requires Caddy on :8080.</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2.5">
+                            <StatusIndicator url="/health" label="Web" />
+                            <StatusIndicator url="/api/health" label="Backend" />
+                        </div>
+                    </div>
+
+                    <div className="mt-6 grid items-stretch gap-5 lg:grid-cols-2">
+                        <div id="auth-demo" className="scroll-mt-28">
+                            <AuthPanel />
+                        </div>
+                        <div id="project-estimator" className="scroll-mt-28">
+                            <ProjectEstimator />
+                        </div>
+                    </div>
                 </section>
 
-                <section className="grid gap-5 lg:grid-cols-2" aria-label="Useful endpoints and local development">
-                    <div className="rounded-2xl border border-white/10 bg-[#131d2d] p-6">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-300">ENDPOINTS</p>
-                        <h2 className="mt-2 text-xl font-semibold">Explore the running services</h2>
-                        <div className="mt-5 space-y-3">
-                            {[
-                                { path: '/health', note: 'Next.js release and readiness' },
-                                { path: '/api/health', note: 'Fastify backend through Caddy' },
-                                { path: '/api/docs', note: 'Swagger UI through Caddy' },
-                            ].map((endpoint) => (
-                                <a
-                                    key={endpoint.path}
-                                    href={endpoint.path}
-                                    className="flex items-center justify-between gap-4 rounded-xl border border-white/10 p-3 transition-colors hover:border-sky-400/40 hover:bg-white/5"
-                                >
-                                    <div>
-                                        <p className="font-mono text-sm text-sky-300">{endpoint.path}</p>
-                                        <p className="mt-1 text-xs text-slate-400">{endpoint.note}</p>
-                                    </div>
-                                    <span aria-hidden="true" className="text-slate-500">
-                                        ↗
-                                    </span>
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="rounded-2xl border border-white/10 bg-[#131d2d] p-6">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">GET STARTED</p>
-                        <h2 className="mt-2 text-xl font-semibold">Run each app separately</h2>
-                        <div className="mt-5 rounded-xl border border-white/10 bg-[#0b1220] p-4 font-mono text-sm leading-8 text-slate-300">
-                            <p>
-                                <span className="text-slate-500">$</span> pnpm dev:web
-                            </p>
-                            <p>
-                                <span className="text-slate-500">$</span> pnpm dev:backend
-                            </p>
-                            <p>
-                                <span className="text-slate-500">$</span> pnpm dev:api
-                            </p>
-                            <p>
-                                <span className="text-slate-500">$</span> pnpm dev:worker
-                            </p>
-                        </div>
-                        <p className="mt-4 text-xs leading-relaxed text-slate-400">
-                            The bot is disabled by default; backend authentication is an explicit integration placeholder. This dashboard does not
-                            create accounts or credentials.
-                        </p>
+                <section id="architecture" aria-labelledby="architecture-heading" className="scroll-mt-28">
+                    <SectionHeading
+                        id="architecture-heading"
+                        eyebrow="ARCHITECTURE"
+                        title="Thoughtful foundations, ready to extend"
+                        description="Clear boundaries, useful examples and established tools — without an unnecessary framework on top."
+                        centered
+                    />
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {features.map((feature) => (
+                            <FeatureTile key={feature.title} {...feature} />
+                        ))}
                     </div>
                 </section>
-            </div>
-            <footer className="border-t border-white/10 py-7 text-center text-xs text-slate-500">
-                Universal Platform Template · An extendable monorepo foundation
+
+                <QuickStartBanner />
+            </main>
+            <footer className="border-t border-[#e0eaf8] bg-white/80">
+                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-7 text-xs text-[#7488a6] sm:px-8">
+                    <span>© iMagic · Platform Template · v{APP_VERSION}</span>
+                    <div className="flex flex-wrap items-center gap-5">
+                        <a href="#overview" className="hover:text-[#0866df]">Back to top</a>
+                        <a href="https://github.com/iMagicKey/platform-template" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-[#0866df]">
+                            <PlatformIcon name="github" size={14} /> GitHub
+                        </a>
+                        <a href="https://github.com/iMagicKey/platform-template/blob/main/docs/ARCHITECTURE.md" target="_blank" rel="noopener noreferrer" className="hover:text-[#0866df]">
+                            Architecture
+                        </a>
+                    </div>
+                </div>
             </footer>
-        </main>
+        </div>
     )
 }

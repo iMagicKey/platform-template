@@ -9,15 +9,11 @@ export function UpdateBanner({ release }: { release: string }) {
         <aside
             role="status"
             aria-live="polite"
-            className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-2xl items-center justify-between gap-4 rounded-xl border border-sky-300 bg-slate-950 p-4 text-white shadow-2xl"
+            className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-4 rounded-xl border border-[#b2d7ff] bg-white p-4 text-sm text-[#174274] shadow-[0_18px_55px_rgba(19,78,161,0.22)]"
         >
-            <span>Доступна новая версия приложения.</span>
-            <button
-                type="button"
-                className="rounded-md bg-sky-300 px-4 py-2 font-medium text-slate-950 hover:bg-sky-200"
-                onClick={() => window.location.reload()}
-            >
-                Обновить
+            <span>A new version of this app is available.</span>
+            <button type="button" className="action-primary px-4 py-2" onClick={() => window.location.reload()}>
+                Refresh
             </button>
         </aside>
     )

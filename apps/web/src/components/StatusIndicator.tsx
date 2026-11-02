@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 type CheckState = 'checking' | 'online' | 'offline'
 
-/** Real probe; failure is shown as offline rather than an invented green indicator. */
+/** Real probe; failures are shown as unavailable, never as invented green status. */
 export function StatusIndicator({ url, label }: { url: string; label: string }) {
     const [status, setStatus] = useState<CheckState>('checking')
 
@@ -26,12 +26,9 @@ export function StatusIndicator({ url, label }: { url: string; label: string }) 
         }
     }, [url])
 
-    const color = status === 'online' ? 'bg-emerald-400' : status === 'offline' ? 'bg-rose-400' : 'bg-amber-400'
+    const color = status === 'online' ? 'bg-[#16ba82]' : status === 'offline' ? 'bg-[#ed6277]' : 'bg-[#f3b84f]'
     return (
-        <span
-            aria-live="polite"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
-        >
+        <span aria-live="polite" className="inline-flex items-center gap-2 rounded-full border border-[#e0ebf7] bg-[#f9fbff] px-3 py-2 text-xs font-medium text-[#536b8d]">
             <span className={`size-2 rounded-full ${color}`} />
             {label}: {status === 'checking' ? 'Checking' : status === 'online' ? 'Reachable' : 'Unavailable'}
         </span>
