@@ -1,4 +1,4 @@
-import type { FastifyInstance } from 'fastify'
+import type { FastifyBaseLogger, FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
 import { sendError, type ApiIssue } from '@platform/api-contract'
 
 function validationIssues(value: unknown): ApiIssue[] {
@@ -43,24 +43,34 @@ const clientErrors: Record<number, { code: string; message: string }> = {
     429: { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' },
 }
 
+function sendStatusError(log: FastifyBaseLogger, error: unknown, request: FastifyRequest, reply: FastifyReply) {
+    const { statusCode } = error as { statusCode?: number }
+    const status = statusCode && statusCode >= 400 && statusCode < 600 ? statusCode : 500
+    if (status >= 500) {
+        log.error({ err: error, requestId: request.id }, 'Unhandled HTTP error')
+        return reply.code(status).send(sendError('INTERNAL_SERVER_ERROR', 'An unexpected server error occurred'))
+    }
+
+    const clientError = clientErrors[status] ?? { code: 'REQUEST_FAILED', message: 'Request failed' }
+    return reply.code(status).send(sendError(clientError.code, clientError.message))
+}
+
+/** Router failures such as malformed URL encoding bypass setErrorHandler and reflect the raw path by default. */
+export function handleFrameworkError(error: FastifyError, request: FastifyRequest, reply: FastifyReply): void {
+    void sendStatusError(request.log, error, request, reply)
+}
+
 export function registerErrorHandlers(app: FastifyInstance): void {
     app.setNotFoundHandler((_request, reply) => {
         return reply.code(404).send(sendError('NOT_FOUND', 'Route not found'))
     })
 
     app.setErrorHandler((error, request, reply) => {
-        const failure = error as { validation?: unknown; statusCode?: number }
+        const failure = error as { validation?: unknown }
         if (failure.validation) {
             return reply.code(400).send(sendError('VALIDATION_ERROR', 'Request validation failed', validationIssues(failure.validation)))
         }
 
-        const status = failure.statusCode && failure.statusCode >= 400 && failure.statusCode < 600 ? failure.statusCode : 500
-        if (status >= 500) {
-            app.log.error({ err: error, requestId: request.id }, 'Unhandled HTTP error')
-            return reply.code(status).send(sendError('INTERNAL_SERVER_ERROR', 'An unexpected server error occurred'))
-        }
-
-        const clientError = clientErrors[status] ?? { code: 'REQUEST_FAILED', message: 'Request failed' }
-        return reply.code(status).send(sendError(clientError.code, clientError.message))
+        return sendStatusError(app.log, error, request, reply)
     })
 }

@@ -6,6 +6,19 @@ import { PlatformHeader } from '../components/PlatformHeader'
 import { PlatformHero } from '../components/PlatformHero'
 import { CapabilityCard } from '../components/CapabilityCard'
 import { FeatureTile } from '../components/FeatureTile'
+import { HomeContainer } from '../containers/HomeContainer'
+import { DashboardStoreProvider } from '../providers/DashboardStoreProvider'
+
+test('dashboard summary uses the singular for the default single favorite', () => {
+    const markup = renderToStaticMarkup(createElement(DashboardStoreProvider, { children: createElement(HomeContainer) }))
+    assert.match(markup, /1 favorite · Stored/)
+})
+
+test('platform hero background uses a Tailwind 4 gradient utility', () => {
+    const markup = renderToStaticMarkup(createElement(PlatformHero))
+    assert.match(markup, /\bbg-linear-115\b/)
+    assert.doesNotMatch(markup, /bg-gradient-to-\[/)
+})
 
 test('platform header has a home landmark, in-page navigation and documentation', () => {
     const markup = renderToStaticMarkup(createElement(PlatformHeader))

@@ -21,6 +21,17 @@ test('public API distinguishes raw health and enveloped JSON routes', async () =
     }
 })
 
+test('malformed URL encoding uses the envelope without reflecting the path', async () => {
+    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
+    try {
+        const response = await app.inject('/%E0%A4%A')
+        assert.equal(response.statusCode, 400)
+        assert.deepEqual(response.json(), { data: null, error: { code: 'BAD_REQUEST', message: 'Invalid request' } })
+    } finally {
+        await app.close()
+    }
+})
+
 test('unexpected exceptions are sanitized in independent API', async () => {
     const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
     app.get('/__test/error', async () => {

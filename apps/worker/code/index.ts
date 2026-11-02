@@ -30,6 +30,7 @@ let closing = false
 async function shutdown(signal: string) {
     if (closing) return
     closing = true
+    // Stays armed after the drain: the library reports a timed-out task as idle while its promise may still hold Node open.
     const timeout = setTimeout(() => {
         logger.fatal({ event: 'service.shutdown.timeout' }, 'Worker shutdown deadline exceeded')
         process.exit(1)
@@ -40,7 +41,6 @@ async function shutdown(signal: string) {
     const drained = await waitForTaskDrain(() => Object.values(scheduler.getStatus()).some((task) => task.inProcess))
     if (!drained) logger.warn('Active scheduler tasks exceeded shutdown deadline')
     logger.flush()
-    clearTimeout(timeout)
     // Setting exitCode alone is not sufficient: the unresolved task may keep Node alive.
     if (!drained) process.exit(1)
 }

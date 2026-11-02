@@ -61,6 +61,17 @@ test('malformed JSON, missing routes and unexpected exceptions use the same enve
     }
 })
 
+test('malformed URL encoding uses the envelope without reflecting the path', async () => {
+    const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
+    try {
+        const response = await app.inject('/%E0%A4%A')
+        assert.equal(response.statusCode, 400)
+        assert.deepEqual(response.json(), { data: null, error: { code: 'BAD_REQUEST', message: 'Invalid request' } })
+    } finally {
+        await app.close()
+    }
+})
+
 test('Fastify rate limits use RATE_LIMIT_EXCEEDED with status 429', async () => {
     const app = await buildApp(readConfig({ NODE_ENV: 'test', DOCS_ENABLED: 'false' }))
     try {

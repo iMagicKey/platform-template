@@ -8,15 +8,17 @@ async function shutdown(signal: string) {
     if (closing) return
     closing = true
     app.log.info({ event: 'service.shutdown', signal }, 'Stopping API')
-    const timer = setTimeout(() => process.exit(1), 10_000)
-    timer.unref()
+    // Stays armed after close: it cannot delay a clean exit (unref) but bounds any handle that outlives close.
+    const deadline = setTimeout(() => {
+        app.log.fatal('Graceful shutdown timed out')
+        process.exit(1)
+    }, 10_000)
+    deadline.unref()
     try {
         await app.close()
     } catch (error) {
         app.log.error({ err: error }, 'Shutdown failed')
         process.exitCode = 1
-    } finally {
-        clearTimeout(timer)
     }
 }
 process.once('SIGINT', () => {

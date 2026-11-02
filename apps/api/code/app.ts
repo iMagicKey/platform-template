@@ -8,13 +8,14 @@ import { registerRoutes } from './routes/index.js'
 import { APP_VERSION } from './consts/app.js'
 import { createLoggerOptions } from './logging.js'
 import { registerRequestLogging } from './plugins/request-logging.js'
-import { registerErrorHandlers } from './plugins/error-handler.js'
+import { handleFrameworkError, registerErrorHandlers } from './plugins/error-handler.js'
 
 export async function buildApp(config: ApiConfig = readConfig()) {
     const app = Fastify({
         logger: createLoggerOptions(config),
         logController: new LogController({ disableRequestLogging: true }),
         trustProxy: '127.0.0.1',
+        frameworkErrors: handleFrameworkError,
     })
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)

@@ -1,7 +1,7 @@
 {
     "name": "@platform/web",
     "private": true,
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "engines": {
         "node": ">=26 <27"
@@ -16,16 +16,16 @@
     },
     "dependencies": {
         "@platform/api-contract": "workspace:*",
-        "next": "^16.4.3",
-        "react": "^19.2.0",
-        "react-dom": "^19.2.0",
-        "zustand": "^5.0.8"
+        "next": "^16.4.4",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "zustand": "^5.0.16"
     },
     "devDependencies": {
-        "@tailwindcss/postcss": "^4.1.0",
-        "@types/react": "^19.2.0",
-        "@types/react-dom": "^19.2.0",
-        "tailwindcss": "^4.1.0",
-        "postcss": "^8.5.0"
+        "@tailwindcss/postcss": "^4.3.3",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "tailwindcss": "^4.3.3",
+        "postcss": "^8.5.32"
     }
 }

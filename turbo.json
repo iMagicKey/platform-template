@@ -5,6 +5,11 @@
             "dependsOn": ["^build"],
             "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
         },
+        "@platform/web#build": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*"],
+            "outputs": [".next/**", "!.next/cache/**"]
+        },
         "typecheck": {
             "dependsOn": ["^build"],
             "outputs": []

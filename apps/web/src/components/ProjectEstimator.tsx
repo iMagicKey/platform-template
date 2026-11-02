@@ -5,8 +5,9 @@ import { estimateProjectCost, type Estimate } from '../libs/projectsClient'
 import { PlatformIcon } from './PlatformIcon'
 
 export function ProjectEstimator() {
-    const [hours, setHours] = useState(8)
-    const [rate, setRate] = useState(100)
+    // Raw input text: coercing on each keystroke turns a cleared field into 0 and then "012".
+    const [hours, setHours] = useState('8')
+    const [rate, setRate] = useState('100')
     const [estimate, setEstimate] = useState<Estimate | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [busy, setBusy] = useState(false)
@@ -17,7 +18,7 @@ export function ProjectEstimator() {
         setError(null)
         setEstimate(null)
         try {
-            setEstimate(await estimateProjectCost(hours, Math.round(rate * 100)))
+            setEstimate(await estimateProjectCost(Number(hours), Math.round(Number(rate) * 100)))
         } catch (cause) {
             setError(cause instanceof Error ? cause.message : 'Unable to estimate')
         } finally {
@@ -52,7 +53,7 @@ export function ProjectEstimator() {
                             step={1}
                             required
                             value={hours}
-                            onChange={(event) => setHours(Number(event.target.value))}
+                            onChange={(event) => setHours(event.target.value)}
                             className="form-control"
                         />
                     </label>
@@ -65,7 +66,7 @@ export function ProjectEstimator() {
                             step={0.01}
                             required
                             value={rate}
-                            onChange={(event) => setRate(Number(event.target.value))}
+                            onChange={(event) => setRate(event.target.value)}
                             className="form-control"
                         />
                     </label>
@@ -78,7 +79,9 @@ export function ProjectEstimator() {
                     <div role="status" className="mt-5 rounded-xl border border-[#c6eadd] bg-[#f1fbf6] p-4">
                         <p className="text-xs font-medium text-[#547b6a]">Estimated total · demo currency units</p>
                         <p className="mt-1 text-2xl font-bold tracking-tight text-[#177c55]">{(estimate.totalCents / 100).toFixed(2)}</p>
-                        <p className="mt-1 text-xs text-[#5e907c]">{estimate.hours} hours · integer-cent backend calculation</p>
+                        <p className="mt-1 text-xs text-[#5e907c]">
+                            {estimate.hours} {estimate.hours === 1 ? 'hour' : 'hours'} · integer-cent backend calculation
+                        </p>
                     </div>
                 )}
                 {error && (

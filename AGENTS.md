@@ -3,6 +3,8 @@
 Read **docs/ARCHITECTURE.md** before editing code. It is the single source of truth for the semantics of directories, naming, URLs, data ownership, security and deployment; do not copy its tables into local documents.
 
 - Read the target application's `AGENTS.md` for the _actual_ routes, modules, env requirements and tests.
+- **Do not expand task scope without explicit owner confirmation.** Complete the authorized work and its necessary validation; report additional findings separately and obtain confirmation before implementing unrelated fixes, improvements, refactors or deployment work. Acknowledging findings is not authorization to implement them.
+- Write all prompts intended for other agents in English, regardless of the conversation language.
 - **Do not change approved architecture without explicit prior owner consent.** Present the existing rule, proposed change, affected files, migration, risks and checks; await approval for the precise scope before editing. If rules conflict, ask rather than improvise. Make approved structural changes in a separate branch/PR, and never merge or deploy without separate owner approval. See `docs/ARCHITECTURE.md`.
 - Place files according to architecture-owned paths, not arbitrary folder names. Next.js components/containers/providers and ORM model files are PascalCase; hooks/stores camelCase; routes lowercase/kebab-case; SQL identifiers snake_case.
 - Every Fastify HTTP app has one central `code/routes/index.ts`. A nested route `index.ts` is its URL endpoint, never a nested registry.

@@ -120,7 +120,9 @@ export function HomeContainer() {
                         <span>
                             Showing {visible.length} of {SERVICES.length} applications
                         </span>
-                        <span>{favorites.length} favorites · Stored in scoped Zustand state</span>
+                        <span>
+                            {favorites.length} {favorites.length === 1 ? 'favorite' : 'favorites'} · Stored in scoped Zustand state
+                        </span>
                     </div>
                     {visible.length ? (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

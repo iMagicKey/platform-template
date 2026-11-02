@@ -14,7 +14,7 @@ import { registerWebsocket } from './websocket/index.js'
 import { createAuthService } from './modules/auth/auth.factory.js'
 import { createLoggerOptions } from './logging.js'
 import { registerRequestLogging } from './plugins/request-logging.js'
-import { registerErrorHandlers } from './plugins/error-handler.js'
+import { handleFrameworkError, registerErrorHandlers } from './plugins/error-handler.js'
 import { createStore, type RuntimeStore } from './store.js'
 import { APP_VERSION } from './consts/app.js'
 
@@ -24,6 +24,7 @@ export async function buildApp(config: BackendConfig = readConfig(), state: Runt
         logger: createLoggerOptions(config),
         logController: new LogController({ disableRequestLogging: true }),
         trustProxy: '127.0.0.1',
+        frameworkErrors: handleFrameworkError,
     }
 
     if (config.HTTPS_ENABLED) {

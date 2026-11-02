@@ -107,7 +107,7 @@ export function AuthPanel() {
                         </button>
                     </form>
                 )}
-                {auth.error && (
+                {auth.error && auth.status !== 'unavailable' && (
                     <p role="alert" className="mt-4 rounded-lg bg-[#fff3f2] px-3 py-2.5 text-sm text-[#a9404e]">
                         {auth.error}
                     </p>

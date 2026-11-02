@@ -15,6 +15,7 @@ export function validateCommitSubject(message: string): string[] {
     if (!summary || !/^[a-z0-9]/.test(summary)) errors.push('Summary must begin with a lowercase English word or a digit')
     if (summary && /[.!]$/.test(summary)) errors.push('Summary must not end with punctuation')
     if (summary && /\s{2,}/.test(summary)) errors.push('Summary must use single spaces')
+    if (summary && /[\p{Extended_Pictographic}\p{Emoji_Presentation}\u20E3]/u.test(summary)) errors.push('Summary must not contain emoji')
     return errors
 }
 

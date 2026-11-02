@@ -7,7 +7,7 @@ export function PlatformHero() {
         <section
             id="overview"
             aria-labelledby="hero-heading"
-            className="relative isolate overflow-hidden rounded-[28px] border border-[#dceafe] bg-gradient-to-[115deg] from-[#f8fbff] via-[#e9f3ff] to-[#cfe5ff] shadow-[0_22px_70px_-40px_rgba(34,99,183,0.32)]"
+            className="relative isolate overflow-hidden rounded-[28px] border border-[#dceafe] bg-linear-115 from-[#f8fbff] via-[#e9f3ff] to-[#cfe5ff] shadow-[0_22px_70px_-40px_rgba(34,99,183,0.32)]"
         >
             <div
                 aria-hidden="true"
