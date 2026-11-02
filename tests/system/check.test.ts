@@ -25,12 +25,35 @@ test('architecture checker catches filename, route and cross-boundary violations
         add('apps/api/code/routes/index.ts', '// registry')
         add('apps/backend/code/routes/a.ts', "app.get('/a', () => {})")
         assert.equal(spawnSync(process.execPath, [checker, root], { encoding: 'utf8' }).status, 0)
-        add('tests/backend/valid.test.ts', 'export {}')
-        add('apps/backend/tests/misplaced.test.ts', 'export {}')
-        const misplaced = spawnSync(process.execPath, [checker, root], { encoding: 'utf8' })
-        assert.equal(misplaced.status, 1)
-        assert.match(misplaced.stderr, /Test files must live under root tests\//)
-        rmSync(join(root, 'apps/backend/tests'), { recursive: true, force: true })
+        add('packages/api-contract/package.json', JSON.stringify({ name: '@platform/api-contract' }))
+        for (const path of [
+            'apps/api/tests/valid.test.ts',
+            'apps/backend/tests/valid.test.ts',
+            'apps/web/src/tests/valid.test.ts',
+            'tests/system/valid.test.ts',
+            'packages/api-contract/tests/valid.test.ts',
+            'tests/deploy/valid.test.ts',
+        ]) add(path, 'export {}')
+        assert.equal(spawnSync(process.execPath, [checker, root], { encoding: 'utf8' }).status, 0)
+
+        for (const path of [
+            'tests/backend/misplaced.test.ts',
+            'tests/backend/helper.ts',
+            'apps/backend/code/misplaced.test.ts',
+            'apps/web/tests/misplaced.test.ts',
+            'tests/api-contract/misplaced.test.ts',
+            'tests/api-contract/helper.ts',
+            'packages/api-contract/code/misplaced.test.ts',
+            'packages/api-contract/src/tests/misplaced.test.ts',
+            'system/misplaced.test.ts',
+            'deploy/misplaced.test.ts',
+        ]) {
+            add(path, 'export {}')
+            const misplaced = spawnSync(process.execPath, [checker, root], { encoding: 'utf8' })
+            assert.equal(misplaced.status, 1, path)
+            assert.match(misplaced.stderr, /Misplaced test source:/, path)
+            rmSync(join(root, path))
+        }
         add('apps/web/src/components/lower_case_component.tsx', 'export const x = 1')
         add('apps/web/src/hooks/notAHook.ts', 'export const x = 1')
         add('apps/backend/code/routes/BadSegment/Bad_Route.ts', 'export {}')
