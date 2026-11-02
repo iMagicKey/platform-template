@@ -1,0 +1,31 @@
+import { resolve } from 'node:path'
+import pino from 'pino'
+import { readConfig } from './config.js'
+import { createBot } from './bot.js'
+
+const config = readConfig()
+const logger = pino({
+    level: config.LOG_LEVEL,
+    base: { service: 'bot', environment: config.NODE_ENV, release: config.APP_RELEASE },
+    ...(config.LOG_OUTPUT === 'file' ? {
+        transport: { target: 'pino-roll', options: { file: resolve(process.cwd(), 'logs', 'app'), frequency: 'daily', mkdir: true } },
+    } : {}),
+})
+if (!config.BOT_ENABLED) {
+    logger.info({ event: 'service.disabled' }, 'Bot is disabled (BOT_ENABLED=false)')
+} else {
+    const bot = createBot(config.BOT_TOKEN, logger)
+    let closing = false
+    async function shutdown(signal: string) {
+        if (closing) return
+        closing = true
+        logger.info({ event: 'service.shutdown', signal }, 'Stopping Telegram bot')
+        try { await bot.stop() }
+        catch (error) { logger.error({ err: error }, 'Telegram shutdown error') }
+        logger.flush()
+    }
+    process.once('SIGINT', () => { void shutdown('SIGINT') })
+    process.once('SIGTERM', () => { void shutdown('SIGTERM') })
+    try { await bot.start({ onStart: () => logger.info({ event: 'service.started' }, 'Telegram bot started') }) }
+    catch (error) { logger.fatal({ err: error }, 'Telegram bot failed'); process.exitCode = 1 }
+}

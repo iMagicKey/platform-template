@@ -21,7 +21,8 @@
     "system:certs": "node system/certs/index.mjs",
     "system:service": "node system/service/index.mjs",
     "system:logs": "node system/logs/index.mjs",
-    "dev:worker": "pnpm --filter @platform/worker dev"
+    "dev:worker": "pnpm --filter @platform/worker dev",
+    "dev:bot": "pnpm --filter @platform/bot dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

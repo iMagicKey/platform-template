@@ -7,7 +7,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) for the architecture contract and [AGENT
 ## Quick start
 
 ```bash
-corepack enable
+npm install -g pnpm@10.21.0
 pnpm install
 pnpm system:init
 pnpm dev
@@ -19,6 +19,8 @@ Development services: native Next.js `http://127.0.0.1:3000`, backend `http://12
 pnpm dev:web
 pnpm dev:backend
 pnpm dev:api
+pnpm dev:worker
+pnpm dev:bot
 pnpm --filter @platform/backend test
 pnpm check:architecture
 pnpm typecheck
@@ -62,5 +64,5 @@ The systemd installer generates a reviewable unit without requiring root; `--app
 
 - `apps/*/AGENTS.md` documents only app-specific facts. No Markdown in backend `code/`.
 - Per-app `.env.example` is committed; `.env` and `runtime/` are not.
-- Scheduler and grammY are intentionally not bootstrapped until concrete package API and token/integration requirements are verified.
+- Worker uses the published imagic-scheduler npm package; bot uses grammY but remains disabled without BOT_ENABLED and BOT_TOKEN.
 - Database adapter is an unconnected example; no mandatory DB or migrations.

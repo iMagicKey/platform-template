@@ -13,6 +13,8 @@ if (!existsSync(path)) throw new Error('Unknown app')
 const pkg = JSON.parse(readFileSync(path, 'utf8'))
 if (!pkg.scripts?.start || !pkg.scripts?.build) throw new Error('App must declare build and start scripts')
 
+const pnpmExecutable = execFileSync('which', ['pnpm'], { encoding: 'utf8' }).trim()
+if (!pnpmExecutable.startsWith('/')) throw new Error('Could not locate absolute pnpm executable')
 const unitName = `platform-${name}.service`
 const unit = `[Unit]
 Description=Platform ${name}
@@ -20,9 +22,9 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=${join(root, 'apps', name)}
+WorkingDirectory=${root}
 Environment=NODE_ENV=production
-ExecStart=${process.execPath} ${join(root, 'system', 'service', 'runner.mjs')} ${name}
+ExecStart=${pnpmExecutable} --filter @platform/${name} start
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=15
