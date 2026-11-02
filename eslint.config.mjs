@@ -19,5 +19,17 @@ export default tseslint.config(
             'promise/always-return': 'off',
         },
     },
+    {
+        files: ['**/*.{ts,tsx}'],
+        rules: {
+            // Respect framework callbacks and React PascalCase components.
+            '@typescript-eslint/naming-convention': [
+                'error',
+                { selector: 'variable', format: ['camelCase', 'PascalCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+                { selector: 'function', format: ['camelCase', 'PascalCase'] },
+                { selector: 'typeLike', format: ['PascalCase'] },
+            ],
+        },
+    },
     prettier
 )
