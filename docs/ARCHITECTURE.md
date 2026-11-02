@@ -75,7 +75,6 @@ A directory is a _responsibility boundary_, not a catch-all. Prefer the smallest
 
 Future Fastify apps must follow the same `code/` conventions regardless of their name. Worker/bot apps do not need an HTTP route registry if they do not serve HTTP.
 
-
 ## Server Runtime Store — process-local shared state
 
 Each server application **may** have a small `code/store.ts` when multiple modules need access to the same mutable operational data. This is a plain typed object, **not** a class or a required library. It is distinct from client-side Zustand in Next.js.
