@@ -15,10 +15,13 @@ function validationIssues(value: unknown): ApiIssue[] {
         const pointer = item.instancePath ?? ''
         const path = Array.isArray(zodIssue?.path)
             ? zodIssue.path
-            : pointer.split('/').filter(Boolean).map((part) => {
-                  const decoded = part.replaceAll('~1', '/').replaceAll('~0', '~')
-                  return /^(0|[1-9][0-9]*)$/.test(decoded) ? Number(decoded) : decoded
-              })
+            : pointer
+                  .split('/')
+                  .filter(Boolean)
+                  .map((part) => {
+                      const decoded = part.replaceAll('~1', '/').replaceAll('~0', '~')
+                      return /^(0|[1-9][0-9]*)$/.test(decoded) ? Number(decoded) : decoded
+                  })
 
         return {
             path,

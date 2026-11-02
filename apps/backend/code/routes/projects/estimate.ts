@@ -10,7 +10,10 @@ const estimateRouteSchema = {
     tags: ['projects'],
     summary: 'Estimate project cost in integer cents',
     body: estimateRequestSchema,
-    response: { 200: dataResponseSchema(estimateResponseSchema), 400: z.union([errorResponseSchema('VALIDATION_ERROR'), errorResponseSchema('BAD_REQUEST')]) },
+    response: {
+        200: dataResponseSchema(estimateResponseSchema),
+        400: z.union([errorResponseSchema('VALIDATION_ERROR'), errorResponseSchema('BAD_REQUEST')]),
+    },
 }
 
 export function registerProjectEstimate(app: FastifyInstance, state: RuntimeStore): void {

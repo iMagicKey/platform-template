@@ -6,11 +6,6 @@
         "declaration": true,
         "tsBuildInfoFile": "dist/.tsbuildinfo"
     },
-    "include": [
-        "code/**/*.ts"
-    ],
-    "exclude": [
-        "dist",
-        "tests"
-    ]
+    "include": ["code/**/*.ts"],
+    "exclude": ["dist", "tests"]
 }

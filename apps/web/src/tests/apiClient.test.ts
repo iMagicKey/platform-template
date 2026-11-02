@@ -15,6 +15,9 @@ test('web client uses API error codes and rejects malformed envelopes', async ()
         (error: unknown) => error instanceof ApiRequestError && error.status === 401 && error.code === 'UNAUTHENTICATED'
     )
     await assert.rejects(() => readApiResponse(Response.json({ user: 1 })), /Invalid API response envelope/)
-    await assert.rejects(() => readApiResponse(Response.json({ data: 'secret', error: { code: 'FAIL', message: 'failed' } }, { status: 400 })), /Invalid API response envelope/)
+    await assert.rejects(
+        () => readApiResponse(Response.json({ data: 'secret', error: { code: 'FAIL', message: 'failed' } }, { status: 400 })),
+        /Invalid API response envelope/
+    )
     await assert.rejects(() => readApiResponse(new Response('<html>Proxy error</html>', { status: 502 })), /invalid JSON response/)
 })
