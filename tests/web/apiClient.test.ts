@@ -36,7 +36,7 @@ test('frontend receives every structured validation issue', async () => {
 })
 
 test('requestApi does not send JSON content type on bodyless logout', async () => {
-    const { requestApi } = await import('../libs/apiClient')
+    const { requestApi } = await import('../../apps/web/src/libs/apiClient')
     const originalFetch = globalThis.fetch
     let sentHeaders: Headers | undefined
     globalThis.fetch = async (_url, init) => {

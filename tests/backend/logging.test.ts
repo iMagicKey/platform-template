@@ -28,8 +28,10 @@ test('backend uses structured stdout logging by default with sensitive headers r
 
 test('backend file logging adds the unchanged daily rotating pino-roll transport', () => {
     const logger = createLoggerOptions(readConfig({ NODE_ENV: 'test', LOG_OUTPUT: 'file' }))
-    assert.equal(logger.transport?.target, 'pino-roll')
-    assert.equal(logger.transport?.options?.frequency, 'daily')
-    assert.equal(logger.transport?.options?.size, '20m')
-    assert.deepEqual(logger.transport?.options?.limit, { count: 14, removeOtherLogFiles: true })
+    const transport = logger.transport
+    assert.ok(transport && 'target' in transport)
+    assert.equal(transport.target, 'pino-roll')
+    assert.equal(transport.options?.frequency, 'daily')
+    assert.equal(transport.options?.size, '20m')
+    assert.deepEqual(transport.options?.limit, { count: 14, removeOtherLogFiles: true })
 })

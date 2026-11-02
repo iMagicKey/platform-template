@@ -62,7 +62,7 @@ test('real WebSocket handshake and ping/pong work with an explicitly allowed tic
         })
         const reply = new Promise<string>((resolve, reject) => {
             const timer = setTimeout(() => reject(new Error('WebSocket ping timeout')), 2_000)
-            socket!.once('message', (value) => {
+            socket!.once('message', (value: unknown) => {
                 clearTimeout(timer)
                 resolve(String(value))
             })
