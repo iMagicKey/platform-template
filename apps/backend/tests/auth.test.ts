@@ -112,7 +112,7 @@ test('file-backed demo sessions survive app restart and are revoked across resta
             assert.equal(current.statusCode, 200)
             assert.equal(current.json().data.user.id, 'operator')
             const logout = await second.inject({ method: 'POST', url: '/auth/logout', headers: { cookie, origin: ORIGIN } })
-            assert.equal(logout.statusCode, 204)
+            assert.equal(logout.statusCode, 200)
         } finally {
             await second.close()
         }

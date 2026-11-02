@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs'
 import type { ServerOptions as HttpsServerOptions } from 'node:https'
-import { resolve } from 'node:path'
 import Fastify, { type FastifyServerOptions } from 'fastify'
 import cors from '@fastify/cors'
 import cookie from '@fastify/cookie'
