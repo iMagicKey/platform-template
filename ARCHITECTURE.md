@@ -146,3 +146,7 @@ build(deps): update Fastify and Zod versions
 ci: validate commit subjects on push
 chore: synchronize workspace lockfile
 ```
+
+### Demonstration database adapter
+
+The first backend storage example uses `code/db/FileJsonStore.ts` with Zod validation, temporary-file atomic rename and in-process serialized updates. `FileSessionStore.ts` implements the `SessionStore` contract, persisting hashed development session tokens beneath untracked `apps/backend/storage/`. It is intentionally **single-writer**: atomic rename does not provide distributed locking or transactions. It must not be used for production authentication, and `AUTH_MODE=demo` is rejected in production. No ORM or database daemon is required by the template.

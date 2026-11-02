@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { buildApp } from '../code/app.js'
 import { readConfig } from '../code/config.js'
 import { hashPassword } from '../code/modules/auth/auth.service.js'
 
 const ORIGIN = 'http://localhost:8080'
 
-async function createDemoApp() {
+async function createDemoApp(file: string) {
     const passwordHash = await hashPassword('nontrivial-test-password')
     return buildApp(
         readConfig({
@@ -16,12 +19,14 @@ async function createDemoApp() {
             AUTH_USERNAME: 'operator',
             AUTH_PASSWORD_HASH: passwordHash,
             AUTH_ALLOWED_ORIGINS: ORIGIN,
+            AUTH_FILE_PATH: file,
         })
     )
 }
 
 test('demo login, cookie session, identity and revocable logout', async () => {
-    const app = await createDemoApp()
+    const dir = await mkdtemp(join(tmpdir(), 'platform-auth-'))
+    const app = await createDemoApp(join(dir, 'sessions.json'))
     try {
         const bad = await app.inject({
             method: 'POST',
@@ -57,6 +62,7 @@ test('demo login, cookie session, identity and revocable logout', async () => {
         assert.equal((await app.inject({ url: '/auth/me', headers: { cookie } })).statusCode, 401)
     } finally {
         await app.close()
+        await rm(dir, { recursive: true, force: true })
     }
 })
 
@@ -74,4 +80,45 @@ test('demo identity provider refuses production and missing configuration', asyn
         /forbidden in production/
     )
     assert.throws(() => readConfig({ NODE_ENV: 'test', AUTH_MODE: 'demo' }), /AUTH_USERNAME/)
+})
+
+test('file-backed demo sessions survive app restart and are revoked across restarts', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'platform-auth-'))
+    const file = join(dir, 'sessions.json')
+    try {
+        const first = await createDemoApp(file)
+        let cookie = ''
+        try {
+            const login = await first.inject({
+                method: 'POST',
+                url: '/auth/login',
+                headers: { origin: ORIGIN },
+                payload: { login: 'operator', password: 'nontrivial-test-password' },
+            })
+            assert.equal(login.statusCode, 200)
+            cookie = String(login.headers['set-cookie']).split(';')[0]!
+        } finally {
+            await first.close()
+        }
+
+        const second = await createDemoApp(file)
+        try {
+            const current = await second.inject({ url: '/auth/me', headers: { cookie } })
+            assert.equal(current.statusCode, 200)
+            assert.equal(current.json().user.id, 'operator')
+            const logout = await second.inject({ method: 'POST', url: '/auth/logout', headers: { cookie, origin: ORIGIN } })
+            assert.equal(logout.statusCode, 204)
+        } finally {
+            await second.close()
+        }
+
+        const third = await createDemoApp(file)
+        try {
+            assert.equal((await third.inject({ url: '/auth/me', headers: { cookie } })).statusCode, 401)
+        } finally {
+            await third.close()
+        }
+    } finally {
+        await rm(dir, { recursive: true, force: true })
+    }
 })

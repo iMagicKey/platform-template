@@ -7,10 +7,10 @@ Actual implementations:
 - `code/index.ts` starts/stops the process; `code/app.ts` assembles Fastify/Zod/Pino/OpenAPI/WebSocket/rate limiting.
 - `code/config.ts` validates env; `code/consts/app.ts` holds fixed version and service name.
 - `code/routes/index.ts` is the single HTTP registry.
-- `code/routes/health/index.ts`: `GET /health`; `auth/index.ts`: `GET /auth`; `auth/login.ts`: `POST /auth/login`, returns **501** by default, or authenticates a single demo account when AUTH_MODE=demo on non-production. `POST /auth/logout` and `GET /auth/me` use the same revocable in-memory cookie session. Production auth requires a real persistent identity/session provider; demo mode is blocked in production.
+- `code/routes/health/index.ts`: `GET /health`; `auth/index.ts`: `GET /auth`; `auth/login.ts`: `POST /auth/login`, returns **501** by default, or authenticates a single demo account when AUTH_MODE=demo on non-production. `POST /auth/logout` and `GET /auth/me` use the same revocable file-backed development cookie session. Production auth requires a real persistent identity/session provider; demo mode is blocked in production.
 - `code/modules/auth/auth.service.ts` is the currently disabled identity provider boundary; `jwt.ts` supplies jose JWT issue/verify primitives but no session backend.
 - `code/websocket/index.ts` supplies `/ws` heartbeat and development-only origin/token check. Never treat the demo ticket as production auth.
-- `code/db/client.ts`, `code/db/models/User.ts`: unconnected ORM-neutral database examples.
+- `code/db/FileJsonStore.ts` is a Zod-validated atomic JSON file adapter; `FileSessionStore.ts` persists hashed dev-session tokens through the `SessionStore` interface, using untracked `storage/auth/sessions.json` or `AUTH_FILE_PATH`. One writer only, not production-safe. `code/db/models/UserSession.ts` is its storage model; `User.ts` remains ORM-neutral example.
 - `GET /projects` returns tracked `data/projects.json` via `modules/projects/projects.service.ts`; `POST /projects/estimate` validates numeric cents with Zod, calculates costs in pure domain logic and generates OpenAPI. No persistent writes.
 - `GET /openapi.json`, optional `/docs` Swagger UI.
 

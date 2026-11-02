@@ -33,9 +33,24 @@ pnpm test
 pnpm build
 ```
 
-## Optional single-port ingress
+## Optional single-port ingress (Caddy)
 
-With Caddy installed:
+Caddy is a small reverse proxy that exposes Next.js and Fastify through a single address. On Ubuntu/Debian, a basic installation is:
+
+```bash
+sudo apt update
+sudo apt install -y caddy
+```
+
+For newer releases or other operating systems, see the [official installation guide](https://caddyserver.com/docs/install).
+The package automatically starts a systemd service. Stop it **only when running the local Caddyfile manually** to avoid a port/admin API conflict:
+
+```bash
+sudo systemctl stop caddy
+caddy validate --config deploy/caddy/Caddyfile
+```
+
+Start web/backend/API with `pnpm dev`, then launch Caddy from the repository root:
 
 ```bash
 caddy run --config deploy/caddy/Caddyfile
@@ -49,7 +64,9 @@ Sample Caddy routing:
 - `http://localhost:8081/v1/ping` → independent API
 - `http://localhost:8081/docs` → API Swagger UI
 
-The example is deliberately HTTP for local work. A production HTTPS example with _imported_ PEM is at `deploy/caddy/Caddyfile.production.example`. Certificates, keys and production proxy config never enter Git.
+The example is deliberately HTTP for local work. It uses `handle_path /api/*` to strip the `/api` prefix before forwarding requests to Fastify. You can change the internal ports in `deploy/caddy/Caddyfile`.
+
+For a managed service on a VPS, start from `deploy/caddy/Caddyfile.production.example`: copy it to `/etc/caddy/Caddyfile`, set hostnames and certificate paths, and use `sudo caddy validate --config /etc/caddy/Caddyfile` followed by `sudo systemctl reload caddy`. Keep imported PEM/key files out of Git and readable only by the appropriate service account. Never run a second manual Caddy instance alongside the system service. See [Caddy documentation](https://caddyserver.com/docs/) for detailed setup.
 
 ## Operations
 
@@ -75,7 +92,7 @@ The example auth is deliberately unavailable in production. To try the working l
 2. In `apps/backend/.env` set `AUTH_MODE=demo`, `AUTH_USERNAME=operator`, `AUTH_PASSWORD_HASH=<generated value>`, and `AUTH_ALLOWED_ORIGINS=http://localhost:8080,http://127.0.0.1:8080`.
 3. Start the backend and open `http://localhost:8080` with Caddy running. Login, `/auth/me`, and logout use an HttpOnly session cookie; browser code never stores credentials or tokens.
 
-**Do not use this single-user in-memory identity provider in production.** It has no persistent users/sessions or shared multi-process session store. A real storage adapter and stronger session policies must replace it before production login. The projects estimator runs without auth and demonstrates the full frontend-to-Fastify request path.
+**Do not use this single-user demo identity provider in production.** Sessions are stored as hashed-token records in untracked `apps/backend/storage/auth/sessions.json` (or `AUTH_FILE_PATH`) and survive a restart, but no concurrent writers, distributed locking, backups or production account management are provided. A real storage adapter and stronger session policies must replace it before production login. The projects estimator runs without auth and demonstrates the full frontend-to-Fastify request path.
 
 ## Integration smoke test
 
@@ -93,7 +110,7 @@ provider and independent store tests.
 - `apps/*/AGENTS.md` documents only app-specific facts. No Markdown in backend `code/`.
 - Per-app `.env.example` is committed; `.env` and `runtime/` are not.
 - Worker uses the published imagic-scheduler npm package; bot uses grammY but remains disabled without BOT_ENABLED and BOT_TOKEN.
-- Database adapter is an unconnected example; no mandatory DB or migrations.
+- `apps/backend/code/db/FileJsonStore.ts` and `FileSessionStore.ts` demonstrate validated, atomic single-process JSON storage for dev auth; no mandatory database or migrations.
 
 ## Commit conventions
 
