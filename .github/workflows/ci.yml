@@ -41,6 +41,11 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Prettier diagnostics for centralized test migration
+        run: |
+          pnpm exec prettier --write .
+          git diff --stat
+          git diff -- tests/ docs/ARCHITECTURE.md README.md apps/ system/check.ts AGENTS.md
       - run: pnpm format:check
       - name: Integration smoke through real Caddy ingress
         shell: bash
