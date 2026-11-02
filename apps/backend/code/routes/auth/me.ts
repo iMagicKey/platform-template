@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { dataResponseSchema, errorResponseSchema, sendData, sendError } from '@platform/api-contract'
+import { commonErrorResponses, dataResponseSchema, sendData, sendError } from '@platform/api-contract'
 import { z } from 'zod'
 import { demoCookieName, type DemoAuthService } from '../../modules/auth/auth.service.js'
 
@@ -7,6 +7,7 @@ const meRouteSchema = {
     tags: ['auth'],
     summary: 'Read current development session',
     response: {
+        ...commonErrorResponses,
         200: dataResponseSchema(z.object({ user: z.object({ id: z.string() }) })),
         401: errorResponseSchema('UNAUTHENTICATED'),
         501: errorResponseSchema('AUTH_NOT_CONFIGURED'),

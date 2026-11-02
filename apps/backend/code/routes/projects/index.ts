@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { dataResponseSchema, sendData } from '@platform/api-contract'
+import { commonErrorResponses, dataResponseSchema, sendData } from '@platform/api-contract'
 import { z } from 'zod'
 import { listProjects, projectSchema } from '../../modules/projects/projects.service.js'
 
@@ -7,7 +7,8 @@ import { listProjects, projectSchema } from '../../modules/projects/projects.ser
 const projectsRouteSchema = {
     tags: ['projects'],
     summary: 'List reference projects',
-    response: { 200: dataResponseSchema(z.object({ projects: z.array(projectSchema) })) },
+    response: {
+        ...commonErrorResponses, 200: dataResponseSchema(z.object({ projects: z.array(projectSchema) })) },
 }
 
 export function registerProjectsRoot(app: FastifyInstance): void {

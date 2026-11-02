@@ -8,10 +8,10 @@
     },
     "scripts": {
         "dev": "next dev --hostname 127.0.0.1 --port 3000",
-        "build": "next build",
+        "build": "pnpm --filter @platform/api-contract build && next build",
         "start": "next start --hostname 127.0.0.1 --port 3000",
-        "test": "tsx --tsconfig tsconfig.test.json --test src/tests/*.test.ts",
-        "typecheck": "tsc --noEmit",
+        "test": "pnpm --filter @platform/api-contract build && tsx --tsconfig tsconfig.test.json --test src/tests/*.test.ts",
+        "typecheck": "pnpm --filter @platform/api-contract build && tsc --noEmit",
         "lint": "eslint src"
     },
     "dependencies": {

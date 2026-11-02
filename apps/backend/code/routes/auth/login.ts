@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { dataResponseSchema, errorResponseSchema, sendData, sendError } from '@platform/api-contract'
+import { commonErrorResponses, dataResponseSchema, sendData, sendError } from '@platform/api-contract'
 import type { ZodTypeProvider } from '@fastify/type-provider-zod'
 import { z } from 'zod'
 import { DEMO_SESSION_SECONDS, demoCookieName, type DemoAuthService } from '../../modules/auth/auth.service.js'
@@ -11,6 +11,7 @@ const loginRouteSchema = {
     summary: 'Development-only login; never enabled in production',
     body: z.object({ login: z.string().min(1).max(128), password: z.string().min(1).max(512) }),
     response: {
+        ...commonErrorResponses,
         200: dataResponseSchema(z.object({ user: z.object({ id: z.string() }) })),
         401: errorResponseSchema('INVALID_CREDENTIALS'),
         403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),

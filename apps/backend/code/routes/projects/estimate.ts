@@ -1,6 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { z } from 'zod'
-import { dataResponseSchema, errorResponseSchema, sendData } from '@platform/api-contract'
+import { commonErrorResponses, dataResponseSchema, sendData } from '@platform/api-contract'
 import type { ZodTypeProvider } from '@fastify/type-provider-zod'
 import { estimateProject, estimateRequestSchema, estimateResponseSchema, markProjectEstimated } from '../../modules/projects/projects.service.js'
 import type { RuntimeStore } from '../../store.js'
@@ -11,8 +10,8 @@ const estimateRouteSchema = {
     summary: 'Estimate project cost in integer cents',
     body: estimateRequestSchema,
     response: {
+        ...commonErrorResponses,
         200: dataResponseSchema(estimateResponseSchema),
-        400: z.union([errorResponseSchema('VALIDATION_ERROR'), errorResponseSchema('BAD_REQUEST')]),
     },
 }
 

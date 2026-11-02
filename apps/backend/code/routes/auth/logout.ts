@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { dataResponseSchema, errorResponseSchema, sendData, sendError } from '@platform/api-contract'
+import { commonErrorResponses, dataResponseSchema, sendData, sendError } from '@platform/api-contract'
 import { demoCookieName, type DemoAuthService } from '../../modules/auth/auth.service.js'
 import { requireAllowedOrigin } from '../../modules/auth/origin.js'
 import type { BackendConfig } from '../../config.js'
@@ -9,6 +9,7 @@ const logoutRouteSchema = {
     tags: ['auth'],
     summary: 'Revoke development session',
     response: {
+        ...commonErrorResponses,
         200: dataResponseSchema(z.null()),
         403: errorResponseSchema('ORIGIN_NOT_ALLOWED'),
         501: errorResponseSchema('AUTH_NOT_CONFIGURED'),

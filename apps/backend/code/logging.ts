@@ -3,7 +3,19 @@ import type { LoggerOptions } from 'pino'
 import type { BackendConfig } from './config.js'
 import { SERVICE_NAME } from './consts/app.js'
 
-const SENSITIVE_LOG_PATHS = ['req.headers.authorization', 'req.headers.cookie', 'headers.authorization', 'headers.cookie']
+const SENSITIVE_LOG_PATHS = [
+    'req.headers.authorization',
+    'req.headers.cookie',
+    'res.headers["set-cookie"]',
+    'headers.authorization',
+    'headers.cookie',
+    'headers["set-cookie"]',
+    'req.body.password',
+    'password',
+    'token',
+    '*.token',
+    'err.payload',
+]
 
 export function createLoggerOptions(config: BackendConfig): LoggerOptions {
     const logger: LoggerOptions = {
