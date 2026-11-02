@@ -21,6 +21,6 @@
         "lint": "eslint code tests"
     },
     "dependencies": {
-        "zod": "^4.2.0"
+        "zod": "^4.6.7"
     }
 }
