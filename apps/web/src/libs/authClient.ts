@@ -45,8 +45,8 @@ export async function loginUser(login: string, password: string): Promise<Curren
         })
     } catch (cause) {
         if (cause instanceof ApiRequestError) {
-            if (cause.code === 'INVALID_CREDENTIALS') throw new Error('Invalid login or password')
-            if (cause.code === 'ORIGIN_NOT_ALLOWED') throw new Error('Origin is not permitted; check AUTH_ALLOWED_ORIGINS')
+            if (cause.code === 'INVALID_CREDENTIALS') throw new Error('Invalid login or password', { cause })
+            if (cause.code === 'ORIGIN_NOT_ALLOWED') throw new Error('Origin is not permitted; check AUTH_ALLOWED_ORIGINS', { cause })
         }
         throw cause
     }

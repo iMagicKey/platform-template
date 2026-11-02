@@ -10,7 +10,7 @@ export async function estimateProjectCost(hours: number, rateCents: number): Pro
             body: JSON.stringify({ hours, rateCents }),
         })
     } catch (cause) {
-        if (cause instanceof ApiRequestError && cause.status === 400) throw new Error('Check the entered numbers')
+        if (cause instanceof ApiRequestError && cause.status === 400) throw new Error('Check the entered numbers', { cause })
         throw cause
     }
     if (
