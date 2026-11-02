@@ -1,0 +1,21 @@
+# Development ingress: caddy run --config deploy/caddy/Caddyfile
+# Backend owns public /api/* (stripped before forwarding) and /ws.
+:8080 {
+    @ws path /ws /ws/*
+    handle @ws {
+        reverse_proxy 127.0.0.1:3100
+    }
+
+    handle_path /api/* {
+        reverse_proxy 127.0.0.1:3100
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}
+
+# Independent API is published separately. For local testing, use localhost:8081.
+:8081 {
+    reverse_proxy 127.0.0.1:3200
+}

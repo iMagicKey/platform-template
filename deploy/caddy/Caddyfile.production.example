@@ -1,0 +1,24 @@
+# Example: provide your own Cloudflare Origin CA or other PEM files in runtime/.
+# Do not commit actual certs, keys or host-specific credentials.
+# Replace example.com and paths, then copy to an untracked deployment config.
+example.com {
+    tls /opt/platform/runtime/certs/web/fullchain.pem /opt/platform/runtime/certs/web/privkey.pem
+
+    @ws path /ws /ws/*
+    handle @ws {
+        reverse_proxy 127.0.0.1:3100
+    }
+
+    handle_path /api/* {
+        reverse_proxy 127.0.0.1:3100
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:3000
+    }
+}
+
+api.example.com {
+    tls /opt/platform/runtime/certs/api/fullchain.pem /opt/platform/runtime/certs/api/privkey.pem
+    reverse_proxy 127.0.0.1:3200
+}

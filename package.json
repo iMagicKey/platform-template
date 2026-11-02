@@ -16,7 +16,11 @@
     "check:architecture": "node system/check/index.mjs",
     "dev:web": "pnpm --filter @platform/web dev",
     "dev:backend": "pnpm --filter @platform/backend dev",
-    "dev:api": "pnpm --filter @platform/api dev"
+    "dev:api": "pnpm --filter @platform/api dev",
+    "system:init": "node system/init/index.mjs",
+    "system:certs": "node system/certs/index.mjs",
+    "system:service": "node system/service/index.mjs",
+    "system:logs": "node system/logs/index.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
