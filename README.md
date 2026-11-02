@@ -100,9 +100,9 @@ Application JSON endpoints in the independent Fastify services share `@platform/
 
 ## Test layout
 
-All test files live in the root `tests/` directory: `tests/backend/`, `tests/api/`, `tests/bot/`, `tests/web/`, `tests/worker/`, `tests/api-contract/` and `tests/system/`. The private `@platform/tests` workspace provides dependencies imported directly by the suites; application build artifacts stay outside `tests/`.
+Application tests live with their owners: `apps/api/tests/`, `apps/backend/tests/`, `apps/bot/tests/`, `apps/worker/tests/`, and `apps/web/src/tests/`. Root `tests/` contains only repository-level checks: `tests/system/`, package contract suites such as `tests/api-contract/`, and optional deployment suites. The private `@platform/repo-tests` workspace provides dependencies for repository-level suites.
 
-Run `pnpm test` for app and contract suites, `pnpm test:system` for system utilities, or `pnpm --filter @platform/backend test` for a specific app. CI also typechecks `tests/` and rejects test sources outside the root `tests/` tree.
+Run `pnpm test` for app and contract suites, `pnpm test:system` for system utilities, or `pnpm --filter @platform/backend test` for a specific app. CI typechecks app-local and root suites; the architecture checker enforces test ownership. The architecture in `docs/ARCHITECTURE.md` is owner-approved: agents must request explicit consent before changing rules, and separately obtain approval before merge or deployment.
 
 ## Integration smoke test
 

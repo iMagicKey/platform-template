@@ -1,0 +1,10 @@
+# Requests owner review on architecture policy and its enforcement.
+# Required approval must also be enabled in GitHub branch rules.
+/docs/ARCHITECTURE.md @iMagicKey
+/AGENTS.md @iMagicKey
+/apps/*/AGENTS.md @iMagicKey
+/system/check.ts @iMagicKey
+/tests/system/check.test.ts @iMagicKey
+/pnpm-workspace.yaml @iMagicKey
+/turbo.json @iMagicKey
+/.github/workflows/ @iMagicKey
