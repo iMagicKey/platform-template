@@ -6,7 +6,7 @@ Actual implementations:
 
 - `code/index.ts` starts/stops the process; `code/app.ts` assembles Fastify/Zod/Pino/OpenAPI/WebSocket/rate limiting.
 - `code/logging.ts` builds Pino options using explicit `if` for file transport; `code/plugins/request-logging.ts` owns the request-completion hook; infrastructure assembly stays readable in `app.ts`.
-- Each HTTP route keeps its `const ...RouteSchema` above its exported register function in the same file. Shared backend HTTP error responses reuse `code/schemas/common.ts`; never mirror `routes/` inside `schemas/`.
+- Each HTTP route keeps its `const ...RouteSchema` above its exported register function in the same file. Reused JSON response types and Zod factories are imported from the monorepo package `@platform/api-contract` (`packages/api-contract/`); the former `code/schemas/common.ts` has been removed. Do not mirror `routes/` inside `schemas/`.
 - `code/modules/auth/auth.factory.ts` wires the optional development-only auth provider.
 - `code/config.ts` validates env; `code/consts/app.ts` holds fixed version and service name.
 - `code/store.ts` exports the process-local singleton and `createStore()`. Current fields are `activeConnections` (written directly by WebSocket) and `lastProjectEstimateAt` (written through `modules/projects/projects.service.ts`). `code/index.ts` supplies the singleton to `buildApp`; tests default to fresh isolated stores.

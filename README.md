@@ -16,7 +16,7 @@ pnpm system:init
 pnpm dev
 ```
 
-Development services: native Next.js `http://127.0.0.1:3000`, backend `http://127.0.0.1:3100`, independent API `http://127.0.0.1:3200`. No external service, database, Telegram token or authentication credentials required to start.
+Development services: native Next.js `http://127.0.0.1:3000`, backend `http://127.0.0.1:3100`, independent API `http://127.0.0.1:3200`. No external service, database, Telegram token or authentication credentials required to start. The root `dev`, `dev:web`, `dev:backend` and `dev:api` scripts build `@platform/api-contract` first, including on a clean clone.
 
 ```bash
 pnpm dev:web

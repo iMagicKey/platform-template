@@ -4,7 +4,7 @@ Workspace `@platform/api`, independent Fastify HTTP process, internal port **320
 
 - `code/index.ts`: process lifecycle; `code/app.ts`: Fastify composition, Pino, Zod, Swagger, rate limits.
 - `code/logging.ts` builds Pino options using explicit `if` for file transport; `code/plugins/request-logging.ts` owns the request-completion hook; infrastructure assembly stays readable in `app.ts`.
-- Each HTTP route keeps its `const ...RouteSchema` above its exported register function in the same file. Shared backend HTTP error responses reuse `code/schemas/common.ts`; never mirror `routes/` inside `schemas/`.
+- Each HTTP route keeps its `const ...RouteSchema` above its exported register function in the same file. Reused JSON response types and Zod factories are imported from the monorepo package `@platform/api-contract` (`packages/api-contract/`); the former `code/schemas/common.ts` has been removed. Do not mirror `routes/` inside `schemas/`.
 - `code/config.ts`: Zod env. `code/consts/app.ts`: service name/version.
 - `code/routes/index.ts`: only central HTTP registrar; `routes/health/index.ts` maps `GET /health`; `routes/v1/ping.ts` maps `GET /v1/ping`.
 - `code/modules/ping.ts`: example isolated domain function (returns pong).

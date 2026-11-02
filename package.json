@@ -14,7 +14,7 @@
         "lint": "turbo run lint && eslint system",
         "check": "pnpm check:architecture && pnpm typecheck && pnpm test",
         "check:architecture": "node system/check.ts",
-        "dev:web": "pnpm --filter @platform/web dev",
+        "dev:web": "pnpm --filter @platform/api-contract build && pnpm --filter @platform/web dev",
         "dev:backend": "pnpm --filter @platform/api-contract build && pnpm --filter @platform/backend dev",
         "dev:api": "pnpm --filter @platform/api-contract build && pnpm --filter @platform/api dev",
         "system:init": "node system/init.ts",
