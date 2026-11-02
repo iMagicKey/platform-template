@@ -47,7 +47,9 @@ async function main() {
     assert.ok(object(backendSpec.paths)['/auth/login'])
     const swaggerPage = await waitFor(`${origin}/api/docs/`)
     const swaggerHtml = await swaggerPage.text()
-    assert.match(swaggerHtml, /\/api\/docs\/static\//)
+    assert.match(swaggerHtml, /\.\/static\/swagger-ui\.css/)
+    const swaggerStyles = await waitFor(`${origin}/api/docs/static/swagger-ui.css`)
+    assert.match(swaggerStyles.headers.get('content-type') ?? '', /text\/css/)
 
     const api = await waitFor(`${apiOrigin}/v1/ping`)
     assert.equal(object(object(await api.json()).data).message, 'pong')

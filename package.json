@@ -7,7 +7,7 @@
         "node": ">=26 <27"
     },
     "scripts": {
-        "dev": "pnpm --filter @platform/api-contract build && turbo run dev --parallel",
+        "dev": "pnpm --filter @platform/api-contract build && turbo run dev",
         "build": "turbo run build",
         "test": "turbo run test",
         "typecheck": "turbo run typecheck && tsc --noEmit -p tsconfig.system.json",
