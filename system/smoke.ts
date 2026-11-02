@@ -41,6 +41,14 @@ async function main() {
     assert.equal(estimate.status, 200)
     assert.equal(object(object(await estimate.json()).data).totalCents, 3750)
 
+    const backendSpec = object(await (await waitFor(`${origin}/api/openapi.json`)).json())
+    const backendServers = backendSpec.servers as Array<{ url: string }>
+    assert.equal(backendServers[0]?.url, '/api')
+    assert.ok(object(backendSpec.paths)['/auth/login'])
+    const swaggerPage = await waitFor(`${origin}/api/docs/`)
+    const swaggerHtml = await swaggerPage.text()
+    assert.match(swaggerHtml, /\/api\/docs\/static\//)
+
     const api = await waitFor(`${apiOrigin}/v1/ping`)
     assert.equal(object(object(await api.json()).data).message, 'pong')
 
